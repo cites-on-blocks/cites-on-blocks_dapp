@@ -1,0 +1,19 @@
+language: node_js
+node_js:
+  - "7"
+install:
+  - npm install -g truffle
+  - npm install -g ganache-cli
+  - npm install
+script:
+  - ganache-cli -b 3 &
+  - truffle compile
+  - truffle migrate
+  - truffle test
+branches:
+  only:
+  - master
+  - develop
+cache:
+  directories:
+    - "node_modules"
