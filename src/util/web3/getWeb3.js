@@ -9,9 +9,9 @@ function web3Initialized(results) {
   }
 }
 
-let getWeb3 = new Promise(function(resolve, reject) {
+let getWeb3 = new Promise(function(resolve) {
   // Wait for loading completion to avoid race conditions with web3 injection timing.
-  window.addEventListener('load', function(dispatch) {
+  window.addEventListener('load', function() {
     var results
     var web3
 

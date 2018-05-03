@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
 // Styles
 import './css/oswald.css'
@@ -14,6 +15,10 @@ class App extends Component {
       </div>
     );
   }
+}
+
+App.propTypes = {
+  children: PropTypes.node
 }
 
 export default App
