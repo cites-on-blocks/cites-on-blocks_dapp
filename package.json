@@ -75,7 +75,8 @@
     "lint": "node node_modules/eslint/bin/eslint.js .",
     "lint:fix": "node node_modules/eslint/bin/eslint.js --fix .",
     "lint:solium": "node node_modules/solium/bin/solium.js -d .",
-    "lint:solium:fix": "node node_modules/solium/bin/solium.js --fix -d ."
+    "lint:solium:fix": "node node_modules/solium/bin/solium.js --fix -d .",
+    "lint:all": "npm run lint && npm run lint:solium"
   },
   "jest": {
     "collectCoverageFrom": [
