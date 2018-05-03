@@ -22,11 +22,5 @@ start_ganache() {
 echo "Starting ganache instance"
 start_ganache
 
-echo "Compile contracts"
-truffle compile
-
-echo "Migrate contracts"
-truffle migrate
-
 echo "Run truffle tests"
 truffle test
