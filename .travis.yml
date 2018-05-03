@@ -6,10 +6,8 @@ install:
   - npm install -g ganache-cli
   - npm install
 script:
-  - ganache-cli -b 3 > /dev/null & 
-  - truffle compile
-  - truffle migrate
-  - truffle test
+  - npm run test
+  - ./scripts/run_truffle_tests.sh
 branches:
   only:
   - master
