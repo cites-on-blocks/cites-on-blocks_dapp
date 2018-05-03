@@ -24,6 +24,7 @@
     "eslint-plugin-flowtype": "2.21.0",
     "eslint-plugin-import": "2.0.1",
     "eslint-plugin-jsx-a11y": "2.2.3",
+    "eslint-plugin-promise": "^3.7.0",
     "eslint-plugin-react": "6.4.1",
     "extract-text-webpack-plugin": "1.0.1",
     "file-loader": "0.9.0",
@@ -40,6 +41,7 @@
     "promise": "7.1.1",
     "react-dev-utils": "^0.4.2",
     "recursive-readdir": "2.1.0",
+    "solium": "^1.1.7",
     "strip-ansi": "3.0.1",
     "style-loader": "0.13.1",
     "truffle-contract": "^1.1.8",
@@ -69,7 +71,11 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
-    "chain": "geth --datadir=\"/tmp/eth/60/01\" --nodiscover --maxpeers 0 --port 30301 --rpc --rpcapi \"db,eth,net,web3\" --rpcport 8101 --verbosity 6 console"
+    "chain": "geth --datadir=\"/tmp/eth/60/01\" --nodiscover --maxpeers 0 --port 30301 --rpc --rpcapi \"db,eth,net,web3\" --rpcport 8101 --verbosity 6 console",
+    "lint": "node node_modules/eslint/bin/eslint.js .",
+    "lint:fix": "node node_modules/eslint/bin/eslint.js --fix .",
+    "lint:solium": "node node_modules/solium/bin/solium.js -d .",
+    "lint:solium:fix": "node node_modules/solium/bin/solium.js --fix -d ."
   },
   "jest": {
     "collectCoverageFrom": [
