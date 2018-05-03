@@ -6,7 +6,7 @@ install:
   - npm install -g ganache-cli
   - npm install
 script:
-  - truffle build
+  - truffle compile
   - npm run lint:all
   - npm run test
   - ./scripts/run_truffle_tests.sh
