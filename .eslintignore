@@ -5,3 +5,5 @@
 /scripts/**
 /test/**
 /migrations/**
+truffle.js
+truffle-config.js
