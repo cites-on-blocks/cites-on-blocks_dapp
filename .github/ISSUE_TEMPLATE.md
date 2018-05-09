@@ -6,3 +6,9 @@
 
 ## Other Information
 <!-- Add other relevant information here. Like related issues, error logs, helpful links,...  -->
+
+## Subtasks
+<!-- List subtasks of issue here and keep the checklist updated. Enables transparency of the progress of this issue. -->
+- [ ]
+- [ ]
+- [ ]
