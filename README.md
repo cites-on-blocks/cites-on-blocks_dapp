@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/cites-on-blocks/cites-on-blocks_dapp.svg?token=RsXo6vditpwRYRHp6iog&branch=develop)](https://travis-ci.com/cites-on-blocks/cites-on-blocks_dapp)
+
 # CITES Blockchain Challenge - DApp
 ## Requirements
 - NodeJS 5.0+ recommended
