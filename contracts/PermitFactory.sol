@@ -1,6 +1,10 @@
 pragma solidity ^0.4.23;
 
 
+/**
+ * @title PermitFactory contract
+ * @dev Contains all CITES permit related functions.
+ */
 contract PermitFactory {
 
   enum PermitTypes {
@@ -15,7 +19,7 @@ contract PermitFactory {
     uint8 permitType; // type of permit: 1 -> Export, 2 -> Re-Export, 3 -> Other
     bytes32[3] exNameAndAddress; // name and address of exporter: ["name", "street", "city"]
     bytes32[3] imNameAndAddress; // name and address of importer: ["name", "street", "city"]
-    bytes32[] specimenHashes; // specimens
+    bytes32[] specimenHashes; // hashes of specimens
     uint nonce; // used to create unique hash
   }
   
@@ -39,18 +43,33 @@ contract PermitFactory {
     address indexed importer
   );
   
+  /**
+   * @dev Creates a CITES permit and stores it in the contract.
+   * @dev A hash of the permit is used as an unique key.
+   * @param _importer address of CITES authority in importing country
+   * @param _permitType type of permit: 1 -> Export, 2 -> Re-Export, 3 -> Other
+   * @param _exNameAndAddress name and address of exporter: ["name", "street", "city"]
+   * @param _imNameAndAddress name and address of importer: ["name", "street", "city"]
+   * @param _quantities quantities of specimens
+   * @param _scientificNames sc. names of specimens
+   * @param _commonNames common names of specimens
+   * @param _descriptions specimen descriptions
+   * @param _originHashes hashes of origin permits of specimens
+   * @param _reExportHashes hashes of last re-export permits of specimens
+   * @return whether permit creation was successful
+   */
   function createPermit(
-    address _importer, // address of importing country
-    uint8 _permitType, // type of permit: 1 -> Export, 2 -> Re-Export, 3 -> Other
-    bytes32[3] _exNameAndAddress, // name and address of exporter: ["name", "street", "city"]
-    bytes32[3] _imNameAndAddress, // name and address of importer: ["name", "street", "city"]
-    uint[] _quantities, // quantities of specimens
-    bytes32[] _scientificNames, // scientific names of specimens
-    bytes32[] _commonNames, // common names of specimens
-    bytes32[] _descriptions, // descriptions of specimens
-    bytes32[] _originHashes, // origin hashes of specimens
-    bytes32[] _reExportHashes // re-export hashes of specimens
-  ) 
+    address _importer,
+    uint8 _permitType,
+    bytes32[3] _exNameAndAddress,
+    bytes32[3] _imNameAndAddress,
+    uint[] _quantities,
+    bytes32[] _scientificNames,
+    bytes32[] _commonNames,
+    bytes32[] _descriptions,
+    bytes32[] _originHashes,
+    bytes32[] _reExportHashes
+  )
     public
     // TODO modifiers
     returns (bool)
@@ -73,7 +92,7 @@ contract PermitFactory {
       permit.nonce
     );
     permits[permitHash] = permit;
-    addSpecimenToPermit(
+    addSpecimens(
       permitHash,
       _quantities,
       _scientificNames,
@@ -91,14 +110,26 @@ contract PermitFactory {
     return true;
   }
 
-  function addSpecimenToPermit(
+  /**
+   * @dev Helper function that creates specimens and stores them in the contract.
+   * @dev Also adds created specimens to related permit.
+   * @param _permitHash hash of related permit
+   * @param _quantities quantities of specimens
+   * @param _scientificNames sc. names of specimens
+   * @param _commonNames common names of specimens
+   * @param _descriptions specimen descriptions
+   * @param _originHashes hashes of origin permits of specimens
+   * @param _reExportHashes hashes of last re-export permits of specimens
+   * @return whether specimens were added successfully
+   */
+  function addSpecimens(
     bytes32 _permitHash,
-    uint[] _quantities, // quantities of specimens
-    bytes32[] _scientificNames, // scientific names of specimens
-    bytes32[] _commonNames, // common names of specimens
-    bytes32[] _descriptions, // descriptions of specimens
-    bytes32[] _originHashes, // origin hashes of specimens
-    bytes32[] _reExportHashes // re-exporhashes of specimens
+    uint[] _quantities,
+    bytes32[] _scientificNames,
+    bytes32[] _commonNames,
+    bytes32[] _descriptions,
+    bytes32[] _originHashes,
+    bytes32[] _reExportHashes
   )
     private
     returns (bool)
@@ -128,6 +159,16 @@ contract PermitFactory {
     return true;
   }
 
+  /**
+   * @dev Returns unique hash of permit.
+   * @param _exporter address of CITES authoriy in exporting country
+   * @param _importer address of CITES authority in importing country
+   * @param _permitType type of permit: 1 -> Export, 2 -> Re-Export, 3 -> Other
+   * @param _exNameAndAddress name and address of exporter: ["name", "street", "city"]
+   * @param _imNameAndAddress name and address of importer: ["name", "street", "city"]
+   * @param _nonce number used to create unique hash
+   * @return unique permit hash
+   */
   function getPermitHash(
     address _exporter,
     address _importer,
@@ -150,6 +191,17 @@ contract PermitFactory {
     );
   }
 
+  /**
+   * @dev Returns unique hash of specimen.
+   * @param _permitHash hash parent permit
+   * @param _quantity quantity of specimen
+   * @param _scientificName sc. name of specimen
+   * @param _commonName common name of specimen
+   * @param _description description of specimen
+   * @param _originHash hash of origin permit of specimen
+   * @param _reExportHash hash of last re-export permit of specimen
+   * @return unique specimen hash
+   */
   function getSpecimenHash(
     bytes32 _permitHash,
     uint _quantity,
@@ -174,6 +226,12 @@ contract PermitFactory {
     );
   }
 
+  /**
+   * @dev Custom getter function to retrieve permit from contract storage.
+   * @dev Needed because client can not directly get array from mapping.
+   * @param permitHash hash of permit
+   * @return permit as tuple
+   */
   function getPermit(bytes32 permitHash)
     public
     view
