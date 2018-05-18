@@ -14,11 +14,11 @@ contract PermitFactory {
   }
   
   struct Permit {
-    address exporter; // address of export authority
-    address importer; // address of import authority
+    bytes2 exportCountry; // ISO country code of export country
+    bytes2 importCountry; // ISO country code of import country
     uint8 permitType; // type of permit: 1 -> Export, 2 -> Re-Export, 3 -> Other
-    bytes32[3] exNameAndAddress; // name and address of exporter: ["name", "street", "city"]
-    bytes32[3] imNameAndAddress; // name and address of importer: ["name", "street", "city"]
+    bytes32[3] exporter; // name and address of exporter: ["name", "street", "city"]
+    bytes32[3] importer; // name and address of importer: ["name", "street", "city"]
     bytes32[] specimenHashes; // hashes of specimens
     uint nonce; // used to create unique hash
   }
@@ -39,17 +39,18 @@ contract PermitFactory {
 
   event PermitCreated (
     bytes32 indexed permitHash,
-    address indexed exporter,
-    address indexed importer
+    bytes2 indexed exportCountry,
+    bytes2 indexed importCountry
   );
   
   /**
    * @dev Creates a CITES permit and stores it in the contract.
    * @dev A hash of the permit is used as an unique key.
-   * @param _importer address of CITES authority in importing country
+   * @param _exportCountry ISO country code of exporting country
+   * @param _importCountry ISO country code of importing country
    * @param _permitType type of permit: 1 -> Export, 2 -> Re-Export, 3 -> Other
-   * @param _exNameAndAddress name and address of exporter: ["name", "street", "city"]
-   * @param _imNameAndAddress name and address of importer: ["name", "street", "city"]
+   * @param _exporter name and address of exporter: ["name", "street", "city"]
+   * @param _importer name and address of importer: ["name", "street", "city"]
    * @param _quantities quantities of specimens
    * @param _scientificNames sc. names of specimens
    * @param _commonNames common names of specimens
@@ -59,10 +60,11 @@ contract PermitFactory {
    * @return whether permit creation was successful
    */
   function createPermit(
-    address _importer,
+    bytes2 _exportCountry,
+    bytes2 _importCountry,
     uint8 _permitType,
-    bytes32[3] _exNameAndAddress,
-    bytes32[3] _imNameAndAddress,
+    bytes32[3] _exporter,
+    bytes32[3] _importer,
     uint[] _quantities,
     bytes32[] _scientificNames,
     bytes32[] _commonNames,
@@ -75,20 +77,20 @@ contract PermitFactory {
     returns (bool)
   {
     Permit memory permit = Permit({
-      exporter: msg.sender,
-      importer: _importer,
+      exportCountry: _exportCountry,
+      importCountry: _importCountry,
       permitType: _permitType,
-      exNameAndAddress: _exNameAndAddress,
-      imNameAndAddress: _imNameAndAddress,
+      exporter: _exporter,
+      importer: _importer,
       specimenHashes: new bytes32[](_quantities.length),
       nonce: permitNonce
     });
     bytes32 permitHash = getPermitHash(
+      permit.exportCountry,
+      permit.importCountry,
+      permit.permitType,
       permit.exporter,
       permit.importer,
-      permit.permitType,
-      permit.exNameAndAddress,
-      permit.imNameAndAddress,
       permit.nonce
     );
     permits[permitHash] = permit;
@@ -103,10 +105,10 @@ contract PermitFactory {
     );
     emit PermitCreated(
       permitHash,
-      permit.exporter,
-      permit.importer
+      permit.exportCountry,
+      permit.importCountry
     );
-    permitNonce++;    
+    permitNonce++;
     return true;
   }
 
@@ -161,20 +163,20 @@ contract PermitFactory {
 
   /**
    * @dev Returns unique hash of permit.
-   * @param _exporter address of CITES authoriy in exporting country
-   * @param _importer address of CITES authority in importing country
+   * @param _exportCountry ISO country code of export country
+   * @param _importCountry ISO country code of import country
    * @param _permitType type of permit: 1 -> Export, 2 -> Re-Export, 3 -> Other
-   * @param _exNameAndAddress name and address of exporter: ["name", "street", "city"]
-   * @param _imNameAndAddress name and address of importer: ["name", "street", "city"]
+   * @param _exporter name and address of exporter: ["name", "street", "city"]
+   * @param _importer name and address of importer: ["name", "street", "city"]
    * @param _nonce number used to create unique hash
    * @return unique permit hash
    */
   function getPermitHash(
-    address _exporter,
-    address _importer,
+    bytes2 _exportCountry,
+    bytes2 _importCountry,
     uint8 _permitType,
-    bytes32[3] _exNameAndAddress,
-    bytes32[3] _imNameAndAddress,
+    bytes32[3] _exporter,
+    bytes32[3] _importer,
     uint _nonce
   ) 
     public
@@ -182,11 +184,11 @@ contract PermitFactory {
     returns (bytes32)
   {
     return keccak256(
+      _exportCountry,
+      _importCountry,
+      _permitType,
       _exporter,
       _importer,
-      _permitType,
-      _exNameAndAddress,
-      _imNameAndAddress,
       _nonce
     );
   }
@@ -229,22 +231,22 @@ contract PermitFactory {
   /**
    * @dev Custom getter function to retrieve permit from contract storage.
    * @dev Needed because client can not directly get array from mapping.
-   * @param permitHash hash of permit
+   * @param _permitHash hash of permit
    * @return permit as tuple
    */
-  function getPermit(bytes32 permitHash)
+  function getPermit(bytes32 _permitHash)
     public
     view
-    returns (address, address, uint8, bytes32[3], bytes32[3], bytes32[], uint)
+    returns (bytes2, bytes2, uint8, bytes32[3], bytes32[3], bytes32[], uint)
   {
     return (
-      permits[permitHash].exporter,
-      permits[permitHash].importer,
-      permits[permitHash].permitType,
-      permits[permitHash].exNameAndAddress,
-      permits[permitHash].imNameAndAddress,
-      permits[permitHash].specimenHashes,
-      permits[permitHash].nonce
+      permits[_permitHash].exportCountry,
+      permits[_permitHash].importCountry,
+      permits[_permitHash].permitType,
+      permits[_permitHash].exporter,
+      permits[_permitHash].importer,
+      permits[_permitHash].specimenHashes,
+      permits[_permitHash].nonce
     );
   }
 }
