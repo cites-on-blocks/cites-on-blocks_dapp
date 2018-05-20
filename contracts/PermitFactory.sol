@@ -33,14 +33,23 @@ contract PermitFactory {
     bytes32 reExportHash; // permit hash of last re-export
   }
   
-  uint permitNonce = 0; // used to generate unique hash
+  uint permitNonce = 1; // used to generate unique hash
   mapping (bytes32 => Permit) public permits; // maps hash to permit
   mapping (bytes32 => Specimen) public specimens; // maps hash to specimen
+  mapping (bytes32 => bool) public confirmed; // maps permit hash to whether permit was cofirmed
+  mapping (bytes32 => bool) public accepted; // maps permit hash to whether permit was accpeted
 
   event PermitCreated (
     bytes32 indexed permitHash,
     bytes2 indexed exportCountry,
     bytes2 indexed importCountry
+  );
+
+  event PermitConfirmed (
+    bytes32 indexed permitHash,
+    bytes2 indexed exportCountry,
+    bytes2 indexed importCountry,
+    bool isAccepted
   );
   
   /**
@@ -74,6 +83,8 @@ contract PermitFactory {
   )
     public
     // TODO modifiers
+    // check if whitelisted
+    // check if msg.sender matches country code 
     returns (bool)
   {
     Permit memory permit = Permit({
@@ -248,5 +259,25 @@ contract PermitFactory {
       permits[_permitHash].specimenHashes,
       permits[_permitHash].nonce
     );
+  }
+
+  /**
+   * @dev Called by CITES authority 
+   */
+  function confirmPermit(bytes32 _permitHash, bool _isAccepted)
+    public
+    // TODO modifier
+    // check if whitelisted
+    returns (bool)
+  {
+    confirmed[_permitHash] = true;
+    accepted[_permitHash] = _isAccepted;
+    emit PermitConfirmed(
+      _permitHash,
+      permits[_permitHash].exportCountry,
+      permits[_permitHash].importCountry,
+      _isAccepted
+    );
+    return true;
   }
 }

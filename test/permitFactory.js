@@ -4,6 +4,17 @@ const PermitFatory = artifacts.require('./PermitFactory.sol')
 
 contract('PermitFactory', accounts => {
   let permitFactoryInstance
+  const exportCountry = 'DE'
+  const importCountry = 'FR'
+  const permitType = 1
+  const importer = ['Importer Name', 'Importer Street', 'Importer City']
+  const exporter = ['Exporter Name', 'Exporter Street', 'Exporter City']
+  const quantities = [100]
+  const scientificNames = ['Scientific Name']
+  const commonNames = ['Common Name']
+  const descriptions = ['Description']
+  const originHashes = ['']
+  const reExportHashes = ['']
   const { hexToUtf8, asciiToHex, BN } = web3.utils
 
   before(done => {
@@ -16,17 +27,6 @@ contract('PermitFactory', accounts => {
 
   describe('#createPermit', () => {
     it('should create permit', done => {
-      const exportCountry = 'DE'
-      const importCountry = 'FR'
-      const permitType = 1
-      const importer = ['Importer Name', 'Importer Street', 'Importer City']
-      const exporter = ['Exporter Name', 'Exporter Street', 'Exporter City']
-      const quantities = [100]
-      const scientificNames = ['Scientific Name']
-      const commonNames = ['Common Name']
-      const descriptions = ['Description']
-      const originHashes = ['']
-      const reExportHashes = ['']
       permitFactoryInstance.createPermit(
         exportCountry,
         importCountry,
@@ -61,10 +61,46 @@ contract('PermitFactory', accounts => {
           assert.equal(hexToUtf8(importer[0]), 'Importer Name')
           assert.equal(hexToUtf8(importer[1]), 'Importer Street')
           assert.equal(hexToUtf8(importer[2]), 'Importer City')
-          console.log(hexToUtf8(importer[0]))
           done()
         })
       }).catch(e => console.log('ERROR', e))
+    })
+  })
+
+  describe('#confirmPermit', () => {
+    let permitHash
+
+    before(done => {
+      permitFactoryInstance.createPermit(
+        exportCountry,
+        importCountry,
+        permitType,
+        exporter,
+        importer,
+        quantities,
+        scientificNames,
+        commonNames,
+        descriptions,
+        originHashes,
+        reExportHashes,
+        { from: accounts[0] }
+      ).then(result => {
+        const [ log ] = result.logs.filter(log => log.event === 'PermitCreated')
+        permitHash = log.args.permitHash
+        done()
+      })
+    })
+
+    it('should confirm permit', done => {
+      permitFactoryInstance.confirmPermit(permitHash, true)
+        .then(result => {
+          const [ log ] = result.logs.filter(log => log.event === 'PermitConfirmed')
+          const { exportCountry, importCountry, isAccepted } = log.args
+          assert.equal(hexToUtf8(exportCountry), 'DE')
+          assert.equal(hexToUtf8(importCountry), 'FR')
+          assert.equal(isAccepted, true)
+          done()
+      })
     })
   })
 })
