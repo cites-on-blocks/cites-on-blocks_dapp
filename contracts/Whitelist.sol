@@ -33,6 +33,14 @@ contract Whitelist is Ownable {
     _; 
   }
 
+  /**
+    * Requires an address to belong to a specific country to proceed. 
+  */
+  modifier whitelistedForCountry(byte2 countryCode, address addr){
+    require(authorityToCountry[addr]==countryCode);
+    _;
+  }
+
 
 }
 
