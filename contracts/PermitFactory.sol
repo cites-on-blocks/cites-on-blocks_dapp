@@ -51,6 +51,102 @@ contract PermitFactory {
     bytes2 indexed importCountry,
     bool isAccepted
   );
+
+  /**
+   * @dev Called by CITES authority in exporting country.
+   * @dev Digital permit flow.
+   * @param _exportCountry ISO country code of exporting country
+   * @param _importCountry ISO country code of importing country
+   * @param _permitType type of permit: 1 -> Export, 2 -> Re-Export, 3 -> Other
+   * @param _exporter name and address of exporter: ["name", "street", "city"]
+   * @param _importer name and address of importer: ["name", "street", "city"]
+   * @param _quantities quantities of specimens
+   * @param _scientificNames sc. names of specimens
+   * @param _commonNames common names of specimens
+   * @param _descriptions specimen descriptions
+   * @param _originHashes hashes of origin permits of specimens
+   * @param _reExportHashes hashes of last re-export permits of specimens
+   * @return whether permit creation was successful   
+   */
+  function createPermit(
+    bytes2 _exportCountry,
+    bytes2 _importCountry,
+    uint8 _permitType,
+    bytes32[3] _exporter,
+    bytes32[3] _importer,
+    uint[] _quantities,
+    bytes32[] _scientificNames,
+    bytes32[] _commonNames,
+    bytes32[] _descriptions,
+    bytes32[] _originHashes,
+    bytes32[] _reExportHashes
+  )
+    public
+    // TODO check if msg.sender matches exportCountry
+    returns(bool)
+  {
+    _createPermit(
+      _exportCountry,
+      _importCountry,
+      _permitType,
+      _exporter,
+      _importer,
+      _quantities,
+      _scientificNames,
+      _commonNames,
+      _descriptions,
+      _originHashes,
+      _reExportHashes
+    );
+  }
+
+  /**
+   * @dev Called by CITES authority in importing country.
+   * @dev Paper-based permit flow.
+   * @param _exportCountry ISO country code of exporting country
+   * @param _importCountry ISO country code of importing country
+   * @param _permitType type of permit: 1 -> Export, 2 -> Re-Export, 3 -> Other
+   * @param _exporter name and address of exporter: ["name", "street", "city"]
+   * @param _importer name and address of importer: ["name", "street", "city"]
+   * @param _quantities quantities of specimens
+   * @param _scientificNames sc. names of specimens
+   * @param _commonNames common names of specimens
+   * @param _descriptions specimen descriptions
+   * @param _originHashes hashes of origin permits of specimens
+   * @param _reExportHashes hashes of last re-export permits of specimens
+   * @return whether permit creation was successful   
+   */
+  function createPaperPermit(
+    bytes2 _exportCountry,
+    bytes2 _importCountry,
+    uint8 _permitType,
+    bytes32[3] _exporter,
+    bytes32[3] _importer,
+    uint[] _quantities,
+    bytes32[] _scientificNames,
+    bytes32[] _commonNames,
+    bytes32[] _descriptions,
+    bytes32[] _originHashes,
+    bytes32[] _reExportHashes
+  )
+    public
+    // TODO check if msg.sender matches importCountry
+    returns(bool)
+  {
+    _createPermit(
+      _exportCountry,
+      _importCountry,
+      _permitType,
+      _exporter,
+      _importer,
+      _quantities,
+      _scientificNames,
+      _commonNames,
+      _descriptions,
+      _originHashes,
+      _reExportHashes
+    );
+  }
   
   /**
    * @dev Creates a CITES permit and stores it in the contract.
@@ -68,7 +164,7 @@ contract PermitFactory {
    * @param _reExportHashes hashes of last re-export permits of specimens
    * @return whether permit creation was successful
    */
-  function createPermit(
+  function _createPermit(
     bytes2 _exportCountry,
     bytes2 _importCountry,
     uint8 _permitType,
@@ -81,10 +177,7 @@ contract PermitFactory {
     bytes32[] _originHashes,
     bytes32[] _reExportHashes
   )
-    public
-    // TODO modifiers
-    // check if whitelisted
-    // check if msg.sender matches country code 
+    private
     returns (bool)
   {
     Permit memory permit = Permit({
