@@ -9,12 +9,12 @@ contract('PermitFactory', accounts => {
   const permitType = 1
   const importer = ['Importer Name', 'Importer Street', 'Importer City']
   const exporter = ['Exporter Name', 'Exporter Street', 'Exporter City']
-  const quantities = [100]
-  const scientificNames = ['Scientific Name']
-  const commonNames = ['Common Name']
-  const descriptions = ['Description']
-  const originHashes = ['']
-  const reExportHashes = ['']
+  const quantities = [100, 200]
+  const scientificNames = ['Scientific Name 1', 'Scientific Name 2']
+  const commonNames = ['Common Name 1', 'Common Name 2']
+  const descriptions = ['Description 1', 'Description 2']
+  const originHashes = ['', '']
+  const reExportHashes = ['', '']
   const { hexToUtf8, asciiToHex, BN } = web3.utils
 
   before(done => {
@@ -69,6 +69,7 @@ contract('PermitFactory', accounts => {
 
   describe('#confirmPermit', () => {
     let permitHash
+    let specimenHashes
 
     before(done => {
       permitFactoryInstance.createPermit(
@@ -87,12 +88,15 @@ contract('PermitFactory', accounts => {
       ).then(result => {
         const [ log ] = result.logs.filter(log => log.event === 'PermitCreated')
         permitHash = log.args.permitHash
-        done()
+        permitFactoryInstance.getPermit.call(permitHash, { from: accounts[0] }).then(permit => {
+          specimenHashes = permit[5]
+          done()
+        })
       })
     })
 
     it('should confirm permit', done => {
-      permitFactoryInstance.confirmPermit(permitHash, true)
+      permitFactoryInstance.confirmPermit(permitHash, specimenHashes, true)
         .then(result => {
           const [ log ] = result.logs.filter(log => log.event === 'PermitConfirmed')
           const { exportCountry, importCountry, isAccepted } = log.args
