@@ -8,26 +8,31 @@ contract Whitelist is Ownable {
 
   event AddressWhitelisted(address added, string indexed country);
 
-  /*
-  To be able to remove whole countries from the whitelist, we map a countrycode to 
-  all addresses related to that country.
-
-  All whitelisted addresses are assigned "true" in the whitelist mapping. If we want
-  to remove an address from the whitelist, we simply assign it "false" in the
-  witelist mapping.
-  
+  /**
+    * Maps ISO 3166-1 Country Codes to a list of addresses assigned to that country
   */
-  mapping (string => address[]) authorityMapping;
-  mapping (address => bool) whitelist; //TODO think about => type (as small as possible)
+  mapping (bytes2 => address[]) authorityMapping; 
+
+  /**
+    * Maps addresses to a boolean, indicating whether or not an address 
+    * is whitelisted
+  */
+  mapping (address => bool) whitelist; 
+
+  /**
+    * Maps addresses to the countries they are located in
+  */
+  mapping (address => bytes2) authorityToCountry;
 
 
   /**
-    Blocks all addresses mapped to false in the whitelist mapping.
+    * Blocks all addresses mapped to false in the whitelist mapping.
    */
   modifier onlyWhitelisted(){
     require(whitelist[msg.sender]);
     _; 
   }
+
 
 }
 
