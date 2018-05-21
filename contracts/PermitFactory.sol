@@ -166,7 +166,7 @@ contract PermitFactory {
         specimen.originHash,
         specimen.reExportHash
       );
-      permits[_permitHash].specimenHashes.push(specimenHash);
+      permits[_permitHash].specimenHashes[i] = specimenHash;
       specimens[specimenHash] = specimen;
     }
     return true;
@@ -262,14 +262,28 @@ contract PermitFactory {
   }
 
   /**
-   * @dev Called by CITES authority 
+   * @dev Called by CITES authority.
+   * @param _permitHash hash of permit that gets confirmed 
+   * @param _specimenHashes hashes of specimens
+   * @param _isAccepted whether permit got imported or not
    */
-  function confirmPermit(bytes32 _permitHash, bool _isAccepted)
+  function confirmPermit(
+    bytes32 _permitHash,
+    bytes32[] _specimenHashes,
+    bool _isAccepted
+  )
     public
     // TODO modifier
     // check if whitelisted
     returns (bool)
   {
+    // does permit exists?
+    require(permits[_permitHash].nonce > 0);
+    // do specimen hashes exist?
+    for(uint i = 0; i < _specimenHashes.length; i++) {
+      require(specimens[_specimenHashes[i]].permitHash == _permitHash);
+    }
+
     confirmed[_permitHash] = true;
     accepted[_permitHash] = _isAccepted;
     emit PermitConfirmed(
