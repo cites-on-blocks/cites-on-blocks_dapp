@@ -1,12 +1,15 @@
 pragma solidity ^0.4.23;
 
+import "./Whitelist.sol";
 
 /**
  * @title PermitFactory contract
  * @dev Contains all CITES permit related functions.
+ * @author Dong-Ha Kim, Lukas Renner
  */
-contract PermitFactory {
+contract PermitFactory is Whitelist {
 
+  // TODO use enums in functions
   enum PermitTypes {
     EXPORT,
     RE_EXPORT,
@@ -82,7 +85,8 @@ contract PermitFactory {
     bytes32[] _reExportHashes
   )
     public
-    // TODO check if msg.sender matches exportCountry
+    onlyWhitelisted
+    whitelistedForCountry(_exportCountry, msg.sender)
     returns(bool)
   {
     _createPermit(
@@ -130,7 +134,8 @@ contract PermitFactory {
     bytes32[] _reExportHashes
   )
     public
-    // TODO check if msg.sender matches importCountry
+    onlyWhitelisted
+    whitelistedForCountry(_importCountry, msg.sender)
     returns(bool)
   {
     _createPermit(
