@@ -1,9 +1,5 @@
-var SimpleStorage = artifacts.require("SimpleStorage");
-var TutorialToken = artifacts.require("TutorialToken");
-var ComplexStorage = artifacts.require("ComplexStorage");
+const Whitelist = artifacts.require('Whitelist')
 
-module.exports = function(deployer) {
-  deployer.deploy(SimpleStorage);
-  deployer.deploy(TutorialToken);
-  deployer.deploy(ComplexStorage);
-};
+module.exports = deployer => {
+  deployer.deploy(Whitelist)
+}
