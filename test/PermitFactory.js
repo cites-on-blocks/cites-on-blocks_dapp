@@ -1,6 +1,6 @@
 const Web3 = require('web3')
 const web3 = new Web3(Web3.givenProvider || 'ws://localhost:8546')
-const PermitFatory = artifacts.require('./PermitFactory.sol')
+const PermitFactory = artifacts.require('./PermitFactory.sol')
 
 contract('PermitFactory', accounts => {
   let permitFactoryInstance
@@ -17,12 +17,9 @@ contract('PermitFactory', accounts => {
   const reExportHashes = ['', '']
   const { hexToUtf8, asciiToHex, BN } = web3.utils
 
-  before(done => {
-    PermitFatory.deployed()
-      .then(instance => {
-        permitFactoryInstance = instance
-        done()
-      })
+  before(async () => {
+    permitFactoryInstance = await PermitFactory.deployed()
+    console.log(permitFactoryInstance)
   })
 
   describe('#createPermit', () => {

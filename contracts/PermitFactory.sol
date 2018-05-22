@@ -2,6 +2,7 @@ pragma solidity ^0.4.23;
 
 import "./Whitelist.sol";
 
+
 /**
  * @title PermitFactory contract
  * @dev Contains all CITES permit related functions.
@@ -152,6 +153,129 @@ contract PermitFactory is Whitelist {
       _reExportHashes
     );
   }
+
+  /**
+   * @dev Called by CITES authority.
+   * @param _permitHash hash of permit that gets confirmed 
+   * @param _specimenHashes hashes of specimens
+   * @param _isAccepted whether permit got imported or not
+   */
+  function confirmPermit(
+    bytes32 _permitHash,
+    bytes32[] _specimenHashes,
+    bool _isAccepted
+  )
+    public
+    // TODO modifier
+    // check if whitelisted
+    returns (bool)
+  {
+    // does permit exists?
+    require(permits[_permitHash].nonce > 0);
+    // do specimen hashes exist?
+    for (uint i = 0; i < _specimenHashes.length; i++) {
+      require(specimens[_specimenHashes[i]].permitHash == _permitHash);
+    }
+
+    confirmed[_permitHash] = true;
+    accepted[_permitHash] = _isAccepted;
+    emit PermitConfirmed(
+      _permitHash,
+      permits[_permitHash].exportCountry,
+      permits[_permitHash].importCountry,
+      _isAccepted
+    );
+    return true;
+  }
+
+    /**
+   * @dev Returns unique hash of permit.
+   * @param _exportCountry ISO country code of export country
+   * @param _importCountry ISO country code of import country
+   * @param _permitType type of permit: 1 -> Export, 2 -> Re-Export, 3 -> Other
+   * @param _exporter name and address of exporter: ["name", "street", "city"]
+   * @param _importer name and address of importer: ["name", "street", "city"]
+   * @param _nonce number used to create unique hash
+   * @return unique permit hash
+   */
+  function getPermitHash(
+    bytes2 _exportCountry,
+    bytes2 _importCountry,
+    uint8 _permitType,
+    bytes32[3] _exporter,
+    bytes32[3] _importer,
+    uint _nonce
+  ) 
+    public
+    pure
+    returns (bytes32)
+  {
+    return keccak256(
+      _exportCountry,
+      _importCountry,
+      _permitType,
+      _exporter,
+      _importer,
+      _nonce
+    );
+  }
+
+  /**
+   * @dev Returns unique hash of specimen.
+   * @param _permitHash hash parent permit
+   * @param _quantity quantity of specimen
+   * @param _scientificName sc. name of specimen
+   * @param _commonName common name of specimen
+   * @param _description description of specimen
+   * @param _originHash hash of origin permit of specimen
+   * @param _reExportHash hash of last re-export permit of specimen
+   * @return unique specimen hash
+   */
+  function getSpecimenHash(
+    bytes32 _permitHash,
+    uint _quantity,
+    bytes32 _scientificName,
+    bytes32 _commonName,
+    bytes32 _description,
+    bytes32 _originHash,
+    bytes32 _reExportHash
+  ) 
+    public
+    pure
+    returns (bytes32)
+  {
+    return keccak256(
+      _permitHash,
+      _quantity,
+      _scientificName,
+      _commonName,
+      _description,
+      _originHash,
+      _reExportHash
+    );
+  }
+
+  /**
+   * @dev Custom getter function to retrieve permit from contract storage.
+   * @dev Needed because client can not directly get array from mapping.
+   * @param _permitHash hash of permit
+   * @return permit as tuple
+   */
+  function getPermit(bytes32 _permitHash)
+    public
+    view
+    returns (bytes2, bytes2, uint8, bytes32[3], bytes32[3], bytes32[], uint)
+  {
+    return (
+      permits[_permitHash].exportCountry,
+      permits[_permitHash].importCountry,
+      permits[_permitHash].permitType,
+      permits[_permitHash].exporter,
+      permits[_permitHash].importer,
+      permits[_permitHash].specimenHashes,
+      permits[_permitHash].nonce
+    );
+  }
   
   /**
    * @dev Creates a CITES permit and stores it in the contract.
@@ -267,129 +391,6 @@ contract PermitFactory is Whitelist {
       permits[_permitHash].specimenHashes[i] = specimenHash;
       specimens[specimenHash] = specimen;
     }
-    return true;
-  }
-
-  /**
-   * @dev Returns unique hash of permit.
-   * @param _exportCountry ISO country code of export country
-   * @param _importCountry ISO country code of import country
-   * @param _permitType type of permit: 1 -> Export, 2 -> Re-Export, 3 -> Other
-   * @param _exporter name and address of exporter: ["name", "street", "city"]
-   * @param _importer name and address of importer: ["name", "street", "city"]
-   * @param _nonce number used to create unique hash
-   * @return unique permit hash
-   */
-  function getPermitHash(
-    bytes2 _exportCountry,
-    bytes2 _importCountry,
-    uint8 _permitType,
-    bytes32[3] _exporter,
-    bytes32[3] _importer,
-    uint _nonce
-  ) 
-    public
-    pure
-    returns (bytes32)
-  {
-    return keccak256(
-      _exportCountry,
-      _importCountry,
-      _permitType,
-      _exporter,
-      _importer,
-      _nonce
-    );
-  }
-
-  /**
-   * @dev Returns unique hash of specimen.
-   * @param _permitHash hash parent permit
-   * @param _quantity quantity of specimen
-   * @param _scientificName sc. name of specimen
-   * @param _commonName common name of specimen
-   * @param _description description of specimen
-   * @param _originHash hash of origin permit of specimen
-   * @param _reExportHash hash of last re-export permit of specimen
-   * @return unique specimen hash
-   */
-  function getSpecimenHash(
-    bytes32 _permitHash,
-    uint _quantity,
-    bytes32 _scientificName,
-    bytes32 _commonName,
-    bytes32 _description,
-    bytes32 _originHash,
-    bytes32 _reExportHash
-  ) 
-    public
-    pure
-    returns (bytes32)
-  {
-    return keccak256(
-      _permitHash,
-      _quantity,
-      _scientificName,
-      _commonName,
-      _description,
-      _originHash,
-      _reExportHash
-    );
-  }
-
-  /**
-   * @dev Custom getter function to retrieve permit from contract storage.
-   * @dev Needed because client can not directly get array from mapping.
-   * @param _permitHash hash of permit
-   * @return permit as tuple
-   */
-  function getPermit(bytes32 _permitHash)
-    public
-    view
-    returns (bytes2, bytes2, uint8, bytes32[3], bytes32[3], bytes32[], uint)
-  {
-    return (
-      permits[_permitHash].exportCountry,
-      permits[_permitHash].importCountry,
-      permits[_permitHash].permitType,
-      permits[_permitHash].exporter,
-      permits[_permitHash].importer,
-      permits[_permitHash].specimenHashes,
-      permits[_permitHash].nonce
-    );
-  }
-
-  /**
-   * @dev Called by CITES authority.
-   * @param _permitHash hash of permit that gets confirmed 
-   * @param _specimenHashes hashes of specimens
-   * @param _isAccepted whether permit got imported or not
-   */
-  function confirmPermit(
-    bytes32 _permitHash,
-    bytes32[] _specimenHashes,
-    bool _isAccepted
-  )
-    public
-    // TODO modifier
-    // check if whitelisted
-    returns (bool)
-  {
-    // does permit exists?
-    require(permits[_permitHash].nonce > 0);
-    // do specimen hashes exist?
-    for(uint i = 0; i < _specimenHashes.length; i++) {
-      require(specimens[_specimenHashes[i]].permitHash == _permitHash);
-    }
-
-    confirmed[_permitHash] = true;
-    accepted[_permitHash] = _isAccepted;
-    emit PermitConfirmed(
-      _permitHash,
-      permits[_permitHash].exportCountry,
-      permits[_permitHash].importCountry,
-      _isAccepted
-    );
     return true;
   }
 }
