@@ -20,6 +20,10 @@ import drizzleOptions from './drizzleOptions'
 // Initialize react-router-redux.
 const history = syncHistoryWithStore(browserHistory, store)
 
+/*
+ * Routes built to the different menu section points
+ */
+
 ReactDOM.render((
     <DrizzleProvider options={drizzleOptions} store={store}>
       <LoadingContainer>

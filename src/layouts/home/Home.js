@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 class Home extends Component {
   render() {
     return (
-      <main style= { { background: '#F234' } } >
+      <main>
         Hello World!
       </main>
     )

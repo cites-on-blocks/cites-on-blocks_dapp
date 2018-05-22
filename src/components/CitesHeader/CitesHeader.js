@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Header, Menu, Title } from 'grommet'
+import { Header, Image, Menu, Title } from 'grommet'
+import logo from '../../imgs/croco.png'
 import s from '../../localization/localizedStrings'
 
 
@@ -9,10 +10,10 @@ import s from '../../localization/localizedStrings'
 class CitesHeader extends Component {
   render() {
     return (
-      <Header fixed={true} className={'cites-header'} direction={'row'}
+      <Header fixed={true} direction={'row'}
       align={'end'} justify="between" separator="bottom" pad={ { horizontal: 'small', vertical: 'small' } } >
           <Title>
-            CITES on Blocks
+            <Image src={logo} alt="logo" size="thumb"/>
           </Title>
           <Menu direction={'row'}>
             <a href="/whitelist">{s.whitelist}</a>
