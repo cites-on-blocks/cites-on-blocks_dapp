@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Box, Footer, Label, SocialShare } from 'grommet'
+import s from '../../localization/localizedStrings'
 
 
 /*
@@ -16,10 +17,10 @@ class CitesFooter extends Component {
             <SocialShare type="linkedin" link={'https://cites.org/'}/>
         </Box>
         <Box>
-            <span>Cites Company:</span>
-            <span>(1-⁠844-⁠627-⁠2871)</span>
-            <span>Monday to Saturday,</span>
-            <span>7 am - 9 pm E.T.</span>
+            <span>{s.officeName}</span>
+            <span>{s.contactPhone}</span>
+            <span>{s.openingDays}</span>
+            <span>{s.openingHours}</span>
         </Box>
       </Footer>
     );
