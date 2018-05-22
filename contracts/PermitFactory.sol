@@ -211,12 +211,14 @@ contract PermitFactory is Whitelist {
     returns (bytes32)
   {
     return keccak256(
-      _exportCountry,
-      _importCountry,
-      _permitType,
-      _exporter,
-      _importer,
-      _nonce
+      abi.encodePacked(
+        _exportCountry,
+        _importCountry,
+        _permitType,
+        _exporter,
+        _importer,
+        _nonce
+      )
     );
   }
 
@@ -245,13 +247,15 @@ contract PermitFactory is Whitelist {
     returns (bytes32)
   {
     return keccak256(
-      _permitHash,
-      _quantity,
-      _scientificName,
-      _commonName,
-      _description,
-      _originHash,
-      _reExportHash
+      abi.encodePacked(
+        _permitHash,
+        _quantity,
+        _scientificName,
+        _commonName,
+        _description,
+        _originHash,
+        _reExportHash
+      )
     );
   }
 
