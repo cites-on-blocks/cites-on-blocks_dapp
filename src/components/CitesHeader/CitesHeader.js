@@ -14,11 +14,11 @@ class CitesHeader extends Component {
             CITES on Block
           </Title>
           <Menu direction={'row'}>
-            <a>Whitelist</a>
-            <a>Permit</a>
-            <a>Analyse</a>
-            <a>Import/Export</a>
-            <a>Hilfe</a>
+            <a href="/whitelist">Whitelist</a>
+            <a href="/permits">Permit</a>
+            <a href="/analytics">Analyse</a>
+            <a href="/import-export">Import/Export</a>
+            <a href="/help">Hilfe</a>
           </Menu>
         </Header>
     );
