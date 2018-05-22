@@ -5,7 +5,7 @@ import { syncHistoryWithStore } from 'react-router-redux'
 import { DrizzleProvider } from 'drizzle-react'
 
 // Layouts
-import App from './App'
+import App from './components/App/App'
 import HomeContainer from './layouts/home/HomeContainer'
 import { LoadingContainer } from 'drizzle-react-components'
 
