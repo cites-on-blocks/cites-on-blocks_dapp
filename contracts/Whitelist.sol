@@ -41,6 +41,23 @@ contract Whitelist is Ownable {
     _;
   }
 
+  /**
+   * removes an address from the whitelist by assigning it to false in the mapping
+   */
+  function removeAddress(address toRemove) external {
+    whitelist[toRemove] = false;
+  }
+
+  /**
+   * removes addresses of an entire region from the whitelist
+   */
+  function removeRegion(bytes2 region) external {
+    address[] memory countryAddresses = authorityMapping[region];
+    for (uint i = 0;i != countryAddresses.length;i++) {
+      whitelist[countryAddresses[i]] = false;
+    }
+  }
+
 
 }
 
