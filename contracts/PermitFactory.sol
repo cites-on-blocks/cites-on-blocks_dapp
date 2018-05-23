@@ -166,8 +166,7 @@ contract PermitFactory is Whitelist {
     bool _isAccepted
   )
     public
-    // TODO modifier
-    // check if whitelisted
+    onlyWhitelisted
     returns (bool)
   {
     // does permit exists?
