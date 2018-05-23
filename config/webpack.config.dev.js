@@ -113,7 +113,8 @@ module.exports = {
           /\.json$/,
           /\.woff$/,
           /\.woff2$/,
-          /\.(ttf|svg|eot)$/
+          /\.(ttf|svg|eot)$/,
+          /\.(png|jpg|gif)$/
         ],
         loader: 'url',
         query: {
@@ -151,7 +152,7 @@ module.exports = {
       },
       // "file" loader for svg
       {
-        test: /\.svg$/,
+        test: /\.(svg|png|jpg|gif)$/,
         loader: 'file',
         query: {
           name: 'static/media/[name].[hash:8].[ext]'

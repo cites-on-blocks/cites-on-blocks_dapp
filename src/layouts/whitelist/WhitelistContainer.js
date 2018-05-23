@@ -1,4 +1,4 @@
-import Home from './Home'
+import Whitelist from './Whitelist'
 import { drizzleConnect } from 'drizzle-react'
 
 // May still need this even with data function to refresh component on updates for this contract.
@@ -9,6 +9,6 @@ const mapStateToProps = state => {
   }
 }
 
-const HomeContainer = drizzleConnect(Home, mapStateToProps);
+const WhitelistContainer = drizzleConnect(Whitelist, mapStateToProps);
 
-export default HomeContainer
+export default WhitelistContainer
