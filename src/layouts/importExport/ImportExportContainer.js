@@ -9,6 +9,6 @@ const mapStateToProps = state => {
   }
 }
 
-const ImportExportContainer = drizzleConnect(ImportExport, mapStateToProps);
+const ImportExportContainer = drizzleConnect(ImportExport, mapStateToProps)
 
 export default ImportExportContainer

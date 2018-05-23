@@ -3,11 +3,7 @@ import PropTypes from 'prop-types'
 
 class Whitelist extends Component {
   render() {
-    return (
-      <main>
-        Whitelist in the making...
-      </main>
-    )
+    return <main>Whitelist in the making...</main>
   }
 }
 

@@ -1,7 +1,6 @@
 import LocalizedStrings from 'react-localization'
 
 let s = new LocalizedStrings({
-
   en: {
     whitelist: 'Whitelist',
     permits: 'Permits',
@@ -24,6 +23,6 @@ let s = new LocalizedStrings({
     contactPhone: '(1-⁠844-⁠627-⁠2871)',
     officeName: 'Cites Büro:'
   }
-});
+})
 
 export default s

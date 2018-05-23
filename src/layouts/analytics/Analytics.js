@@ -3,11 +3,7 @@ import PropTypes from 'prop-types'
 
 class Analytics extends Component {
   render() {
-    return (
-      <main>
-        Analytics still todo...
-      </main>
-    )
+    return <main>Analytics still todo...</main>
   }
 }
 

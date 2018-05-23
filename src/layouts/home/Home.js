@@ -7,8 +7,8 @@ class Home extends Component {
   render() {
     return (
       <main>
-        <Box pad={ { horizontal: 'large', vertical: 'large' } } >
-          <Image src={worldmap} fit="contain"/>
+        <Box pad={{ horizontal: 'large', vertical: 'large' }}>
+          <Image src={worldmap} fit="contain" />
         </Box>
       </main>
     )

@@ -3,11 +3,7 @@ import PropTypes from 'prop-types'
 
 class Permit extends Component {
   render() {
-    return (
-      <main>
-        Permits in the making...
-      </main>
-    )
+    return <main>Permits in the making...</main>
   }
 }
 

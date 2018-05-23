@@ -9,6 +9,6 @@ const mapStateToProps = state => {
   }
 }
 
-const WhitelistContainer = drizzleConnect(Whitelist, mapStateToProps);
+const WhitelistContainer = drizzleConnect(Whitelist, mapStateToProps)
 
 export default WhitelistContainer

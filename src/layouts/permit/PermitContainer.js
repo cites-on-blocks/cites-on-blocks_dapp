@@ -9,6 +9,6 @@ const mapStateToProps = state => {
   }
 }
 
-const PermitContainer = drizzleConnect(Permit, mapStateToProps);
+const PermitContainer = drizzleConnect(Permit, mapStateToProps)
 
 export default PermitContainer

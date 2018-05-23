@@ -3,12 +3,14 @@
     "eslint:recommended",
     "plugin:react/recommended",
     "plugin:import/recommended",
-    "plugin:promise/recommended"
+    "plugin:promise/recommended",
+    "plugin:prettier/recommended"
   ],
   "plugins": [
     "react",
     "import",
-    "promise"
+    "promise",
+    "prettier"
   ],
   "env": {
     "browser": true,
@@ -42,8 +44,8 @@
     "no-undef": 2,
     "object-curly-spacing": [2, "always"],
     "max-len": [2, 120, 2],
-    "generator-star-spacing": ["error", "before"],
     "promise/avoid-new": 0,
-    "no-console": "off"
+    "no-console": "off",
+    "prettier/prettier": "error",
   }
 }

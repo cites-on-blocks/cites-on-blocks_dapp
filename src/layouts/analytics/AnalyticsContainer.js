@@ -9,6 +9,6 @@ const mapStateToProps = state => {
   }
 }
 
-const AnalyticsContainer = drizzleConnect(Analytics, mapStateToProps);
+const AnalyticsContainer = drizzleConnect(Analytics, mapStateToProps)
 
 export default AnalyticsContainer

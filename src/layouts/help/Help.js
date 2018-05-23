@@ -3,11 +3,7 @@ import PropTypes from 'prop-types'
 
 class Help extends Component {
   render() {
-    return (
-      <main>
-        Calling for the rescue...
-      </main>
-    )
+    return <main>Calling for the rescue...</main>
   }
 }
 

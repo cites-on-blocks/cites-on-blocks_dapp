@@ -9,6 +9,6 @@ const mapStateToProps = state => {
   }
 }
 
-const HelpContainer = drizzleConnect(Help, mapStateToProps);
+const HelpContainer = drizzleConnect(Help, mapStateToProps)
 
 export default HelpContainer
