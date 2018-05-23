@@ -17,3 +17,5 @@ branches:
 cache:
   directories:
     - "node_modules"
+notifications:
+  slack: pascites:CcCuJavtn5p7RB614GyrZVGk
