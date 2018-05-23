@@ -13,10 +13,10 @@ class App extends Component {
     return (
       <GrommetApp>
         <CitesHeader/>
-        {this.props.children}
+          {this.props.children}
         <CitesFooter/>
       </GrommetApp>
-    );
+    )
   }
 }
 

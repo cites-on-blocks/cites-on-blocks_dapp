@@ -14,6 +14,9 @@ import ImportExportContainer from './layouts/importExport/ImportExportContainer'
 import PermitContainer from './layouts/permit/PermitContainer'
 import { LoadingContainer } from 'drizzle-react-components'
 
+//Stylesheets
+import './css/grommet.min.css'
+
 import store from './store'
 import drizzleOptions from './drizzleOptions'
 
