@@ -77,7 +77,7 @@
     "test": "node scripts/test.js --env=jsdom",
     "chain":
       "geth --datadir=\"/tmp/eth/60/01\" --nodiscover --maxpeers 0 --port 30301 --rpc --rpcapi \"db,eth,net,web3\" --rpcport 8101 --verbosity 6 console",
-    "precommit": "npm run lint:fix && npm run lint:solium:fix",
+    "precommit": "lint-staged",
     "lint": "node node_modules/eslint/bin/eslint.js .",
     "lint:fix": "node node_modules/eslint/bin/eslint.js --fix .",
     "lint:solium": "node node_modules/solium/bin/solium.js -d .",
@@ -107,5 +107,12 @@
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "lint-staged": {
+    "*.{js,css,jsx,html,scss,less}": [
+      "node node_modules/eslint/bin/eslint.js --fix",
+      "git add"
+    ],
+    "*.sol": ["node node_modules/solium/bin/solium.js --fix -d", "git add"]
   }
 }
