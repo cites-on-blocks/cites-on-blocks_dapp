@@ -1,49 +1,51 @@
 {
-    "extends" : [
-			"eslint:recommended",
-			"plugin:react/recommended",
-      "plugin:import/recommended",
-      "plugin:promise/recommended"
-    ],
-    "plugins": [
-			"react",
-      "import",
-      "promise"
-    ],
-    "env": {
-      "browser": true,
-      "node": true,
-      "mocha": true,
-      "jest": true,
-      "es6": true
-    },
-    "globals" : {
-      "artifacts": false,
-      "contract": false,
-      "assert": false,
-      "web3": false
-    },
-    "rules": {
-      "indent": [2, 2],
-      "quotes": [2, "single"],
-      "space-before-function-paren": ["error", "never"],
-      "no-use-before-define": 0,
-      "eqeqeq": [2, "smart"],
-      "dot-notation": [2, {"allowKeywords": true, "allowPattern": ""}],
-      "no-redeclare": [2, {"builtinGlobals": true}],
-      "no-trailing-spaces": [2, { "skipBlankLines": true }],
-      "eol-last": 1,
-      "comma-spacing": [2, {"before": false, "after": true}],
-      "camelcase": [2, {"properties": "always"}],
-      "no-mixed-spaces-and-tabs": [2, "smart-tabs"],
-      "no-dupe-args": 2,
-      "no-dupe-keys": 2,
-      "no-debugger": 0,
-      "no-undef": 2,
-      "object-curly-spacing": [2, "always"],
-      "max-len": [2, 120, 2],
-      "generator-star-spacing": ["error", "before"],
-      "promise/avoid-new": 0,
-      "no-console": "off"
-    }
+  "extends" : [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:import/recommended",
+    "plugin:promise/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "plugins": [
+    "react",
+    "import",
+    "promise",
+    "prettier"
+  ],
+  "env": {
+    "browser": true,
+    "node": true,
+    "mocha": true,
+    "jest": true,
+    "es6": true
+  },
+  "globals" : {
+    "artifacts": false,
+    "contract": false,
+    "assert": false,
+    "web3": false
+  },
+  "rules": {
+    "indent": [2, 2],
+    "quotes": [2, "single"],
+    "space-before-function-paren": ["error", "never"],
+    "no-use-before-define": 0,
+    "eqeqeq": [2, "smart"],
+    "dot-notation": [2, {"allowKeywords": true, "allowPattern": ""}],
+    "no-redeclare": [2, {"builtinGlobals": true}],
+    "no-trailing-spaces": [2, { "skipBlankLines": true }],
+    "eol-last": 1,
+    "comma-spacing": [2, {"before": false, "after": true}],
+    "camelcase": [2, {"properties": "always"}],
+    "no-mixed-spaces-and-tabs": [2, "smart-tabs"],
+    "no-dupe-args": 2,
+    "no-dupe-keys": 2,
+    "no-debugger": 0,
+    "no-undef": 2,
+    "object-curly-spacing": [2, "always"],
+    "max-len": [2, 120, 2],
+    "promise/avoid-new": 0,
+    "no-console": "off",
+    "prettier/prettier": "error",
   }
+}
