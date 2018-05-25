@@ -44,6 +44,8 @@ contract Whitelist is Ownable {
 
   /**
    * Adds an address to all mappings needed for the whitelist.
+   * @param {address} toAdd address to be added to the whitelist
+   * @param {bytes2} country country the address belongs to
    */
   function addAddress(address toAdd, bytes2 country) external onlyOwner {
     whitelist[toAdd] = true;
