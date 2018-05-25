@@ -11,19 +11,18 @@ contract Whitelist is Ownable {
   /**
    * Maps ISO 3166-1 Country Codes to a list of addresses assigned to that country
    */
-  mapping (bytes2 => address[]) authorityMapping;
+  mapping (bytes2 => address[]) public authorityMapping;
 
   /**
    * Maps addresses to a boolean, indicating whether or not an address
    * is whitelisted
    */
-  mapping (address => bool) whitelist;
+  mapping (address => bool) public whitelist;
 
   /**
    * Maps addresses to the countries they are located in
    */
-  mapping (address => bytes2) authorityToCountry;
-
+  mapping (address => bytes2) public authorityToCountry;
 
   /**
    * Blocks all addresses mapped to false in the whitelist mapping.
