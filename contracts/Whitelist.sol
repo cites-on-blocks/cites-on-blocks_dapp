@@ -6,7 +6,8 @@ import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
 contract Whitelist is Ownable {
 
-  event AddressWhitelisted(address added, string indexed country);
+  event AddressWhitelisted(address added, bytes2 indexed country);
+  event AddressesRemovedFromWhitelist(address[] removed);
 
   /**
    * Maps ISO 3166-1 Country Codes to a list of addresses assigned to that country
@@ -34,7 +35,7 @@ contract Whitelist is Ownable {
   }
 
   /**
-   * Requires an address to belong to a specific country to proceed. 
+   * Requires an address to belong to a specific country to proceed.
    */
   modifier whitelistedForCountry(bytes2 countryCode, address addr) {
     require(authorityToCountry[addr]==countryCode);
@@ -42,22 +43,35 @@ contract Whitelist is Ownable {
   }
 
   /**
-   * removes an address from the whitelist by assigning it to false in the mapping
+   * removes a single address from the whitelist mapping by calling the 
+   * removeAddresses function
+   * @param {address} toRemove address that will be removed from the whitelist
    */
   function removeAddress(address toRemove) external onlyOwner {
-    whitelist[toRemove] = false;
+    removeAddresses([toRemove]);
   }
 
   /**
-   * removes addresses of an entire region from the whitelist
+   * removes addresses of an entire region from the whitelist by calling the
+   * removeAddresses function
+   * @param {bytes2} region all addresses of this region will be removed from the whitelist
    */
-  function removeRegion(bytes2 region) external onlyOwner {
+  function removeCountry(bytes2 region) external onlyOwner {
     address[] memory countryAddresses = authorityMapping[region];
-    for (uint i = 0;i != countryAddresses.length;i++) {
-      whitelist[countryAddresses[i]] = false;
-    }
+    removeAddresses(countryAddresses);
   }
 
+  /**
+   * removes a list of addresses from the whitelist by assigning them to false in
+   * the whitelist mapping
+   * @param {address[]} addresses addresses that will be removed from the whitelist
+   */
+  function removeAddresses(address[] addresses) external onlyOwner {
+    for (uint i = 0;i != addresses.length;i++) {
+      whitelist[addresses[i]] = false;
+    }
+    emit AddressesRemovedFromWhitelist(addresses);
+  }
 
 }
 
