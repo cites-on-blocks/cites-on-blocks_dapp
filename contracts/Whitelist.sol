@@ -1,23 +1,23 @@
 pragma solidity ^0.4.23;
 
-import "zeppelin-solidity/contracts/ownership/Ownable.sol";
+import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 
 
 contract Whitelist is Ownable {
 
-  event AddressWhitelisted(address added, string indexed country);
+  event AddressWhitelisted(address added, bytes2 indexed country);
 
   /**
    * Maps ISO 3166-1 Country Codes to a list of addresses assigned to that country
    */
-  mapping (bytes2 => address[]) authorityMapping; 
+  mapping (bytes2 => address[]) authorityMapping;
 
   /**
-   * Maps addresses to a boolean, indicating whether or not an address 
+   * Maps addresses to a boolean, indicating whether or not an address
    * is whitelisted
    */
-  mapping (address => bool) whitelist; 
+  mapping (address => bool) whitelist;
 
   /**
    * Maps addresses to the countries they are located in
@@ -30,32 +30,33 @@ contract Whitelist is Ownable {
    */
   modifier onlyWhitelisted(){
     require(whitelist[msg.sender]);
-    _; 
+    _;
   }
 
   /**
-   * Requires an address to belong to a specific country to proceed. 
+   * Requires an address to belong to a specific country to proceed.
    */
-  modifier whitelistedForCountry(bytes2 countryCode, address addr) {
-    require(authorityToCountry[addr]==countryCode);
+  modifier whitelistedForCountry(bytes2 _countryCode, address _addr) {
+    require(authorityToCountry[_addr] == _countryCode);
     _;
   }
 
 
   /**
    * Adds an address to all mappings needed for the whitelist.
-   * @param {address} toAdd address to be added to the whitelist
-   * @param {bytes2} country country the address belongs to
+   * @param _toAdd - address to be added to the whitelist
+   * @param  _country - country the address belongs to
    */
-  function addAddress(address toAdd, bytes2 country) external onlyOwner {
-    whitelist[toAdd] = true;
-    if (authorityMapping[country].indexOf(toAdd) != -1) {
-      authrorityMapping[country].push(toAdd);
-    }
-    if (!authorityToCountry[toAdd].isValue) {
-      authorityToCountry[toAdd] = country;
-    }
-    emit AddressWhitelisted(toAdd, country);
+  function addAddress(address _toAdd, bytes2 _country) external onlyOwner {
+    // Only add address if it is a new one.
+    require(!whitelist[_toAdd]);
+
+    // Add it to all associated mappings.
+    whitelist[_toAdd] = true;
+    authorityMapping[_country].push(_toAdd);
+    authorityToCountry[_toAdd] = _country;
+
+    emit AddressWhitelisted(_toAdd, _country);
   }
 
 
