@@ -40,13 +40,29 @@ contract Whitelist is Ownable {
     _;
   }
 
+  /**
+   * Add all addresses defined in the list with the same country code to the whitelist.
+   * @dev Only a wrapper function for {@link addAddress}.
+   *
+   * @param _addressList - the list of addresses to add
+   * @param _country - country all addresses belongs to
+   */
+  function addAddresses(address[] _addressList, bytes2 _country) external onlyOwner {
+    // Make sure any address has been passed.
+    require(_addressList.length > 0);
+
+    // Call addAddress for each entry in the list.
+    for (uint i = 0; i < _addressList.length; i++) {
+      addAddress(_addressList[i], _country);
+    }
+  }
 
   /**
    * Adds an address to all mappings needed for the whitelist.
    * @param _toAdd - address to be added to the whitelist
    * @param  _country - country the address belongs to
    */
-  function addAddress(address _toAdd, bytes2 _country) external onlyOwner {
+  function addAddress(address _toAdd, bytes2 _country) public onlyOwner {
     // Only add address if it is a new one.
     require(!whitelist[_toAdd]);
 
