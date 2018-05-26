@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import { Header, Image, Menu, Title } from 'grommet'
 import logo from '../../imgs/croco.png'
-import s from '../../localization/localizedStrings'
+import local from '../../localization/localizedStrings'
 
 /*
  * Customized Header component to wrap the app in
  */
+
 class CitesHeader extends Component {
   render() {
     return (
@@ -20,11 +21,12 @@ class CitesHeader extends Component {
           <Image src={logo} alt="logo" size="thumb" />
         </Title>
         <Menu direction={'row'}>
-          <a href="/whitelist">{s.whitelist}</a>
-          <a href="/permits">{s.permits}</a>
-          <a href="/analytics">{s.analytics}</a>
-          <a href="/import-export">{s.importExport}</a>
-          <a href="/help">{s.help}</a>
+          <a href="/whitelist">{local.header.whitelist}</a>
+          <a href="/permits">{local.header.permits}</a>
+          <a href="/analytics">{local.header.analytics}</a>
+          <a href="/import-export">{local.header.importExport}</a>
+          <a href="/help">{local.header.help}</a>
+          <a href="">Sprache</a>
         </Menu>
       </Header>
     )

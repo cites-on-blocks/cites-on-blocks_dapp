@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Box, Footer, Label, SocialShare } from 'grommet'
-import s from '../../localization/localizedStrings'
+
+import local from '../../localization/localizedStrings'
 
 /*
  * Customized Footer component to wrap the app in
@@ -20,10 +21,10 @@ class CitesFooter extends Component {
           <SocialShare type="linkedin" link={'https://cites.org/'} />
         </Box>
         <Box>
-          <span>{s.officeName}</span>
-          <span>{s.contactPhone}</span>
-          <span>{s.openingDays}</span>
-          <span>{s.openingHours}</span>
+          <span>{local.footer.officeName}</span>
+          <span>{local.footer.contactPhone}</span>
+          <span>{local.footer.openingDays}</span>
+          <span>{local.footer.openingHours}</span>
         </Box>
       </Footer>
     )
