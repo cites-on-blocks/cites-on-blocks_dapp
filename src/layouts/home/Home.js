@@ -1,13 +1,16 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import worldmap from '../../imgs/world_map_cites.png'
-import { Box, Image } from 'grommet'
+import { Box, Image, Headline } from 'grommet'
+
+import '../../css/home.css'
 
 class Home extends Component {
   render() {
     return (
       <main>
         <Box pad={{ horizontal: 'large', vertical: 'large' }}>
+          <Headline align="center">Sample Headline</Headline>
           <Image src={worldmap} fit="contain" />
         </Box>
       </main>
