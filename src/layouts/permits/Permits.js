@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Box, Columns, Heading, Select, FormField, TextInput } from 'grommet'
+import { Box, Columns, Heading, Select, FormField, Label } from 'grommet'
+
+import AddressInputs from '../../components/AddressInputs'
 
 import * as options from '../../util/options'
+import SpeciesInputs from '../../components/SpeciesInputs'
 
 class Permits extends Component {
   constructor() {
@@ -14,12 +17,12 @@ class Permits extends Component {
       permitType: options.permitTypes[0],
       importer: ['', '', ''],
       exporter: ['', '', ''],
-      quanities: [],
-      scientificNames: [],
-      commonNames: [],
-      descriptions: [],
-      originHashes: [],
-      reExportHashes: []
+      quantities: [0],
+      scientificNames: [''],
+      commonNames: [''],
+      descriptions: [''],
+      originHashes: [''],
+      reExportHashes: ['']
     }
   }
 
@@ -34,7 +37,7 @@ class Permits extends Component {
     // TODO prefill export or import country
   }
 
-  handleArrChange(attr, index, newValue) {
+  handleArrayChange(attr, index, newValue) {
     const newArr = this.state[attr]
     newArr[index] = newValue
     this.handleChange(attr, newArr)
@@ -85,71 +88,38 @@ class Permits extends Component {
           </FormField>
         </Columns>
         <Columns justify={'between'} size={'large'}>
-          <Columns justify={'between'} size={'large'}>
-            <FormField label={'Exporter name'}>
-              <TextInput
-                id={'exName'}
-                name={'ex-name'}
-                value={this.state.exporter[0]}
-                onDOMChange={e => {
-                  this.handleArrChange('exporter', 0, e.target.value)
-                }}
-              />
-            </FormField>
-            <FormField label={'Exporter street'}>
-              <TextInput
-                id={'exStreet'}
-                name={'ex-street'}
-                value={this.state.exporter[1]}
-                onDOMChange={e => {
-                  this.handleArrChange('exporter', 1, e.target.value)
-                }}
-              />
-            </FormField>
-            <FormField label={'Exporter city'}>
-              <TextInput
-                id={'exCity'}
-                name={'ex-city'}
-                value={this.state.exporter[2]}
-                onDOMChange={e => {
-                  this.handleArrChange('exporter', 2, e.target.value)
-                }}
-              />
-            </FormField>
-          </Columns>
-          <Columns justify={'between'} size={'large'}>
-            <FormField label={'Importer name'}>
-              <TextInput
-                id={'imName'}
-                name={'im-name'}
-                value={this.state.importer[0]}
-                onDOMChange={e => {
-                  this.handleArrChange('importer', 0, e.target.value)
-                }}
-              />
-            </FormField>
-            <FormField label={'Importer street'}>
-              <TextInput
-                id={'imStreet'}
-                name={'im-street'}
-                value={this.state.importer[1]}
-                onDOMChange={e => {
-                  this.handleArrChange('importer', 1, e.target.value)
-                }}
-              />
-            </FormField>
-            <FormField label={'Importer city'}>
-              <TextInput
-                id={'imCity'}
-                name={'im-city'}
-                value={this.state.importer[2]}
-                onDOMChange={e => {
-                  this.handleArrChange('importer', 2, e.target.value)
-                }}
-              />
-            </FormField>
-          </Columns>
+          <AddressInputs
+            address={this.state.exporter}
+            recipient={'exporter'}
+            onChange={(recipient, index, newValue) => {
+              this.handleArrayChange(recipient, index, newValue)
+            }}
+          />
+          <AddressInputs
+            address={this.state.importer}
+            recipient={'importer'}
+            onChange={(recipient, index, newValue) => {
+              this.handleArrayChange(recipient, index, newValue)
+            }}
+          />
         </Columns>
+        <Columns>
+          <Label>Specimens</Label>
+        </Columns>
+        {this.state.quantities.map((value, index) => (
+          <SpeciesInputs
+            key={index}
+            quantity={this.state.quantities[index]}
+            scientificName={this.state.scientificNames[index]}
+            commonName={this.state.commonNames[index]}
+            description={this.state.descriptions[index]}
+            originHash={this.state.originHashes[index]}
+            reExportHash={this.state.reExportHashes[index]}
+            onChange={(attr, newValue) => {
+              this.handleArrayChange(attr, index, newValue)
+            }}
+          />
+        ))}
       </Box>
     )
   }
