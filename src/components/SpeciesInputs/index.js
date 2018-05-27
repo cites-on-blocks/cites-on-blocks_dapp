@@ -1,6 +1,15 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Box, Columns, FormField, TextInput, NumberInput } from 'grommet'
+import {
+  Button,
+  Box,
+  Columns,
+  FormField,
+  TextInput,
+  NumberInput,
+  Heading,
+  SubtractIcon
+} from 'grommet'
 
 /**
  * Component for form elements of species information
@@ -8,16 +17,28 @@ import { Box, Columns, FormField, TextInput, NumberInput } from 'grommet'
 class SpeciesInputs extends Component {
   render() {
     const {
+      index,
       quantity,
       scientificName,
       commonName,
       description,
       originHash,
       reExportHash,
-      onChange
+      onChange,
+      onRemove
     } = this.props
     return (
-      <Box>
+      <Box margin={{ bottom: 'large' }}>
+        <Box
+          justify={'between'}
+          size={'full'}
+          direction={'row'}
+          pad={{ horizontal: 'medium' }}>
+          <Heading tag={'h3'}>Species {index + 1}</Heading>
+          {index !== 0 && (
+            <Button icon={<SubtractIcon />} onClick={() => onRemove(index)} />
+          )}
+        </Box>
         <Columns justify={'between'} size={'large'}>
           <FormField label={'Scientific name'}>
             <TextInput
@@ -64,13 +85,15 @@ class SpeciesInputs extends Component {
 }
 
 SpeciesInputs.propTypes = {
+  index: PropTypes.number,
   quantity: PropTypes.number,
   scientificName: PropTypes.string,
   commonName: PropTypes.string,
   description: PropTypes.string,
   originHash: PropTypes.string,
   reExportHash: PropTypes.string,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  onRemove: PropTypes.func
 }
 
 export default SpeciesInputs
