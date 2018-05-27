@@ -209,7 +209,7 @@ contract('Whitelist', async accounts => {
     })
 
     /**
-     * Try to add a single new address to the whitelist without beeing the owner of the contract.
+     * Try to add a list of new addresses to the whitelist without beeing the owner of the contract.
      * Expect an exception to be thrown.
      */
     it('Can not add address if not beeing the owner.', async () => {
