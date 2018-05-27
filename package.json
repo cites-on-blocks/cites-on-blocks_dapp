@@ -19,25 +19,30 @@
     "drizzle-react": "^1.0.1",
     "drizzle-react-components": "^1.0.1",
     "eslint": "3.8.1",
+    "eslint-config-prettier": "^2.9.0",
     "eslint-config-react-app": "^0.5.0",
     "eslint-loader": "1.6.0",
     "eslint-plugin-flowtype": "2.21.0",
     "eslint-plugin-import": "2.0.1",
     "eslint-plugin-jsx-a11y": "2.2.3",
+    "eslint-plugin-prettier": "^2.6.0",
     "eslint-plugin-promise": "^3.7.0",
     "eslint-plugin-react": "6.4.1",
     "extract-text-webpack-plugin": "1.0.1",
-    "file-loader": "0.9.0",
+    "file-loader": "^1.1.11",
     "filesize": "3.3.0",
     "fs-extra": "0.30.0",
     "gzip-size": "3.0.0",
     "html-webpack-plugin": "2.24.0",
     "http-proxy-middleware": "0.17.2",
+    "husky": "^1.0.0-rc.6",
     "jest": "17.0.2",
     "json-loader": "0.5.4",
+    "lint-staged": "^7.1.2",
     "object-assign": "4.1.0",
     "path-exists": "2.1.0",
     "postcss-loader": "1.0.0",
+    "prettier": "^1.12.1",
     "promise": "7.1.1",
     "react-dev-utils": "^0.4.2",
     "recursive-readdir": "2.1.0",
@@ -46,7 +51,6 @@
     "style-loader": "0.13.1",
     "truffle-contract": "^1.1.8",
     "truffle-hdwallet-provider": "0.0.3",
-    "url-loader": "0.5.7",
     "webpack": "1.14.0",
     "webpack-dev-server": "1.16.2",
     "webpack-manifest-plugin": "1.1.0",
@@ -55,9 +59,11 @@
   },
   "dependencies": {
     "eth-block-tracker-es5": "^2.3.2",
+    "grommet": "^1.10.1",
     "prop-types": "^15.6.1",
     "react": "^16.3.0",
     "react-dom": "^16.3.0",
+    "react-localization": "^1.0.10",
     "react-redux": "^5.0.2",
     "react-router": "^3.0.2",
     "react-router-redux": "^4.0.0",
@@ -70,8 +76,13 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js --env=jsdom",
-    "chain": "geth --datadir=\"/tmp/eth/60/01\" --nodiscover --maxpeers 0 --port 30301 --rpc --rpcapi \"db,eth,net,web3\" --rpcport 8101 --verbosity 6 console",
+    "test":
+      "node scripts/test.js --env=jsdom && ./scripts/run_truffle_tests.sh",
+    "chain":
+      "geth --datadir=\"/tmp/eth/60/01\" --nodiscover --maxpeers 0 --port 30301 --rpc --rpcapi \"db,eth,net,web3\" --rpcport 8101 --verbosity 6 console",
+    "precommit": "lint-staged",
+    "postcommit": "git update-index --again",
+    "prepush": "CI=true npm run test",
     "lint": "node node_modules/eslint/bin/eslint.js .",
     "lint:fix": "node node_modules/eslint/bin/eslint.js --fix .",
     "lint:solium": "node node_modules/solium/bin/solium.js -d .",
@@ -79,12 +90,8 @@
     "lint:all": "npm run lint && npm run lint:solium"
   },
   "jest": {
-    "collectCoverageFrom": [
-      "src/**/*.{js,jsx}"
-    ],
-    "setupFiles": [
-      "<rootDir>/config/polyfills.js"
-    ],
+    "collectCoverageFrom": ["src/**/*.{js,jsx}"],
+    "setupFiles": ["<rootDir>/config/polyfills.js"],
     "testPathIgnorePatterns": [
       "<rootDir>[/\\\\](build|docs|node_modules)[/\\\\]"
     ],
@@ -95,19 +102,22 @@
       "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
       "^(?!.*\\.(js|jsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
     },
-    "transformIgnorePatterns": [
-      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$"
-    ],
+    "transformIgnorePatterns": ["[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$"],
     "moduleNameMapper": {
       "^react-native$": "react-native-web"
     }
   },
   "babel": {
-    "presets": [
-      "react-app"
-    ]
+    "presets": ["react-app"]
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "lint-staged": {
+    "*.{js,jsx,scss,less}": [
+      "node node_modules/eslint/bin/eslint.js --fix",
+      "git add"
+    ],
+    "*.sol": ["node node_modules/solium/bin/solium.js --fix --file", "git add"]
   }
 }

@@ -1,6 +1,4 @@
-import ComplexStorage from './../build/contracts/ComplexStorage.json'
-import SimpleStorage from './../build/contracts/SimpleStorage.json'
-import TutorialToken from './../build/contracts/TutorialToken.json'
+import Whitelist from './../build/contracts/Whitelist.json'
 
 const drizzleOptions = {
   web3: {
@@ -10,11 +8,7 @@ const drizzleOptions = {
       url: 'ws://127.0.0.1:8545'
     }
   },
-  contracts: [
-    ComplexStorage,
-    SimpleStorage,
-    TutorialToken
-  ],
+  contracts: [Whitelist],
   events: {
     SimpleStorage: ['StorageSet']
   },
