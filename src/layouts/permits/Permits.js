@@ -9,12 +9,10 @@ import {
   FormField,
   AddIcon
 } from 'grommet'
-// import AddIcon from 'grommet/components/icons/base/Add'
 
 import AddressInputs from '../../components/AddressInputs'
-
-import * as options from '../../util/options'
 import SpeciesInputs from '../../components/SpeciesInputs'
+import * as options from '../../util/options'
 
 class Permits extends Component {
   constructor() {
@@ -93,11 +91,7 @@ class Permits extends Component {
   addSpecies() {
     let speciesAttributes = this.getSpeciesAttr()
     speciesAttributes.map(attrArr => {
-      if (typeof attrArr[0] === 'number') {
-        attrArr.push(0)
-      } else {
-        attrArr.push('')
-      }
+      attrArr.push(typeof attrArr[0] === 'number' ? 0 : '')
     })
     this.setSpeciesAttr(speciesAttributes)
   }
