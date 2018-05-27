@@ -1,6 +1,15 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Box, Columns, Heading, Select, FormField, Label } from 'grommet'
+import {
+  Button,
+  Box,
+  Columns,
+  Heading,
+  Select,
+  FormField,
+  AddIcon
+} from 'grommet'
+// import AddIcon from 'grommet/components/icons/base/Add'
 
 import AddressInputs from '../../components/AddressInputs'
 
@@ -43,10 +52,70 @@ class Permits extends Component {
     this.handleChange(attr, newArr)
   }
 
+  getSpeciesAttr() {
+    const {
+      quantities,
+      scientificNames,
+      commonNames,
+      descriptions,
+      originHashes,
+      reExportHashes
+    } = this.state
+    return [
+      quantities,
+      scientificNames,
+      commonNames,
+      descriptions,
+      originHashes,
+      reExportHashes
+    ]
+  }
+
+  setSpeciesAttr(attributes) {
+    const [
+      quantities,
+      scientificNames,
+      commonNames,
+      descriptions,
+      originHashes,
+      reExportHashes
+    ] = attributes
+    this.setState({
+      quantities,
+      scientificNames,
+      commonNames,
+      descriptions,
+      originHashes,
+      reExportHashes
+    })
+  }
+
+  addSpecies() {
+    let speciesAttributes = this.getSpeciesAttr()
+    speciesAttributes.map(attrArr => {
+      if (typeof attrArr[0] === 'number') {
+        attrArr.push(0)
+      } else {
+        attrArr.push('')
+      }
+    })
+    this.setSpeciesAttr(speciesAttributes)
+  }
+
+  removeSpecies(index) {
+    let speciesAttributes = this.getSpeciesAttr()
+    speciesAttributes.map(attrArr => {
+      attrArr.splice(index, 1)
+    })
+    this.setSpeciesAttr(speciesAttributes)
+  }
+
   render() {
     return (
       <Box>
-        <Heading>Permit</Heading>
+        <Heading align={'center'} margin={'medium'}>
+          CITES Permit
+        </Heading>
         <Columns justify={'between'} size={'large'}>
           <FormField label={'Type'}>
             <Select
@@ -103,12 +172,22 @@ class Permits extends Component {
             }}
           />
         </Columns>
-        <Columns>
-          <Label>Specimens</Label>
-        </Columns>
+        <Box
+          justify={'between'}
+          size={'full'}
+          direction={'row'}
+          margin={'medium'}>
+          <Heading tag={'h2'}>Specimens</Heading>
+          <Button
+            label={'Add Species'}
+            icon={<AddIcon />}
+            onClick={() => this.addSpecies()}
+          />
+        </Box>
         {this.state.quantities.map((value, index) => (
           <SpeciesInputs
             key={index}
+            index={index}
             quantity={this.state.quantities[index]}
             scientificName={this.state.scientificNames[index]}
             commonName={this.state.commonNames[index]}
@@ -117,6 +196,9 @@ class Permits extends Component {
             reExportHash={this.state.reExportHashes[index]}
             onChange={(attr, newValue) => {
               this.handleArrayChange(attr, index, newValue)
+            }}
+            onRemove={index => {
+              this.removeSpecies(index)
             }}
           />
         ))}
