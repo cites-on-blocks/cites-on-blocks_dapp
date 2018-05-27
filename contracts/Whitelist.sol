@@ -9,7 +9,7 @@ contract Whitelist is Ownable {
   event AddressWhitelisted(address added, bytes2 indexed country);
 
   /**
-   * Maps ISO 3166-1 Country Codes to a list of addresses assigned to that country
+   * Maps ISO 3166-1 Country Codes to a list of addresses assigned to that country.
    */
   mapping (bytes2 => address[]) public authorityMapping;
 
