@@ -136,17 +136,57 @@ contract('PermitFactory', accounts => {
       specimenHashes = permit[5]      
     })
 
-    it('should confirm permit', async () => {
-      const result = await permitFactoryInstance.confirmPermit(permitHash, specimenHashes, true, {
-        from: ACC_IMPORT
-      })
+    it('should return not confirmed and not accepted for permit', async () => {
+      const [ confirmed, accepted ] = await Promise.all([
+        permitFactoryInstance.confirmed(permitHash),
+        permitFactoryInstance.accepted(permitHash)
+      ])
+      assert.equal(confirmed, false)
+      assert.equal(accepted, false)
+    })
+
+    it('should confirm and not accept permit', async () => {
+      const result = await permitFactoryInstance.confirmPermit(
+        permitHash,
+        specimenHashes,
+        false,
+        { from: ACC_IMPORT }
+      )
+      // test event
+      const [ log ] = result.logs.filter(log => log.event === 'PermitConfirmed')
+      const { exportCountry, importCountry, isAccepted } = log.args
+      assert.equal(hexToUtf8(exportCountry), EXPORT_COUNTRY)
+      assert.equal(hexToUtf8(importCountry), IMPORT_COUNTRY)
+      assert.equal(isAccepted, false)
+      // test mappings
+      const [ confirmed, accepted ] = await Promise.all([
+        permitFactoryInstance.confirmed(permitHash),
+        permitFactoryInstance.accepted(permitHash)
+      ])
+      assert.equal(confirmed, true)
+      assert.equal(accepted, false)
+    })
+
+    it('should confirm and accept permit', async () => {
+      const result = await permitFactoryInstance.confirmPermit(
+        permitHash,
+        specimenHashes,
+        true,
+        { from: ACC_IMPORT }
+      )
       const [ log ] = result.logs.filter(log => log.event === 'PermitConfirmed')
       const { exportCountry, importCountry, isAccepted } = log.args
       assert.equal(hexToUtf8(exportCountry), EXPORT_COUNTRY)
       assert.equal(hexToUtf8(importCountry), IMPORT_COUNTRY)
       assert.equal(isAccepted, true)
+      // test mappings
+      const [ confirmed, accepted ] = await Promise.all([
+        permitFactoryInstance.confirmed(permitHash),
+        permitFactoryInstance.accepted(permitHash)
+      ])
+      assert.equal(confirmed, true)
+      assert.equal(accepted, true)
     })
-    // TODO more tests
   })
 
   // TODO #getPermitHash()
