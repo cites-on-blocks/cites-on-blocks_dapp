@@ -9,18 +9,11 @@ import "./Whitelist.sol";
  * @author Dong-Ha Kim, Lukas Renner
  */
 contract PermitFactory is Whitelist {
-
-  // TODO use enums in functions
-  enum PermitTypes {
-    EXPORT,
-    RE_EXPORT,
-    OTHER
-  }
   
   struct Permit {
     bytes2 exportCountry; // ISO country code of export country
     bytes2 importCountry; // ISO country code of import country
-    uint8 permitType; // type of permit: 1 -> Export, 2 -> Re-Export, 3 -> Other
+    uint8 permitType; // type of permit: 0 -> Export, 1 -> Re-Export, 2 -> Other
     bytes32[3] exporter; // name and address of exporter: ["name", "street", "city"]
     bytes32[3] importer; // name and address of importer: ["name", "street", "city"]
     bytes32[] specimenHashes; // hashes of specimens
