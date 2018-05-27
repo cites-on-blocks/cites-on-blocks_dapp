@@ -323,7 +323,7 @@ contract PermitFactory is Whitelist {
       permit.nonce
     );
     permits[permitHash] = permit;
-    addSpecimens(
+    _addSpecimens(
       permitHash,
       _quantities,
       _scientificNames,
@@ -353,7 +353,7 @@ contract PermitFactory is Whitelist {
    * @param _reExportHashes hashes of last re-export permits of specimens
    * @return whether specimens were added successfully
    */
-  function addSpecimens(
+  function _addSpecimens(
     bytes32 _permitHash,
     uint[] _quantities,
     bytes32[] _scientificNames,
