@@ -7,7 +7,8 @@ import {
   Heading,
   Select,
   FormField,
-  AddIcon
+  AddIcon,
+  DocumentUploadIcon
 } from 'grommet'
 import { utils } from 'web3'
 
@@ -232,7 +233,7 @@ class PermitCreate extends Component {
           size={'full'}
           direction={'row'}
           margin={'medium'}>
-          <Heading tag={'h2'}>Specimens</Heading>
+          <Heading tag={'h3'}>Specimens</Heading>
           <Button
             label={'Add Species'}
             icon={<AddIcon />}
@@ -257,11 +258,18 @@ class PermitCreate extends Component {
             }}
           />
         ))}
-        <Button
-          label={'Create Permit'}
-          icon={<AddIcon />}
-          onClick={() => this.createPermit()}
-        />
+        <Box
+          justify={'center'}
+          size={'full'}
+          direction={'row'}
+          margin={'medium'}>
+          <Button
+            primary={true}
+            label={'Create Permit'}
+            icon={<DocumentUploadIcon />}
+            onClick={() => this.createPermit()}
+          />
+        </Box>
       </Box>
     )
   }
