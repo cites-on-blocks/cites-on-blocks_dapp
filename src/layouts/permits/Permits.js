@@ -44,14 +44,6 @@ class Permits extends Component {
     )
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   // only update component when state or props change
-  //   return (
-  //     JSON.stringify(this.state) !== JSON.stringify(nextState) ||
-  //     JSON.stringify(this.props) !== JSON.stringify(nextProps)
-  //   )
-  // }
-
   componentDidUpdate(prevProps, prevState) {
     if (this.props.accounts[0] !== prevProps.accounts[0]) {
       this.dataKey = this.contracts.PermitFactory.methods.authorityToCountry.cacheCall(
@@ -161,14 +153,14 @@ class Permits extends Component {
       utils.asciiToHex(exportCountry),
       utils.asciiToHex(importCountry),
       options.permitTypes.indexOf(permitType),
-      importer.map(i => utils.asciiToHex(i)),
+      importer.map(e => utils.asciiToHex(e)),
       exporter.map(e => utils.asciiToHex(e)),
       quantities,
-      scientificNames.map(i => utils.asciiToHex(i)),
-      commonNames.map(i => utils.asciiToHex(i)),
-      descriptions.map(i => utils.asciiToHex(i)),
-      originHashes.map(i => utils.asciiToHex(i)),
-      reExportHashes.map(i => utils.asciiToHex(i)),
+      scientificNames.map(e => utils.asciiToHex(e)),
+      commonNames.map(e => utils.asciiToHex(e)),
+      descriptions.map(e => utils.asciiToHex(e)),
+      originHashes.map(e => utils.asciiToHex(e)),
+      reExportHashes.map(e => utils.asciiToHex(e)),
       { from: this.props.accounts[0] }
     )
   }

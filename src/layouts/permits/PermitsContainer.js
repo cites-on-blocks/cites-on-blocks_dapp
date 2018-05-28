@@ -11,17 +11,6 @@ const mapStateToProps = state => {
   }
 }
 
-// const mapDispatchToProps = (dispatch, ownProps) => {
-//   console.log(dispatch, ownProps)
-//   return {
-//     createPermit: () => console.log('hello')
-//   }
-// }
-
-const PermitsContainer = drizzleConnect(
-  Permits,
-  mapStateToProps
-  // mapDispatchToProps
-)
+const PermitsContainer = drizzleConnect(Permits, mapStateToProps)
 
 export default PermitsContainer
