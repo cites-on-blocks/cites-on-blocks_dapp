@@ -9,15 +9,17 @@ import {
   FormField,
   AddIcon
 } from 'grommet'
+import { utils } from 'web3'
 
 import AddressInputs from '../../components/AddressInputs'
 import SpeciesInputs from '../../components/SpeciesInputs'
 import * as options from '../../util/options'
 
 class Permits extends Component {
-  constructor() {
-    super()
+  constructor(props, context) {
+    super(props)
     this.state = {
+      // permit information
       permitForm: options.permitForms[0],
       exportCountry: '',
       importCountry: '',
@@ -29,7 +31,39 @@ class Permits extends Component {
       commonNames: [''],
       descriptions: [''],
       originHashes: [''],
-      reExportHashes: ['']
+      reExportHashes: [''],
+      // authority information
+      authorityCountry: ''
+    }
+    // for convinience
+    this.contracts = context.drizzle.contracts
+    // return key for data and cache result in PermitFatory prop
+    this.dataKey = this.contracts.PermitFactory.methods.authorityToCountry.cacheCall(
+      this.props.accounts[0]
+    )
+  }
+
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   // only update component when state or props change
+  //   return (
+  //     JSON.stringify(this.state) !== JSON.stringify(nextState) ||
+  //     JSON.stringify(this.props) !== JSON.stringify(nextProps)
+  //   )
+  // }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.accounts[0] !== prevProps.accounts[0]) {
+      this.dataKey = this.contracts.PermitFactory.methods.authorityToCountry.cacheCall(
+        this.props.accounts[0]
+      )
+    }
+    if (this.dataKey in this.props.PermitFactory.authorityToCountry) {
+      const authorityCountry = utils.hexToUtf8(
+        this.props.PermitFactory.authorityToCountry[this.dataKey].value
+      )
+      if (prevState.authorityCountry !== authorityCountry) {
+        this.setState({ authorityCountry })
+      }
     }
   }
 
@@ -104,7 +138,43 @@ class Permits extends Component {
     this.setSpeciesAttr(speciesAttributes)
   }
 
+  createPermit() {
+    // const {
+    //   exportCountry,
+    //   importCountry,
+    //   permitType,
+    //   importer,
+    //   exporter,
+    //   quantities,
+    //   scientificNames,
+    //   commonNames,
+    //   descriptions,
+    //   originHashes,
+    //   reExportHashes
+    // } = this.state
+    // const stackId = this.props.PermitFactory.methods.createPermit.cacheSend(
+    //   exportCountry,
+    //   importCountry,
+    //   options.permitTypes.indexOf(permitType),
+    //   importer,
+    //   exporter,
+    //   quantities,
+    //   scientificNames,
+    //   commonNames,
+    //   descriptions,
+    //   originHashes,
+    //   reExportHashes,
+    //   { from: this.props.accounts[0] }
+    // )
+    // // Use the dataKey to display the transaction status.
+    // if (state.transactionStack[stackId]) {
+    //   const txHash = state.transactionStack[stackId]
+    //   return state.transactions[txHash].status
+    // }
+  }
+
   render() {
+    console.log(this.state.authorityCountry)
     return (
       <Box>
         <Heading align={'center'} margin={'medium'}>
@@ -202,7 +272,14 @@ class Permits extends Component {
 }
 
 Permits.propTypes = {
-  accounts: PropTypes.object
+  accounts: PropTypes.object,
+  PermitFactory: PropTypes.object,
+  drizzleStatus: PropTypes.object,
+  contracts: PropTypes.object
+}
+
+Permits.contextTypes = {
+  drizzle: PropTypes.object
 }
 
 export default Permits
