@@ -1,6 +1,7 @@
 pragma solidity ^0.4.23;
 
 import "./Whitelist.sol";
+import "zeppelin-solidity/contracts/math/SafeMath.sol";
 
 
 /**
@@ -9,7 +10,22 @@ import "./Whitelist.sol";
  * @author Dong-Ha Kim, Lukas Renner
  */
 contract PermitFactory is Whitelist {
-  
+
+  // Initialize the safe math data types.
+  using SafeMath for uint256;
+
+
+  /*
+   * Structures
+   */
+
+  /**
+   * A permit object as digital representation of a real permit provided as paper.
+   * Contains a bunch of information to describe this permit.
+   * A permit is between to countries, the exporting and importing one.
+   * With a permit a set of specimens get exported, which are linked here.
+   * Each permit gets a numeric nonce value to make sure this permit gets unique.
+   */
   struct Permit {
     bytes2 exportCountry; // ISO country code of export country
     bytes2 importCountry; // ISO country code of import country
@@ -19,29 +35,46 @@ contract PermitFactory is Whitelist {
     bytes32[] specimenHashes; // hashes of specimens
     uint nonce; // used to create unique hash
   }
-  
+
+  /**
+   * As part of a permit, it describes the exported specimens.
+   * Each specimen object is for one type of specimen.
+   * It contains a bunch of information to describe this partial export.
+   * Each permit has a backward relation to its permit.
+   * Species can get linked to a new permit, if they get re-exported.
+   * Nonetheless it always keeps its relation to the origin permit, where it gets created
+   * for.
+   */
   struct Specimen {
     bytes32 permitHash; // hash of parent permit
     uint quantity; // quantity of specimen
     bytes32 scientificName; // scientific name of species
-    bytes32 commmonName; // common name of specied
+    bytes32 commmonName; // common name of specimen
     bytes32 description; // description of specimen
     bytes32 originHash; // permit hash of origin permit
     bytes32 reExportHash; // permit hash of last re-export
   }
-  
-  uint permitNonce = 1; // used to generate unique hash
-  mapping (bytes32 => Permit) public permits; // maps hash to permit
-  mapping (bytes32 => Specimen) public specimens; // maps hash to specimen
-  mapping (bytes32 => bool) public confirmed; // maps permit hash to whether permit was cofirmed
-  mapping (bytes32 => bool) public accepted; // maps permit hash to whether permit was accpeted
 
+
+  /*
+   * Events
+   */
+
+  /**
+   * Will be thrown when a new permit has been created.
+   * Also if the permit itself has been already created, this event is thrown after all
+   * specimen objects related to this permit have been created as well.
+   */
   event PermitCreated (
     bytes32 indexed permitHash,
     bytes2 indexed exportCountry,
     bytes2 indexed importCountry
   );
 
+  /**
+   * Will be thrown when a part gets confirmed by an authority.
+   * Contains also the information if the permit was accepted or not.
+   */
   event PermitConfirmed (
     bytes32 indexed permitHash,
     bytes2 indexed exportCountry,
@@ -49,7 +82,21 @@ contract PermitFactory is Whitelist {
     bool isAccepted
   );
 
+
+  /*
+   * Global Variables
+   */
+
+  uint permitNonce = 1; // Used to generate unique hash values for permit objects and all related objects as well.
+  mapping (bytes32 => Permit) public permits; // Used to store permits to their identifying hash values.
+  mapping (bytes32 => Specimen) public specimens; // Used to store specimens to their identifying hash values.
+  mapping (bytes32 => bool) public confirmed; // Maps the hash values of permits to the flag if they have been confirmed.
+  mapping (bytes32 => bool) public accepted; // Maps the hash values of permits to the flag if they have been accepted.
+
+
   /**
+   * Create a new permit object and register it.
+   *
    * @dev Called by CITES authority in exporting country.
    * @dev Digital permit flow.
    * @param _exportCountry ISO country code of exporting country
@@ -63,7 +110,6 @@ contract PermitFactory is Whitelist {
    * @param _descriptions specimen descriptions
    * @param _originHashes hashes of origin permits of specimens
    * @param _reExportHashes hashes of last re-export permits of specimens
-   * @return whether permit creation was successful   
    */
   function createPermit(
     bytes2 _exportCountry,
@@ -81,7 +127,6 @@ contract PermitFactory is Whitelist {
     public
     onlyWhitelisted
     whitelistedForCountry(_exportCountry, msg.sender)
-    returns(bool)
   {
     _createPermit(
       _exportCountry,
@@ -99,6 +144,8 @@ contract PermitFactory is Whitelist {
   }
 
   /**
+   * Create a new paper permit object and register it.
+   *
    * @dev Called by CITES authority in importing country.
    * @dev Paper-based permit flow.
    * @param _exportCountry ISO country code of exporting country
@@ -112,7 +159,6 @@ contract PermitFactory is Whitelist {
    * @param _descriptions specimen descriptions
    * @param _originHashes hashes of origin permits of specimens
    * @param _reExportHashes hashes of last re-export permits of specimens
-   * @return whether permit creation was successful   
    */
   function createPaperPermit(
     bytes2 _exportCountry,
@@ -130,7 +176,6 @@ contract PermitFactory is Whitelist {
     public
     onlyWhitelisted
     whitelistedForCountry(_importCountry, msg.sender)
-    returns(bool)
   {
     _createPermit(
       _exportCountry,
@@ -148,8 +193,12 @@ contract PermitFactory is Whitelist {
   }
 
   /**
+   * Mark a permit as confirmed and set the accepted flag.
+   * Requires that all the permit and specimen hashes exist.
+   * Required that the permit is not confirmed already.
+   *
    * @dev Called by CITES authority.
-   * @param _permitHash hash of permit that gets confirmed 
+   * @param _permitHash hash of permit that gets confirmed
    * @param _specimenHashes hashes of specimens
    * @param _isAccepted whether permit got imported or not
    */
@@ -160,27 +209,33 @@ contract PermitFactory is Whitelist {
   )
     public
     onlyWhitelisted
-    returns (bool)
   {
-    // does permit exists?
+    // Make sure the permit is not confirmed already.
+    require(!confirmed[_permitHash]);
+
+    // Check all provided hash values for to exist.
     require(permits[_permitHash].nonce > 0);
-    // do specimen hashes exist?
+
     for (uint i = 0; i < _specimenHashes.length; i++) {
       require(specimens[_specimenHashes[i]].permitHash == _permitHash);
     }
 
+    // Mark the permit as confirmed and set the acceptance mapping.
     confirmed[_permitHash] = true;
     accepted[_permitHash] = _isAccepted;
+
     emit PermitConfirmed(
       _permitHash,
       permits[_permitHash].exportCountry,
       permits[_permitHash].importCountry,
       _isAccepted
     );
-    return true;
   }
 
-    /**
+  /**
+   * Generate a unique hash value for a permit.
+   * Use a bunch of attributes to retrieve this value.
+   *
    * @dev Returns unique hash of permit.
    * @param _exportCountry ISO country code of export country
    * @param _importCountry ISO country code of import country
@@ -190,15 +245,15 @@ contract PermitFactory is Whitelist {
    * @param _nonce number used to create unique hash
    * @return unique permit hash
    */
-  function getPermitHash(
+  function _getPermitHash(
     bytes2 _exportCountry,
     bytes2 _importCountry,
     uint8 _permitType,
     bytes32[3] _exporter,
     bytes32[3] _importer,
     uint _nonce
-  ) 
-    public
+  )
+    private
     pure
     returns (bytes32)
   {
@@ -215,6 +270,9 @@ contract PermitFactory is Whitelist {
   }
 
   /**
+   * Generate a unique hash value for a specimen.
+   * Use a bunch of attributes to retrieve this value.
+   *
    * @dev Returns unique hash of specimen.
    * @param _permitHash hash parent permit
    * @param _quantity quantity of specimen
@@ -225,7 +283,7 @@ contract PermitFactory is Whitelist {
    * @param _reExportHash hash of last re-export permit of specimen
    * @return unique specimen hash
    */
-  function getSpecimenHash(
+  function _getSpecimenHash(
     bytes32 _permitHash,
     uint _quantity,
     bytes32 _scientificName,
@@ -233,8 +291,8 @@ contract PermitFactory is Whitelist {
     bytes32 _description,
     bytes32 _originHash,
     bytes32 _reExportHash
-  ) 
-    public
+  )
+    private
     pure
     returns (bytes32)
   {
@@ -252,6 +310,10 @@ contract PermitFactory is Whitelist {
   }
 
   /**
+   * Retrieve the permit object for a given hash value as key.
+   * Require that the hash value exists.
+   *
+   * Do not check if a permit exists for this hash value.
    * @dev Custom getter function to retrieve permit from contract storage.
    * @dev Needed because client can not directly get array from mapping.
    * @param _permitHash hash of permit
@@ -262,6 +324,11 @@ contract PermitFactory is Whitelist {
     view
     returns (bytes2, bytes2, uint8, bytes32[3], bytes32[3], bytes32[], uint)
   {
+    // Check if a permit for this hash exist.
+    // Cause the initial nonce is zero, all permits must have a nonce with a higher value.
+    require(permits[_permitHash].nonce > 0);
+
+    // Build a tuple with the attributes of the permit object.
     return (
       permits[_permitHash].exportCountry,
       permits[_permitHash].importCountry,
@@ -272,7 +339,7 @@ contract PermitFactory is Whitelist {
       permits[_permitHash].nonce
     );
   }
-  
+
   /**
    * @dev Creates a CITES permit and stores it in the contract.
    * @dev A hash of the permit is used as an unique key.
@@ -287,7 +354,6 @@ contract PermitFactory is Whitelist {
    * @param _descriptions specimen descriptions
    * @param _originHashes hashes of origin permits of specimens
    * @param _reExportHashes hashes of last re-export permits of specimens
-   * @return whether permit creation was successful
    */
   function _createPermit(
     bytes2 _exportCountry,
@@ -303,8 +369,8 @@ contract PermitFactory is Whitelist {
     bytes32[] _reExportHashes
   )
     private
-    returns (bool)
   {
+    // Create the new permit by the provided values.
     Permit memory permit = Permit({
       exportCountry: _exportCountry,
       importCountry: _importCountry,
@@ -314,7 +380,9 @@ contract PermitFactory is Whitelist {
       specimenHashes: new bytes32[](_quantities.length),
       nonce: permitNonce
     });
-    bytes32 permitHash = getPermitHash(
+
+    // Generate the unique hash to store the permit.
+    bytes32 permitHash = _getPermitHash(
       permit.exportCountry,
       permit.importCountry,
       permit.permitType,
@@ -322,7 +390,11 @@ contract PermitFactory is Whitelist {
       permit.importer,
       permit.nonce
     );
+
     permits[permitHash] = permit;
+
+
+    // Call to add new specimens.
     _addSpecimens(
       permitHash,
       _quantities,
@@ -332,13 +404,15 @@ contract PermitFactory is Whitelist {
       _originHashes,
       _reExportHashes
     );
+
     emit PermitCreated(
       permitHash,
       permit.exportCountry,
       permit.importCountry
     );
-    permitNonce++;
-    return true;
+
+    // Increase the permit nonce to get continuously unique hash values.
+    permitNonce = permitNonce.add(1);
   }
 
   /**
@@ -351,7 +425,6 @@ contract PermitFactory is Whitelist {
    * @param _descriptions specimen descriptions
    * @param _originHashes hashes of origin permits of specimens
    * @param _reExportHashes hashes of last re-export permits of specimens
-   * @return whether specimens were added successfully
    */
   function _addSpecimens(
     bytes32 _permitHash,
@@ -363,8 +436,8 @@ contract PermitFactory is Whitelist {
     bytes32[] _reExportHashes
   )
     private
-    returns (bool)
   {
+    // Do this for all defined specimens.
     for (uint i = 0; i < _quantities.length; i++) {
       Specimen memory specimen = Specimen(
         _permitHash,
@@ -375,7 +448,7 @@ contract PermitFactory is Whitelist {
         _originHashes[i],
         _reExportHashes[i]
       );
-      bytes32 specimenHash = getSpecimenHash(
+      bytes32 specimenHash = _getSpecimenHash(
         specimen.permitHash,
         specimen.quantity,
         specimen.scientificName,
@@ -387,6 +460,5 @@ contract PermitFactory is Whitelist {
       permits[_permitHash].specimenHashes[i] = specimenHash;
       specimens[specimenHash] = specimen;
     }
-    return true;
   }
 }
