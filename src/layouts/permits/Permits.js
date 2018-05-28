@@ -34,6 +34,7 @@ class Permits extends Component {
       reExportHashes: [''],
       // authority information
       authorityCountry: ''
+      // tx information
     }
     // for convinience
     this.contracts = context.drizzle.contracts
@@ -64,6 +65,10 @@ class Permits extends Component {
       if (prevState.authorityCountry !== authorityCountry) {
         this.setState({ authorityCountry })
       }
+    }
+    if (this.props.transactionStack[this.stackId]) {
+      const txHash = this.props.transactionStack[this.stackId]
+      console.log(this.props.transactions[txHash].status)
     }
   }
 
@@ -139,42 +144,36 @@ class Permits extends Component {
   }
 
   createPermit() {
-    // const {
-    //   exportCountry,
-    //   importCountry,
-    //   permitType,
-    //   importer,
-    //   exporter,
-    //   quantities,
-    //   scientificNames,
-    //   commonNames,
-    //   descriptions,
-    //   originHashes,
-    //   reExportHashes
-    // } = this.state
-    // const stackId = this.props.PermitFactory.methods.createPermit.cacheSend(
-    //   exportCountry,
-    //   importCountry,
-    //   options.permitTypes.indexOf(permitType),
-    //   importer,
-    //   exporter,
-    //   quantities,
-    //   scientificNames,
-    //   commonNames,
-    //   descriptions,
-    //   originHashes,
-    //   reExportHashes,
-    //   { from: this.props.accounts[0] }
-    // )
-    // // Use the dataKey to display the transaction status.
-    // if (state.transactionStack[stackId]) {
-    //   const txHash = state.transactionStack[stackId]
-    //   return state.transactions[txHash].status
-    // }
+    const {
+      exportCountry,
+      importCountry,
+      permitType,
+      importer,
+      exporter,
+      quantities,
+      scientificNames,
+      commonNames,
+      descriptions,
+      originHashes,
+      reExportHashes
+    } = this.state
+    this.stackId = this.contracts.PermitFactory.methods.createPermit.cacheSend(
+      utils.asciiToHex(exportCountry),
+      utils.asciiToHex(importCountry),
+      options.permitTypes.indexOf(permitType),
+      importer.map(i => utils.asciiToHex(i)),
+      exporter.map(e => utils.asciiToHex(e)),
+      quantities,
+      scientificNames.map(i => utils.asciiToHex(i)),
+      commonNames.map(i => utils.asciiToHex(i)),
+      descriptions.map(i => utils.asciiToHex(i)),
+      originHashes.map(i => utils.asciiToHex(i)),
+      reExportHashes.map(i => utils.asciiToHex(i)),
+      { from: this.props.accounts[0] }
+    )
   }
 
   render() {
-    console.log(this.state.authorityCountry)
     return (
       <Box>
         <Heading align={'center'} margin={'medium'}>
@@ -266,6 +265,11 @@ class Permits extends Component {
             }}
           />
         ))}
+        <Button
+          label={'Create Permit'}
+          icon={<AddIcon />}
+          onClick={() => this.createPermit()}
+        />
       </Box>
     )
   }
@@ -275,7 +279,9 @@ Permits.propTypes = {
   accounts: PropTypes.object,
   PermitFactory: PropTypes.object,
   drizzleStatus: PropTypes.object,
-  contracts: PropTypes.object
+  contracts: PropTypes.object,
+  transactionStack: PropTypes.array,
+  transactions: PropTypes.object
 }
 
 Permits.contextTypes = {
