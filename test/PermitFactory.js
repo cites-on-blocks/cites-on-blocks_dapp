@@ -50,7 +50,7 @@ contract('PermitFactory', accounts => {
         RE_EXPORT_HASHES,
         { from: ACC_EXPORT }
       )
-      const [ log ] = result.logs.filter(log => log.event === 'PermitCreated')
+      const [log] = result.logs.filter(log => log.event === 'PermitCreated')
       const { permitHash, exportCountry, importCountry } = log.args
       assert.isString(permitHash)
       assert.equal(hexToUtf8(exportCountry), EXPORT_COUNTRY)
@@ -118,7 +118,7 @@ contract('PermitFactory', accounts => {
         RE_EXPORT_HASHES,
         { from: ACC_IMPORT }
       )
-      const [ log ] = result.logs.filter(log => log.event === 'PermitCreated')
+      const [log] = result.logs.filter(log => log.event === 'PermitCreated')
       const { permitHash, exportCountry, importCountry } = log.args
       assert.isString(permitHash)
       assert.equal(hexToUtf8(exportCountry), EXPORT_COUNTRY)
@@ -189,7 +189,7 @@ contract('PermitFactory', accounts => {
         RE_EXPORT_HASHES,
         { from: ACC_EXPORT }
       )
-      const [ log ] = result.logs.filter(log => log.event === 'PermitCreated')
+      const [log] = result.logs.filter(log => log.event === 'PermitCreated')
       permitHash = log.args.permitHash
     })
 
@@ -206,16 +206,36 @@ contract('PermitFactory', accounts => {
       assert.equal(hexToUtf8(permit[4][2]), IMPORTER[2])
       assert.lengthOf(permit[5], QUANTITIES.length)
       assert.isAbove(permit[6], 0)
-      specimenHashes = permit[5]      
+      specimenHashes = permit[5]
     })
 
     it('should return specimen', async () => {
-      const specimen_1 = await permitFactoryInstance.specimens(specimenHashes[0])
+      const specimen_1 = await permitFactoryInstance.specimens(
+        specimenHashes[0]
+      )
       assert.equal(specimen_1[0], permitHash)
       assert.equal(specimen_1[1].toString(), QUANTITIES[0].toString())
       assert.equal(hexToUtf8(specimen_1[2]), SCIENTIFIC_NAMES[0])
       assert.equal(hexToUtf8(specimen_1[3]), COMMON_NAMES[0])
       assert.equal(hexToUtf8(specimen_1[4]), DESCRIPTIONS[0])
+    })
+
+    it('Requires that the provided hash value exists.', async () => {
+      try {
+        // Generate a non-existing hash value based on the given one.
+        const nonExistingHash = permitHash
+          .split('')
+          .reverse()
+          .join('')
+
+        // Try to get a permit for this non-existing hash value.
+        await permitFactoryInstance.getPermit.call(nonExistingHash)
+        assert.fail(
+          'Expected an exception to be thrown when try to retrieve a permit for an non-existing hash value.'
+        )
+      } catch (err) {
+        // Expected
+      }
     })
   })
 
@@ -223,7 +243,7 @@ contract('PermitFactory', accounts => {
     let permitHash
     let specimenHashes
 
-    before(async () => {
+    beforeEach(async () => {
       const result = await permitFactoryInstance.createPermit(
         EXPORT_COUNTRY,
         IMPORT_COUNTRY,
@@ -238,14 +258,15 @@ contract('PermitFactory', accounts => {
         RE_EXPORT_HASHES,
         { from: ACC_EXPORT }
       )
-      const [ log ] = result.logs.filter(log => log.event === 'PermitCreated')
+
+      const [log] = result.logs.filter(log => log.event === 'PermitCreated')
       permitHash = log.args.permitHash
       const permit = await permitFactoryInstance.getPermit.call(permitHash)
-      specimenHashes = permit[5]      
+      specimenHashes = permit[5]
     })
 
     it('should return not confirmed and not accepted for permit', async () => {
-      const [ confirmed, accepted ] = await Promise.all([
+      const [confirmed, accepted] = await Promise.all([
         permitFactoryInstance.confirmed(permitHash),
         permitFactoryInstance.accepted(permitHash)
       ])
@@ -261,13 +282,13 @@ contract('PermitFactory', accounts => {
         { from: ACC_IMPORT }
       )
       // test event
-      const [ log ] = result.logs.filter(log => log.event === 'PermitConfirmed')
+      const [log] = result.logs.filter(log => log.event === 'PermitConfirmed')
       const { exportCountry, importCountry, isAccepted } = log.args
       assert.equal(hexToUtf8(exportCountry), EXPORT_COUNTRY)
       assert.equal(hexToUtf8(importCountry), IMPORT_COUNTRY)
       assert.equal(isAccepted, false)
       // test mappings
-      const [ confirmed, accepted ] = await Promise.all([
+      const [confirmed, accepted] = await Promise.all([
         permitFactoryInstance.confirmed(permitHash),
         permitFactoryInstance.accepted(permitHash)
       ])
@@ -282,21 +303,42 @@ contract('PermitFactory', accounts => {
         true,
         { from: ACC_IMPORT }
       )
-      const [ log ] = result.logs.filter(log => log.event === 'PermitConfirmed')
+      const [log] = result.logs.filter(log => log.event === 'PermitConfirmed')
       const { exportCountry, importCountry, isAccepted } = log.args
       assert.equal(hexToUtf8(exportCountry), EXPORT_COUNTRY)
       assert.equal(hexToUtf8(importCountry), IMPORT_COUNTRY)
       assert.equal(isAccepted, true)
       // test mappings
-      const [ confirmed, accepted ] = await Promise.all([
+      const [confirmed, accepted] = await Promise.all([
         permitFactoryInstance.confirmed(permitHash),
         permitFactoryInstance.accepted(permitHash)
       ])
       assert.equal(confirmed, true)
       assert.equal(accepted, true)
     })
-  })
 
-  // TODO #getPermitHash()
-  // TODO #getSpecimenHash()
+    it('It should not be possible to confirm a permit twice.', async () => {
+      // Confirm the permit the first time.
+      const result = await permitFactoryInstance.confirmPermit(
+        permitHash,
+        specimenHashes,
+        true,
+        { from: ACC_IMPORT }
+      )
+
+      // Try to confirm a second time.
+      try {
+        const result = await permitFactoryInstance.confirmPermit(
+          permitHash,
+          specimenHashes,
+          true,
+          { from: ACC_IMPORT }
+        )
+
+        assert.fail('Confirm a permit a second time should throw an expection!')
+      } catch (err) {
+        // Expected.
+      }
+    })
+  })
 })
