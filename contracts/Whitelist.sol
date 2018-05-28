@@ -1,6 +1,6 @@
 pragma solidity ^0.4.23;
 
-import "zeppelin-solidity/contracts/ownership/Ownable.sol";
+import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 
 
@@ -63,13 +63,21 @@ contract Whitelist is Ownable {
    * @param  _country - country the address belongs to
    */
   function addAddress(address _toAdd, bytes2 _country) public onlyOwner {
-    // Only add address if it is a new one.
-    require(!whitelist[_toAdd]);
+    // In case the address is a new one, set also the country mappings.
+    // Use the authority to country mapping, cause the whitelist mappings can't be used
+    // with booleans as values, but the country code are null bytes if not defined.
+    if (authorityToCountry[_toAdd] == 0x0) {
+      authorityMapping[_country].push(_toAdd);
+      authorityToCountry[_toAdd] = _country;
+    } else {
+      // Make sure the caller has the correct intention.
+      // Throw an error, cause the user should know that it is not possible to change the country code later
+      // on.
+      require(authorityToCountry[_toAdd] == _country);
+    }
 
-    // Add it to all associated mappings.
+    // Enable the address, whatever it is a new one or not.
     whitelist[_toAdd] = true;
-    authorityMapping[_country].push(_toAdd);
-    authorityToCountry[_toAdd] = _country;
 
     emit AddressWhitelisted(_toAdd, _country);
   }
