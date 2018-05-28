@@ -99,6 +99,45 @@ contract('Whitelist', async accounts => {
     })
 
     /**
+     * Add the same address with the same country code two times.
+     * This should enable the address (again), but leave the country mappings untouched.
+     */
+    it('Add an address twice with the same country code only (re)enable the address.', async () => {
+      // Add the address the first time.
+      await whitelist.addAddress(ACC_NEW, COUNTRY, { from: ACC_OWNER })
+
+      // Store the current mapping values.
+      const authorityToCountryValue = await whitelist.authorityToCountry(
+        ACC_NEW
+      )
+      const authorityMappingValue = await whitelist.authorityMapping(COUNTRY, 0)
+
+      // Add the address a second time with the same country code.
+      await whitelist.addAddress(ACC_NEW, COUNTRY, { from: ACC_OWNER })
+
+      /* Check the resulting mapping values. */
+      // Check if the address is still enabled.
+      assert.isTrue(
+        await whitelist.whitelist(ACC_NEW),
+        'The address should stay enabled when add it again!'
+      )
+
+      // Check if the authority to country mapping hasn't changed.
+      assert.equal(
+        await whitelist.authorityToCountry(ACC_NEW),
+        authorityToCountryValue,
+        'The authority to country mapping should not change on adding the address twice!'
+      )
+
+      // Check if the authority mapping hasn't changed.
+      assert.equal(
+        await whitelist.authorityMapping(COUNTRY, 0),
+        authorityMappingValue,
+        'The authority mapping should not change on adding the address twice!'
+      )
+    })
+
+    /**
      * Try to add a single new address to the whitelist without beeing the owner of the contract.
      * Expect an exception to be thrown.
      */
@@ -107,6 +146,27 @@ contract('Whitelist', async accounts => {
       try {
         await whitelist.addAddress(ACC_NEW, COUNTRY, { from: ACC_NO_OWNER })
         assert.fail('Add address as non-owner should not been successful!')
+      } catch (err) {
+        // Expected to fail here.
+      }
+    })
+
+    /**
+     * Try to add the same address twice with different country codes.
+     * Expect an exception to be thrown.
+     */
+    it('Can not add the same address twice with different country codes.', async () => {
+      // Add the address the first time.
+      await whitelist.addAddress(ACC_NEW, COUNTRY, { from: ACC_OWNER })
+
+      // Try to add the same address a second time with a different country code.
+      try {
+        await whitelist.addAddress(ACC_NEW, string2Hex('EN'), {
+          from: ACC_OWNER
+        })
+        assert.fail(
+          'Add the same address twice with different country codes should not been successful!'
+        )
       } catch (err) {
         // Expected to fail here.
       }
@@ -177,6 +237,22 @@ contract('Whitelist', async accounts => {
     })
 
     /**
+     * Try to add an empty list of addresses to the whitelist.
+     * Expect an exception to be thrown.
+     */
+    it('Can not add an empty list of addresses.', async () => {
+      // Add an empty list to the whitelist.
+      try {
+        await whitelist.addAddresses([], COUNTRY, { from: ACC_NO_OWNER })
+        assert.fail(
+          'Add an empty list of addresses should not been successful!'
+        )
+      } catch (err) {
+        // Expected to fail here.
+      }
+    })
+
+    /**
      * Try to add a list of new addresses to the whitelist without beeing the owner of the contract.
      * Expect an exception to be thrown.
      */
@@ -186,7 +262,7 @@ contract('Whitelist', async accounts => {
         await whitelist.addAddresses(ACC_NEW_LIST, COUNTRY, {
           from: ACC_NO_OWNER
         })
-        assert.fail('Add address as non-owner should not been successful!')
+        assert.fail('Add addresses as non-owner should not been successful!')
       } catch (err) {
         // Expected to fail here.
       }
