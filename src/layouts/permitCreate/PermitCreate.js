@@ -8,7 +8,8 @@ import {
   Select,
   FormField,
   AddIcon,
-  DocumentUploadIcon
+  DocumentUploadIcon,
+  Toast
 } from 'grommet'
 import { utils } from 'web3'
 
@@ -34,8 +35,15 @@ class PermitCreate extends Component {
       originHashes: [''],
       reExportHashes: [''],
       // authority information
-      authorityCountry: ''
-      // tx information
+      authorityCountry: '',
+      // tx information toast
+      toast: {
+        show: false,
+        status: '',
+        text: ''
+      },
+      // tx status
+      txStatus: ''
     }
     // for convinience
     this.contracts = context.drizzle.contracts
@@ -46,22 +54,31 @@ class PermitCreate extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    // check if accounts changed
     if (this.props.accounts[0] !== prevProps.accounts[0]) {
+      // return key for data and cache result in PermitFatory prop
       this.dataKey = this.contracts.PermitFactory.methods.authorityToCountry.cacheCall(
         this.props.accounts[0]
       )
     }
+    // check if key is cached
     if (this.dataKey in this.props.PermitFactory.authorityToCountry) {
       const authorityCountry = utils.hexToUtf8(
         this.props.PermitFactory.authorityToCountry[this.dataKey].value
       )
+      // only set state if authority country changed
       if (prevState.authorityCountry !== authorityCountry) {
         this.setState({ authorityCountry })
       }
     }
+    // check if tx for stack id exists
     if (this.props.transactionStack[this.stackId]) {
       const txHash = this.props.transactionStack[this.stackId]
-      console.log(this.props.transactions[txHash].status)
+      const { status } = this.props.transactions[txHash]
+      // change tx related state is status changed
+      if (prevState.txStatus !== status) {
+        this.changeTxState(status)
+      }
     }
   }
 
@@ -137,38 +154,70 @@ class PermitCreate extends Component {
   }
 
   createPermit() {
-    const {
-      exportCountry,
-      importCountry,
-      permitType,
-      importer,
-      exporter,
-      quantities,
-      scientificNames,
-      commonNames,
-      descriptions,
-      originHashes,
-      reExportHashes
-    } = this.state
     this.stackId = this.contracts.PermitFactory.methods.createPermit.cacheSend(
-      utils.asciiToHex(exportCountry),
-      utils.asciiToHex(importCountry),
-      options.permitTypes.indexOf(permitType),
-      importer.map(e => utils.asciiToHex(e)),
-      exporter.map(e => utils.asciiToHex(e)),
-      quantities,
-      scientificNames.map(e => utils.asciiToHex(e)),
-      commonNames.map(e => utils.asciiToHex(e)),
-      descriptions.map(e => utils.asciiToHex(e)),
-      originHashes.map(e => utils.asciiToHex(e)),
-      reExportHashes.map(e => utils.asciiToHex(e)),
+      utils.asciiToHex(this.state.exportCountry),
+      utils.asciiToHex(this.state.importCountry),
+      options.permitTypes.indexOf(this.state.permitType),
+      this.state.importer.map(e => utils.asciiToHex(e)),
+      this.state.exporter.map(e => utils.asciiToHex(e)),
+      this.state.quantities,
+      this.state.scientificNames.map(e => utils.asciiToHex(e)),
+      this.state.commonNames.map(e => utils.asciiToHex(e)),
+      this.state.descriptions.map(e => utils.asciiToHex(e)),
+      this.state.originHashes.map(e => utils.asciiToHex(e)),
+      this.state.reExportHashes.map(e => utils.asciiToHex(e)),
       { from: this.props.accounts[0] }
     )
+  }
+
+  changeTxState(newTxState) {
+    if (newTxState === 'pending') {
+      this.setState({
+        txStatus: 'pending',
+        toast: {
+          show: true,
+          status: 'unknown',
+          text: 'Permit creation is pending...'
+        }
+      })
+    } else if (newTxState === 'success') {
+      this.stackId = ''
+      this.setState({
+        txStatus: 'success',
+        toast: {
+          show: true,
+          status: 'ok',
+          text: 'Permit creation was successful!'
+        }
+      })
+    } else {
+      this.stackId = ''
+      this.setState({
+        txStatus: 'failed',
+        toast: {
+          show: true,
+          status: 'critical',
+          text: 'Permit creation failed.'
+        }
+      })
+    }
   }
 
   render() {
     return (
       <Box>
+        {this.state.toast.show && (
+          <Toast
+            status={this.state.toast.status}
+            onClose={() =>
+              this.setState({
+                txStatus: '',
+                toast: { show: false }
+              })
+            }>
+            {this.state.toast.text}
+          </Toast>
+        )}
         <Heading align={'center'} margin={'medium'}>
           CITES Permit
         </Heading>
