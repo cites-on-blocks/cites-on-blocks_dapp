@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-class Permit extends Component {
+class Permits extends Component {
   render() {
-    return <main>Permits in the making...</main>
+    return <main>List permits...</main>
   }
 }
 
-Permit.propTypes = {
+Permits.propTypes = {
   accounts: PropTypes.object
 }
 
-export default Permit
+export default Permits
