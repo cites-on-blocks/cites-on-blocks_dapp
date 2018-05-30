@@ -350,6 +350,23 @@ contract('Whitelist', async accounts => {
         // Expected to fail here.
       }
     })
+
+    /**
+     * Try to remove an address, that does not exist on the whitelist.
+     * Expect an exception to be thrown.
+     */
+    it('Can not remove a non-existing address.', async () => {
+      try {
+        await whitelist.removeAddress(accounts[5], { from: ACC_OWNER })
+
+        assert(
+          false,
+          'Remove a non-existing address should not been successful!'
+        )
+      } catch (err) {
+        // Expected to fail here.
+      }
+    })
   })
 
   /*
@@ -407,6 +424,24 @@ contract('Whitelist', async accounts => {
           COUNTRY,
           'The country code for one address in the list is not equal the one in the thrown event!'
         )
+      }
+    })
+
+    /**
+     * Try to remove an empty list of addresses from the whitelist.
+     * Expect an exception to be thrown.
+     */
+    it('Can not remove an empty list from addresses.', async () => {
+      // Remove an empty list from the whitelist.
+      try {
+        await whitelist.removeAddresses([], COUNTRY, { from: ACC_NO_OWNER })
+
+        assert(
+          false,
+          'Remove an empty list of addresses should not been successful!'
+        )
+      } catch (err) {
+        // Expected to fail here.
       }
     })
 
@@ -499,6 +534,25 @@ contract('Whitelist', async accounts => {
         1,
         'The event that the whole country has been removed has not been thrown!'
       )
+    })
+
+    /**
+     * Try to remove a country that does not have any addresses on the whitelist.
+     * As assumption no address have to be added for the used country code.
+     * Expect an exception to be thrown.
+     */
+    it('Can not remove a non-existing country.', async () => {
+      // Try to remove a country no addresses have been added for.
+      try {
+        await whitelist.removeCountry(string2hex('EN'), { from: ACC_OWNER })
+
+        assert(
+          false,
+          'Remove a non-existing country should not been successful'
+        )
+      } catch (err) {
+        // Expected to fail here.
+      }
     })
 
     /**
