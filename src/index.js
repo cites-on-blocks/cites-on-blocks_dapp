@@ -11,7 +11,9 @@ import WhitelistContainer from './layouts/whitelist/WhitelistContainer'
 import AnalyticsContainer from './layouts/analytics/AnalyticsContainer'
 import HelpContainer from './layouts/help/HelpContainer'
 import ImportExportContainer from './layouts/importExport/ImportExportContainer'
-import PermitContainer from './layouts/permit/PermitContainer'
+import PermitsContainer from './layouts/permits/PermitsContainer'
+import PermitCreateContainer from './layouts/permitCreate/PermitCreateContainer'
+import PermitProcessContainer from './layouts/permitProcess/PermitProcessContainer'
 import { LoadingContainer } from 'drizzle-react-components'
 
 //Stylesheets
@@ -47,7 +49,13 @@ ReactDOM.render(
           <IndexRoute component={ImportExportContainer} />
         </Route>
         <Route path="/permits" component={App}>
-          <IndexRoute component={PermitContainer} />
+          <IndexRoute component={PermitsContainer} />
+        </Route>
+        <Route path="/permits/create" component={App}>
+          <IndexRoute component={PermitCreateContainer} />
+        </Route>
+        <Route path="/permits/process" component={App}>
+          <IndexRoute component={PermitProcessContainer} />
         </Route>
       </Router>
     </LoadingContainer>
