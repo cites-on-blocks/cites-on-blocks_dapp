@@ -1,7 +1,6 @@
 pragma solidity ^0.4.23;
 
-import "zeppelin-solidity/contracts/ownership/Ownable.sol";
-
+import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 
 contract Whitelist is Ownable {
@@ -43,6 +42,56 @@ contract Whitelist is Ownable {
   }
 
   /**
+   * Add all addresses defined in the list with the same country code to the whitelist.
+   * @dev Only a wrapper function for {@link addAddress}.
+   *
+   * @param _addressList - the list of addresses to add
+   * @param _country - country all addresses belongs to
+   */
+  function addAddresses(address[] _addressList, bytes2 _country) external onlyOwner {
+    // Make sure any address has been passed.
+    require(_addressList.length > 0);
+
+    // Call addAddress for each entry in the list.
+    for (uint i = 0; i < _addressList.length; i++) {
+      addAddress(_addressList[i], _country);
+    }
+  }
+
+  /**
+   * Removes a list of addresses from the whitelist.
+   * @dev Is a wrapper function for the removeAddresses function.
+   * @param _addressList addresses that will be removed from the whitelist
+   */
+  function removeAddresses(address[] _addressList) external onlyOwner {
+    // Make sure any address has been passed.
+    require(_addressList.length > 0);
+
+    // Call removeAddress for each entry in the list.
+    for (uint i = 0; i < _addressList.length; i++) {
+      removeAddress(_addressList[i]);
+    }
+  }
+
+  /**
+   * Removes addresses of an entire country from the whitelist. by calling the
+   * @dev Is a wrapper function for the removeAddresses function.
+   * @param _country all addresses of this region will be removed from the whitelist
+   */
+  function removeCountry(bytes2 _country) external onlyOwner {
+    // Make sure the passed country exist.
+    require(authorityMapping[_country].length > 0);
+
+    address[] memory countryAddresses = authorityMapping[_country];
+
+    for (uint i = 0; i < countryAddresses.length; i++) {
+      removeAddress(countryAddresses[i]);
+
+    }
+    emit CountryRemovedFromWhitelist(_country);
+  }
+
+  /**
    * Adds an address to all mappings needed for the whitelist.
    * @param _toAdd - address to be added to the whitelist
    * @param  _country - country the address belongs to
@@ -68,57 +117,19 @@ contract Whitelist is Ownable {
   }
 
   /**
-   * Add all addresses defined in the list with the same country code to the whitelist.
-   * @dev Only a wrapper function for {@link addAddress}.
-   *
-   * @param _addressList - the list of addresses to add
-   * @param _country - country all addresses belongs to
+   * Removes a single address from the whitelist.
+   * @dev Remove means to set the address mapped value to false.
+   * @param _toRemove address that will be removed from the whitelist
    */
-  function addAddresses(address[] _addressList, bytes2 _country) external onlyOwner {
-    // Make sure any address has been passed.
-    require(_addressList.length > 0);
+  function removeAddress(address _toRemove) public onlyOwner {
+    // Make sure the address is defined.
+    require(authorityToCountry[_toRemove] != 0x0);
 
-    // Call addAddress for each entry in the list.
-    for (uint i = 0; i < _addressList.length; i++) {
-      addAddress(_addressList[i], _country);
-    }
-  }
+    // Disable the address.
+    whitelist[_toRemove] = false;
 
-  /**
-   * Removes a single address from the whitelist mapping by calling the
-   * removeAddresses function.
-   * @param toRemove address that will be removed from the whitelist
-   */
-  function removeAddress(address toRemove) public onlyOwner {
-    whitelist[toRemove] = false;
-    bytes2 country = authorityToCountry[toRemove];
-    emit AddressRemoved(toRemove, country);
-  }
-
-  /**
-   * Removes a list of addresses from the whitelist by assigning them to false in
-   * the whitelist mapping.
-   * @param _addresses addresses that will be removed from the whitelist
-   */
-  function removeAddresses(address[] _addresses) external onlyOwner {
-    for (uint i = 0; i < _addresses.length; i++) {
-      removeAddress(_addresses[i]);
-    }
-  }
-
-  /**
-   * Removes addresses of an entire region from the whitelist by calling the
-   * removeAddresses function.
-   * @param _region all addresses of this region will be removed from the whitelist
-   */
-  function removeCountry(bytes2 _region) external onlyOwner {
-    address[] memory countryAddresses = authorityMapping[_region];
-
-    for (uint i = 0; i < countryAddresses.length; i++) {
-      removeAddress(countryAddresses[i]);
-
-    }
-    emit CountryRemovedFromWhitelist(_region);
+    bytes2 country = authorityToCountry[_toRemove];
+    emit AddressRemoved(_toRemove, country);
   }
 
 }
