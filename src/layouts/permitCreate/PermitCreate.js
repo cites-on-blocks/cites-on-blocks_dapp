@@ -44,28 +44,28 @@ class PermitCreate extends Component {
     }
     // for convinience
     this.contracts = context.drizzle.contracts
-    // return key for data and cache result in PermitFatory prop
-    this.dataKey = this.contracts.PermitFactory.methods.authorityToCountry.cacheCall(
-      this.props.accounts[0]
-    )
+    this.setAuthToCountryKey()
+  }
+
+  componentDidMount() {
+    this.handleFormChange(this.state.permitForm)
   }
 
   componentDidUpdate(prevProps, prevState) {
     // check if accounts changed
     if (this.props.accounts[0] !== prevProps.accounts[0]) {
-      // return key for data and cache result in PermitFatory prop
-      this.dataKey = this.contracts.PermitFactory.methods.authorityToCountry.cacheCall(
-        this.props.accounts[0]
-      )
+      this.setAuthToCountryKey()
+      this.handleFormChange(this.state.permitForm)
     }
     // check if key is cached
-    if (this.dataKey in this.props.PermitFactory.authorityToCountry) {
+    if (this.authToCountryKey in this.props.PermitFactory.authorityToCountry) {
       const authorityCountry = utils.hexToUtf8(
-        this.props.PermitFactory.authorityToCountry[this.dataKey].value
+        this.props.PermitFactory.authorityToCountry[this.authToCountryKey].value
       )
       // only set state if authority country changed
       if (prevState.authorityCountry !== authorityCountry) {
         this.setState({ authorityCountry })
+        this.handleFormChange(this.state.permitForm)
       }
     }
     // check if tx for stack id exists
@@ -79,8 +79,20 @@ class PermitCreate extends Component {
     }
   }
 
-  handleFormChange(form) {
-    console.log(form)
+  /**
+   * UI ONLY HANDLERS
+   */
+
+  handleFormChange(permitForm) {
+    const { permit, authorityCountry } = this.state
+    if (permitForm === 'DIGITAL') {
+      permit.exportCountry = authorityCountry
+      permit.importCountry = ''
+    } else {
+      permit.importCountry = authorityCountry
+      permit.exportCountry = ''
+    }
+    this.setState({ permitForm, permit })
   }
 
   handlePermitChange(attribute, newValue) {
@@ -113,6 +125,17 @@ class PermitCreate extends Component {
     const { specimens } = this.state
     specimens.splice(index, 1)
     this.setState({ specimens })
+  }
+
+  /**
+   * DRIZZLE HANDLERS
+   */
+
+  setAuthToCountryKey() {
+    // return key for data and cache result in PermitFatory prop
+    this.authToCountryKey = this.contracts.PermitFactory.methods.authorityToCountry.cacheCall(
+      this.props.accounts[0]
+    )
   }
 
   createPermit() {

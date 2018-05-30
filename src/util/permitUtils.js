@@ -20,6 +20,7 @@ export function convertSpecimensToArrays(specimens) {
       result.descriptions.push(specimen.description)
       result.originHashes.push(specimen.originHash)
       result.reExportHashes.push(specimen.reExportHash)
+      return result
     },
     {
       quantities: [],
