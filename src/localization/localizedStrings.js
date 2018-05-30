@@ -18,7 +18,20 @@ let local = new LocalizedStrings({
         region: 'region',
         joining: 'Date of joining',
         entry: 'Entry into force'
+      },
+      layer: {
+        number: 'Number',
+        publicID: 'Public-ID',
+        entry: 'created'
       }
+    },
+    help: {
+      headline: 'Help',
+      accordionHeadline: 'Most frequent questions',
+      first: 'What is the blockchain?',
+      second: 'What is cites?',
+      third: 'How can I contact cites?',
+      fourth: 'This is Nr. 4'
     },
     footer: {
       openingDays: 'Monday to Saturday',
@@ -44,7 +57,20 @@ let local = new LocalizedStrings({
         region: 'Region',
         joining: 'Beitrittsdatum',
         entry: 'Aufnahmedatum'
+      },
+      layer: {
+        number: 'Nummer',
+        publicID: 'Public-ID',
+        entry: 'erstellt am'
       }
+    },
+    help: {
+      headline: 'Hilfe',
+      accordionHeadline: 'Häufigste Fragen',
+      first: 'Was ist die Blockchain>',
+      second: 'Was ist Cites?',
+      third: 'Wie kann ich cites kontaktieren?',
+      fourth: 'Frage Nr. 4'
     },
     footer: {
       openingDays: 'Montag bis Samstag',
