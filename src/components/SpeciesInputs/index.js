@@ -16,17 +16,7 @@ import {
  */
 class SpeciesInputs extends Component {
   render() {
-    const {
-      index,
-      quantity,
-      scientificName,
-      commonName,
-      description,
-      originHash,
-      reExportHash,
-      onChange,
-      onRemove
-    } = this.props
+    const { index, species, onChange, onRemove } = this.props
     return (
       <Box margin={{ bottom: 'large' }}>
         <Box
@@ -42,41 +32,41 @@ class SpeciesInputs extends Component {
         <Columns justify={'between'} size={'large'}>
           <FormField label={'Scientific name'}>
             <TextInput
-              value={scientificName}
-              onDOMChange={e => onChange('scientificNames', e.target.value)}
+              value={species.scientificName}
+              onDOMChange={e => onChange('scientificName', e.target.value)}
             />
           </FormField>
           <FormField label={'Common name'}>
             <TextInput
-              value={commonName}
-              onDOMChange={e => onChange('commonNames', e.target.value)}
+              value={species.commonName}
+              onDOMChange={e => onChange('commonName', e.target.value)}
             />
           </FormField>
         </Columns>
         <FormField label={'Description'}>
           <TextInput
-            value={description}
-            onDOMChange={e => onChange('descriptions', e.target.value)}
+            value={species.description}
+            onDOMChange={e => onChange('description', e.target.value)}
           />
         </FormField>
         <FormField label={'Quantity'}>
           <NumberInput
-            value={quantity}
+            value={species.quantity}
             step={1}
             min={0}
-            onChange={e => onChange('quantities', e.target.value)}
+            onChange={e => onChange('quantity', e.target.value)}
           />
         </FormField>
         <FormField label={'Number of origin permit'}>
           <TextInput
-            value={originHash}
-            onDOMChange={e => onChange('originHashes', e.target.value)}
+            value={species.originHash}
+            onDOMChange={e => onChange('originHash', e.target.value)}
           />
         </FormField>
         <FormField label={'Number of last re-export permit'}>
           <TextInput
-            value={reExportHash}
-            onDOMChange={e => onChange('reExportHashes', e.target.value)}
+            value={species.reExportHash}
+            onDOMChange={e => onChange('reExportHash', e.target.value)}
           />
         </FormField>
       </Box>
@@ -86,12 +76,7 @@ class SpeciesInputs extends Component {
 
 SpeciesInputs.propTypes = {
   index: PropTypes.number,
-  quantity: PropTypes.number,
-  scientificName: PropTypes.string,
-  commonName: PropTypes.string,
-  description: PropTypes.string,
-  originHash: PropTypes.string,
-  reExportHash: PropTypes.string,
+  species: PropTypes.object,
   onChange: PropTypes.func,
   onRemove: PropTypes.func
 }

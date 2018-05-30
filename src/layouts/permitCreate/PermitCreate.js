@@ -16,24 +16,21 @@ import { utils } from 'web3'
 import AddressInputs from '../../components/AddressInputs'
 import SpeciesInputs from '../../components/SpeciesInputs'
 import * as options from '../../util/options'
+import * as permitUtils from '../../util/permitUtils'
 
 class PermitCreate extends Component {
   constructor(props, context) {
     super(props)
     this.state = {
-      // permit information
-      permitForm: options.permitForms[0],
-      exportCountry: '',
-      importCountry: '',
-      permitType: options.permitTypes[0],
-      importer: ['', '', ''],
-      exporter: ['', '', ''],
-      quantities: [0],
-      scientificNames: [''],
-      commonNames: [''],
-      descriptions: [''],
-      originHashes: [''],
-      reExportHashes: [''],
+      permitForm: permitUtils.PERMIT_FORMS[0],
+      permit: {
+        exportCountry: '',
+        importCountry: '',
+        permitType: permitUtils.PERMIT_TYPES[0],
+        importer: ['', '', ''],
+        exporter: ['', '', '']
+      },
+      specimens: [permitUtils.DEFAULT_SPECIMEN],
       // authority information
       authorityCountry: '',
       // tx information toast
@@ -82,90 +79,57 @@ class PermitCreate extends Component {
     }
   }
 
-  handleChange(attr, newValue) {
-    const newState = {}
-    newState[attr] = newValue
-    this.setState(newState)
+  handleFormChange(form) {
+    console.log(form)
   }
 
-  handleFormChange(newValue) {
-    this.handleChange('permitForm', newValue)
-    // TODO prefill export or import country
+  handlePermitChange(attribute, newValue) {
+    const { permit } = this.state
+    permit[attribute] = newValue
+    this.setState({ permit })
   }
 
-  handleArrayChange(attr, index, newValue) {
-    const newArr = this.state[attr]
-    newArr[index] = newValue
-    this.handleChange(attr, newArr)
+  handleAddressChange(index, recipient, newValue) {
+    const newAddress = this.state.permit[recipient]
+    newAddress[index] = newValue
+    this.handlePermitChange(recipient, newAddress)
   }
 
-  getSpeciesAttr() {
-    const {
-      quantities,
-      scientificNames,
-      commonNames,
-      descriptions,
-      originHashes,
-      reExportHashes
-    } = this.state
-    return [
-      quantities,
-      scientificNames,
-      commonNames,
-      descriptions,
-      originHashes,
-      reExportHashes
-    ]
-  }
-
-  setSpeciesAttr(attributes) {
-    const [
-      quantities,
-      scientificNames,
-      commonNames,
-      descriptions,
-      originHashes,
-      reExportHashes
-    ] = attributes
-    this.setState({
-      quantities,
-      scientificNames,
-      commonNames,
-      descriptions,
-      originHashes,
-      reExportHashes
-    })
+  handleSpeciesChange(index, attribute, newValue) {
+    const { specimens } = this.state
+    const newSpecies = { ...specimens[index] }
+    newSpecies[attribute] = newValue
+    specimens[index] = newSpecies
+    this.setState({ specimens })
   }
 
   addSpecies() {
-    let speciesAttributes = this.getSpeciesAttr()
-    speciesAttributes.map(attrArr => {
-      attrArr.push(typeof attrArr[0] === 'number' ? 0 : '')
-    })
-    this.setSpeciesAttr(speciesAttributes)
+    const { specimens } = this.state
+    specimens.push(permitUtils.DEFAULT_SPECIMEN)
+    this.setState({ specimens })
   }
 
   removeSpecies(index) {
-    let speciesAttributes = this.getSpeciesAttr()
-    speciesAttributes.map(attrArr => {
-      attrArr.splice(index, 1)
-    })
-    this.setSpeciesAttr(speciesAttributes)
+    const { specimens } = this.state
+    specimens.splice(index, 1)
+    this.setState({ specimens })
   }
 
   createPermit() {
+    const { permit, specimens } = this.state
+    const specimensAsArrays = permitUtils.convertSpecimensToArrays(specimens)
     this.stackId = this.contracts.PermitFactory.methods.createPermit.cacheSend(
-      utils.asciiToHex(this.state.exportCountry),
-      utils.asciiToHex(this.state.importCountry),
-      options.permitTypes.indexOf(this.state.permitType),
-      this.state.importer.map(e => utils.asciiToHex(e)),
-      this.state.exporter.map(e => utils.asciiToHex(e)),
-      this.state.quantities,
-      this.state.scientificNames.map(e => utils.asciiToHex(e)),
-      this.state.commonNames.map(e => utils.asciiToHex(e)),
-      this.state.descriptions.map(e => utils.asciiToHex(e)),
-      this.state.originHashes.map(e => utils.asciiToHex(e)),
-      this.state.reExportHashes.map(e => utils.asciiToHex(e)),
+      utils.asciiToHex(permit.exportCountry),
+      utils.asciiToHex(permit.importCountry),
+      permitUtils.PERMIT_TYPES.indexOf(permit.permitType),
+      permit.importer.map(address => utils.asciiToHex(address)),
+      permit.exporter.map(address => utils.asciiToHex(address)),
+      specimensAsArrays.quantities,
+      specimensAsArrays.scientificNames.map(e => utils.asciiToHex(e)),
+      specimensAsArrays.commonNames.map(e => utils.asciiToHex(e)),
+      specimensAsArrays.descriptions.map(e => utils.asciiToHex(e)),
+      specimensAsArrays.originHashes.map(e => utils.asciiToHex(e)),
+      specimensAsArrays.reExportHashes.map(e => utils.asciiToHex(e)),
       { from: this.props.accounts[0] }
     )
   }
@@ -204,6 +168,7 @@ class PermitCreate extends Component {
   }
 
   render() {
+    const { permitForm, permit, specimens } = this.state
     return (
       <Box>
         {this.state.toast.show && (
@@ -224,8 +189,8 @@ class PermitCreate extends Component {
         <Columns justify={'between'} size={'large'}>
           <FormField label={'Type'}>
             <Select
-              value={this.state.permitForm}
-              options={options.permitForms}
+              value={permitForm}
+              options={permitUtils.PERMIT_FORMS}
               onChange={({ option }) => {
                 this.handleFormChange(option)
               }}
@@ -233,10 +198,10 @@ class PermitCreate extends Component {
           </FormField>
           <FormField label={'Permit type'}>
             <Select
-              value={this.state.permitType}
-              options={options.permitTypes}
+              value={permit.permitType}
+              options={permitUtils.PERMIT_TYPES}
               onChange={({ option }) => {
-                this.handleChange('permitType', option)
+                this.handlePermitChange('permitType', option)
               }}
             />
           </FormField>
@@ -244,36 +209,36 @@ class PermitCreate extends Component {
         <Columns justify={'between'} size={'large'}>
           <FormField label={'Country of export'}>
             <Select
-              value={this.state.exportCountry}
+              value={permit.exportCountry}
               options={options.countries}
               onChange={({ option }) => {
-                this.handleChange('exportCountry', option.value)
+                this.handlePermitChange('exportCountry', option.value)
               }}
             />
           </FormField>
           <FormField label={'Country of import'}>
             <Select
-              value={this.state.importCountry}
+              value={permit.importCountry}
               options={options.countries}
               onChange={({ option }) => {
-                this.handleChange('importCountry', option.value)
+                this.handlePermitChange('importCountry', option.value)
               }}
             />
           </FormField>
         </Columns>
         <Columns justify={'between'} size={'large'}>
           <AddressInputs
-            address={this.state.exporter}
+            address={permit.exporter}
             recipient={'exporter'}
             onChange={(recipient, index, newValue) => {
-              this.handleArrayChange(recipient, index, newValue)
+              this.handleAddressChange(index, recipient, newValue)
             }}
           />
           <AddressInputs
-            address={this.state.importer}
+            address={permit.importer}
             recipient={'importer'}
             onChange={(recipient, index, newValue) => {
-              this.handleArrayChange(recipient, index, newValue)
+              this.handleAddressChange(index, recipient, newValue)
             }}
           />
         </Columns>
@@ -289,18 +254,13 @@ class PermitCreate extends Component {
             onClick={() => this.addSpecies()}
           />
         </Box>
-        {this.state.quantities.map((value, index) => (
+        {specimens.map((species, index) => (
           <SpeciesInputs
             key={index}
             index={index}
-            quantity={this.state.quantities[index]}
-            scientificName={this.state.scientificNames[index]}
-            commonName={this.state.commonNames[index]}
-            description={this.state.descriptions[index]}
-            originHash={this.state.originHashes[index]}
-            reExportHash={this.state.reExportHashes[index]}
+            species={species}
             onChange={(attr, newValue) => {
-              this.handleArrayChange(attr, index, newValue)
+              this.handleSpeciesChange(index, attr, newValue)
             }}
             onRemove={index => {
               this.removeSpecies(index)
