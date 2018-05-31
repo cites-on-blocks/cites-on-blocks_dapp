@@ -74,7 +74,7 @@ contract Whitelist is Ownable {
   }
 
   /**
-   * Removes addresses of an entire country from the whitelist. by calling the
+   * Removes addresses of an entire country from the whitelist.
    * @dev Is a wrapper function for the removeAddresses function.
    * @param _country all addresses of this region will be removed from the whitelist
    */
