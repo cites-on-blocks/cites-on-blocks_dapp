@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-
+import PropTypes from 'prop-types'
 import Table from 'grommet/components/Table'
 import TableRow from 'grommet/components/TableRow'
 import Layer from 'grommet/components/Layer'
 import local from '../../localization/localizedStrings'
+import FlagIconFactory from 'react-flag-icon-css'
 
 import WhitelistModal from './WhitelistModal'
 
@@ -14,8 +15,7 @@ const DATA = [
     iso: 'SN',
     region: 'Africa',
     entry: '12/02/1974',
-    join: '01/07/1975',
-    img: require('../../imgs/flags/senegal.png')
+    join: '01/07/1975'
   },
   {
     country: 'Jordan',
@@ -23,8 +23,7 @@ const DATA = [
     iso: 'JO',
     region: 'Asia',
     entry: '14/01/1974',
-    join: '01/07/1975',
-    img: require('../../imgs/flags/jordan.png')
+    join: '01/07/1975'
   },
   {
     country: 'Denmark',
@@ -32,8 +31,7 @@ const DATA = [
     iso: 'DK',
     region: 'Europe',
     entry: '14/01/1974',
-    join: '01/07/1975',
-    img: require('../../imgs/flags/denmark.png')
+    join: '01/07/1975'
   },
   {
     country: 'Switzerland',
@@ -41,8 +39,7 @@ const DATA = [
     iso: 'CH',
     region: 'Europe',
     entry: '09/07/1974',
-    join: '01/07/1975',
-    img: require('../../imgs/flags/switzerland.png')
+    join: '01/07/1975'
   },
   {
     country: 'Sweden',
@@ -50,21 +47,25 @@ const DATA = [
     iso: 'SE',
     region: 'Europe',
     entry: '20/08/1974',
-    join: '01/07/1975',
-    img: require('../../imgs/flags/sweden.png')
+    join: '01/07/1975'
   }
 ]
 
-class WhitlistTable extends Component {
-  constructor() {
-    super()
+class WhitelistTable extends Component {
+  constructor(props) {
+    super(props)
     this.onMore = this.onMore.bind(this)
-    this.state = { data: DATA, layerActive: false }
-    this.onClick = this.onClick.bind(this)
+    this.state = {
+      data: DATA,
+      layerActive: false,
+      countryCode: '',
+      addresses: []
+    }
   }
 
-  onClick() {
+  onClick(id) {
     this.setState({ layerActive: true })
+    this.props.getAddressesFromCountry(this.state.data[id].iso)
   }
 
   onMore() {
@@ -82,7 +83,7 @@ class WhitlistTable extends Component {
 
   render() {
     const { data } = this.state
-
+    const FlagIcon = FlagIconFactory(React, { useCssModules: false })
     const layer = this.state.layerActive ? (
       <Layer
         closer={true}
@@ -92,16 +93,20 @@ class WhitlistTable extends Component {
             layerActive: false
           })
         }}>
-        <WhitelistModal />
+        <WhitelistModal
+          PermitFactory={this.props.PermitFactory}
+          isOwner={this.state.isOwner}
+          dataKeyAddresses={this.props.dataKeyAddresses}
+        />
       </Layer>
     ) : null
 
-    let rows = data.map(data => {
+    let rows = data.map((data, i) => {
       return (
-        <TableRow onClick={this.onClick}>
+        <TableRow onClick={this.onClick.bind(this, i)}>
           <td>{data.country}</td>
           <td>
-            <img height={34} src={data.img} />
+            <FlagIcon code={data.iso.toLowerCase()} size="34" />
           </td>
           <td>{data.iso}</td>
           <td>{data.region}</td>
@@ -134,4 +139,10 @@ class WhitlistTable extends Component {
   }
 }
 
-export default WhitlistTable
+WhitelistTable.propTypes = {
+  getAddressesFromCountry: PropTypes.func,
+  PermitFactory: PropTypes.object,
+  dataKeyAddresses: PropTypes.object
+}
+
+export default WhitelistTable
