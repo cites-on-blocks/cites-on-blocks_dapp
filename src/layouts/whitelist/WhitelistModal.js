@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { Box, Headline, Columns, Label } from 'grommet'
+import { Box, Headline, Label } from 'grommet'
+import PropTypes from 'prop-types'
+import local from '../../localization/localizedStrings'
 import Table from 'grommet/components/Table'
 import TableRow from 'grommet/components/TableRow'
-import local from '../../localization/localizedStrings'
 
 import '../../css/whitelist.css'
 
@@ -17,9 +18,9 @@ const DATA = [
   }
 ]
 
-class WhitlistModal extends Component {
-  constructor() {
-    super()
+class WhitelistModal extends Component {
+  constructor(props) {
+    super(props)
     this.onMore = this.onMore.bind(this)
     this.state = { data: DATA }
   }
@@ -39,6 +40,15 @@ class WhitlistModal extends Component {
 
   render() {
     const { data } = this.state
+    console.log(this.props.dataKeyAddresses)
+    console.log(this.props.PermitFactory)
+    if (
+      this.props.dataKeyAddresses in this.props.PermitFactory.authorityMapping
+    ) {
+      console.log(
+        this.props.PermitFactory.authorityMapping[this.dataKeyAddresses].value
+      )
+    }
 
     let rows = data.map(data => {
       return (
@@ -52,30 +62,20 @@ class WhitlistModal extends Component {
 
     return (
       <main>
-        <Box
-          align="center"
-          wrap={true}
-          basis="xlarge"
-          pad="large"
-          margin="none"
-          full={true}>
+        <Box align="center" full={true} pad="small">
           <Headline className="headline" align="center" tag="h2">
             Senegal
           </Headline>
-          <Columns justify="center" pad="medium" margin="small">
-            <Box align="left" pad="none" margin="none">
+          <Box direction="row" full={true} pad="small">
+            <Box full={true} pad="small" align="center">
               <Label>{local.whitelist.table.language}: deutsch</Label>
-            </Box>
-            <Box align="left" pad="none" margin="none">
-              <Label>{local.whitelist.table.iso}: SE</Label>
-            </Box>
-            <Box align="left" pad="none" margin="none">
               <Label>{local.whitelist.table.entry}: 12/02/1974</Label>
             </Box>
-            <Box align="left" pad="none" margin="none">
+            <Box full={true} pad="small" align="center">
+              <Label>{local.whitelist.table.iso}: SE</Label>
               <Label>{local.whitelist.table.joining}: 13/02/1975</Label>
             </Box>
-          </Columns>
+          </Box>
           <Table
             responsive={false}
             onMore={data.length < 20 ? this.onMore : undefined}>
@@ -94,4 +94,10 @@ class WhitlistModal extends Component {
   }
 }
 
-export default WhitlistModal
+WhitelistModal.propTypes = {
+  getAddressesFromCountry: PropTypes.func,
+  PermitFactory: PropTypes.object,
+  dataKeyAddresses: PropTypes.func
+}
+
+export default WhitelistModal
