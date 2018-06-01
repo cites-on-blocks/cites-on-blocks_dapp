@@ -8,6 +8,7 @@ import { DrizzleProvider } from 'drizzle-react'
 import App from './components/App/App'
 import HomeContainer from './layouts/home/HomeContainer'
 import WhitelistContainer from './layouts/whitelist/WhitelistContainer'
+import WhitelistAddContainer from './layouts/whitelistAdd/WhitelistAddContainer'
 import AnalyticsContainer from './layouts/analytics/AnalyticsContainer'
 import HelpContainer from './layouts/help/HelpContainer'
 import ImportExportContainer from './layouts/importExport/ImportExportContainer'
@@ -36,6 +37,9 @@ ReactDOM.render(
         </Route>
         <Route path="/whitelist" component={App}>
           <IndexRoute component={WhitelistContainer} />
+        </Route>
+        <Route path="/whitelist/add" component={App}>
+          <IndexRoute component={WhitelistAddContainer} />
         </Route>
         <Route path="/analytics" component={App}>
           <IndexRoute component={AnalyticsContainer} />

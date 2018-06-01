@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Header, Image, Menu, Title } from 'grommet'
+import { Link } from 'react-router'
+import { Header, Image, Menu, Title, Anchor } from 'grommet'
 import logo from '../../imgs/croco.png'
 import s from '../../localization/localizedStrings'
 
@@ -20,11 +21,18 @@ class CitesHeader extends Component {
           <Image src={logo} alt="logo" size="thumb" />
         </Title>
         <Menu direction={'row'}>
-          <a href="/whitelist">{s.whitelist}</a>
-          <a href="/permits">{s.permits}</a>
-          <a href="/analytics">{s.analytics}</a>
-          <a href="/import-export">{s.importExport}</a>
-          <a href="/help">{s.help}</a>
+          <Menu
+            responsive={true}
+            label={s.whitelist}
+            inline={false}
+            direction={'column'}>
+            <Anchor path="/whitelist">Whitelist</Anchor>
+            <Anchor path="/whitelist/add">Add Addresses</Anchor>
+          </Menu>
+          <Link tp="/permits">{s.permits}</Link>
+          <Link to="/analytics">{s.analytics}</Link>
+          <Link to="/import-export">{s.importExport}</Link>
+          <Link to="/help">{s.help}</Link>
         </Menu>
       </Header>
     )
