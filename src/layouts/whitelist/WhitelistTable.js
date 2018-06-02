@@ -106,7 +106,7 @@ class WhitelistTable extends Component {
         <TableRow onClick={this.onClick.bind(this, i)}>
           <td>{data.country}</td>
           <td>
-            <FlagIcon code={data.iso.toLowerCase()} size="34" />
+            <FlagIcon code={data.iso.toLowerCase()} size="lg" />
           </td>
           <td>{data.iso}</td>
           <td>{data.region}</td>
@@ -142,7 +142,7 @@ class WhitelistTable extends Component {
 WhitelistTable.propTypes = {
   getAddressesFromCountry: PropTypes.func,
   PermitFactory: PropTypes.object,
-  dataKeyAddresses: PropTypes.object
+  dataKeyAddresses: PropTypes.string
 }
 
 export default WhitelistTable

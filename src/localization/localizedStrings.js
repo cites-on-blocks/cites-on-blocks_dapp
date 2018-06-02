@@ -31,7 +31,8 @@ let local = new LocalizedStrings({
       first: 'What is the blockchain?',
       second: 'What is cites?',
       third: 'How can I contact cites?',
-      fourth: 'This is Nr. 4'
+      fourth: 'This is Nr. 4',
+      contact: 'Contact us'
     },
     footer: {
       openingDays: 'Monday to Saturday',
@@ -70,7 +71,8 @@ let local = new LocalizedStrings({
       first: 'Was ist die Blockchain>',
       second: 'Was ist Cites?',
       third: 'Wie kann ich cites kontaktieren?',
-      fourth: 'Frage Nr. 4'
+      fourth: 'Frage Nr. 4',
+      contact: 'Kontaktieren Sie uns'
     },
     footer: {
       openingDays: 'Montag bis Samstag',

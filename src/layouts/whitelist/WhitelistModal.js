@@ -97,7 +97,7 @@ class WhitelistModal extends Component {
 WhitelistModal.propTypes = {
   getAddressesFromCountry: PropTypes.func,
   PermitFactory: PropTypes.object,
-  dataKeyAddresses: PropTypes.func
+  dataKeyAddresses: PropTypes.string
 }
 
 export default WhitelistModal

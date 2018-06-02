@@ -22,7 +22,7 @@ class CitesHeader extends Component {
           <Image src={logo} alt="logo" size="thumb" />
         </Title>
         <Menu direction={'row'}>
-          <Link to="/whitelist">{local.whitelist}</Link>
+          <Link to="/whitelist">{local.header.whitelist}</Link>
           <Menu
             responsive={true}
             label={local.permits}
@@ -32,9 +32,9 @@ class CitesHeader extends Component {
             <Anchor path="/permits/create">Create Permit</Anchor>
             <Anchor path="/permits/process">Process Permit</Anchor>
           </Menu>
-          <Link to="/analytics">{local.analytics}</Link>
-          <Link to="/import-export">{local.importExport}</Link>
-          <Link to="/help">{local.help}</Link>
+          <Link to="/analytics">{local.header.analytics}</Link>
+          <Link to="/import-export">{local.header.importExport}</Link>
+          <Link to="/help">{local.header.help}</Link>
         </Menu>
       </Header>
     )
