@@ -15,8 +15,27 @@ import { utils } from 'web3'
 import AddressInputs from '../../components/AddressInputs'
 import SpeciesInputs from '../../components/SpeciesInputs'
 import PendingTxModal from '../../components/PendingTxModal'
-import * as options from '../../util/options'
 import * as permitUtils from '../../util/permitUtils'
+
+// NOTE: to be replaced with proper country list from whitelist ui branch
+const COUNTRIES = [
+  {
+    value: 'DE',
+    label: 'DE'
+  },
+  {
+    value: 'FR',
+    label: 'FR'
+  },
+  {
+    value: 'EN',
+    label: 'EN'
+  },
+  {
+    value: 'US',
+    label: 'US'
+  }
+]
 
 class PermitCreate extends Component {
   constructor(props, context) {
@@ -241,7 +260,7 @@ class PermitCreate extends Component {
           <FormField label={'Country of export'}>
             <Select
               value={permit.exportCountry}
-              options={options.countries}
+              options={COUNTRIES}
               onChange={({ option }) => {
                 this.handlePermitChange('exportCountry', option.value)
               }}
@@ -250,7 +269,7 @@ class PermitCreate extends Component {
           <FormField label={'Country of import'}>
             <Select
               value={permit.importCountry}
-              options={options.countries}
+              options={COUNTRIES}
               onChange={({ option }) => {
                 this.handlePermitChange('importCountry', option.value)
               }}
