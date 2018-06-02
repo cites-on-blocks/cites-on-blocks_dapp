@@ -8,19 +8,21 @@ import {
   Button,
   AddIcon
 } from 'grommet'
-//import { utils } from 'web3'
+import { utils } from 'web3'
 import PropTypes from 'prop-types'
 
 import * as options from '../../util/options'
 
 class WhitelistAdd extends Component {
-  constructor(props) {
+  constructor(props, context) {
     super(props)
     this.state = {
       addressCount: 1,
       addressFieldArray: [0],
-      addressesToAdd: []
+      addressesToAdd: [],
+      country: ''
     }
+    this.contracts = context.drizzle.contracts
   }
   addAddressField() {
     console.log(this.state.addressCount)
@@ -43,12 +45,26 @@ class WhitelistAdd extends Component {
 
   addAddresses() {
     console.log(this.state.addressesToAdd)
+    console.log(this.state.country)
+    if (this.state.addressesToAdd.every(ad => utils.isAddress(ad))) {
+      this.stackId = this.contracts.Whitelist.methods.addAddresses.cacheSend(
+        this.state.addressesToAdd,
+        utils.asciiToHex(this.state.country),
+        { from: this.props.accounts[0] }
+      )
+    }
+  }
+
+  setCountry(addressCountry) {
+    var address = this.state
+    address.country = addressCountry.value
+    this.setState({ address })
   }
 
   render() {
     var addressFields = this.state.addressFieldArray.map(field => {
       return (
-        <FormField label={'Address' + field} key={field}>
+        <FormField label={'Address'} key={field}>
           <TextInput
             onBlur={event => {
               this.addAddressToArray(event.target.value, field)
@@ -63,7 +79,13 @@ class WhitelistAdd extends Component {
           Whitelisting
         </Heading>
         <FormField label={'Country'}>
-          <Select options={options.countries} />
+          <Select
+            options={options.countries}
+            value={this.state.country}
+            onChange={option => {
+              this.setCountry(option.value)
+            }}
+          />
         </FormField>
         {addressFields}
         <Button
@@ -82,9 +104,15 @@ class WhitelistAdd extends Component {
 }
 
 WhitelistAdd.propTypes = {
+  accounts: PropTypes.object,
   addressCount: PropTypes.number,
   addressFieldArray: PropTypes.array,
-  addressesToAdd: PropTypes.array
+  addressesToAdd: PropTypes.array,
+  country: PropTypes.string
+}
+
+WhitelistAdd.contextTypes = {
+  drizzle: PropTypes.object
 }
 
 export default WhitelistAdd
