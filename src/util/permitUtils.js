@@ -11,6 +11,14 @@ export const DEFAULT_SPECIMEN = {
   reExportHash: ''
 }
 
+export const DEFAULT_PERMIT = {
+  exportCountry: '',
+  importCountry: '',
+  permitType: PERMIT_TYPES[0],
+  importer: ['', '', ''],
+  exporter: ['', '', '']
+}
+
 export function convertSpecimensToArrays(specimens) {
   return specimens.reduce(
     (result, specimen) => {

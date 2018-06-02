@@ -8,13 +8,13 @@ import {
   Select,
   FormField,
   AddIcon,
-  DocumentUploadIcon,
-  Toast
+  DocumentUploadIcon
 } from 'grommet'
 import { utils } from 'web3'
 
 import AddressInputs from '../../components/AddressInputs'
 import SpeciesInputs from '../../components/SpeciesInputs'
+import PendingTxModal from '../../components/PendingTxModal'
 import * as options from '../../util/options'
 import * as permitUtils from '../../util/permitUtils'
 
@@ -23,20 +23,13 @@ class PermitCreate extends Component {
     super(props)
     this.state = {
       permitForm: permitUtils.PERMIT_FORMS[0],
-      permit: {
-        exportCountry: '',
-        importCountry: '',
-        permitType: permitUtils.PERMIT_TYPES[0],
-        importer: ['', '', ''],
-        exporter: ['', '', '']
-      },
+      permit: permitUtils.DEFAULT_PERMIT,
       specimens: [permitUtils.DEFAULT_SPECIMEN],
       // authority information
       authorityCountry: '',
-      // tx information toast
-      toast: {
+      // tx information modal
+      modal: {
         show: false,
-        status: '',
         text: ''
       },
       // tx status
@@ -77,6 +70,13 @@ class PermitCreate extends Component {
         this.changeTxState(status)
       }
     }
+  }
+
+  setAuthToCountryKey() {
+    // return key for data and cache result in PermitFatory prop
+    this.authToCountryKey = this.contracts.PermitFactory.methods.authorityToCountry.cacheCall(
+      this.props.accounts[0]
+    )
   }
 
   /**
@@ -131,13 +131,6 @@ class PermitCreate extends Component {
    * DRIZZLE HANDLERS
    */
 
-  setAuthToCountryKey() {
-    // return key for data and cache result in PermitFatory prop
-    this.authToCountryKey = this.contracts.PermitFactory.methods.authorityToCountry.cacheCall(
-      this.props.accounts[0]
-    )
-  }
-
   createPermit() {
     const { permit, specimens } = this.state
     const specimensAsArrays = permitUtils.convertSpecimensToArrays(specimens)
@@ -161,50 +154,65 @@ class PermitCreate extends Component {
     if (newTxState === 'pending') {
       this.setState({
         txStatus: 'pending',
-        toast: {
+        modal: {
           show: true,
-          status: 'unknown',
-          text: 'Permit creation is pending...'
+          text: 'Permit creation pending...'
         }
       })
     } else if (newTxState === 'success') {
       this.stackId = ''
       this.setState({
         txStatus: 'success',
-        toast: {
+        modal: {
           show: true,
-          status: 'ok',
-          text: 'Permit creation was successful!'
+          text: 'Permit creation successful!'
         }
       })
     } else {
       this.stackId = ''
       this.setState({
         txStatus: 'failed',
-        toast: {
+        modal: {
           show: true,
-          status: 'critical',
-          text: 'Permit creation failed.'
+          text: 'Permit creation has failed.'
         }
       })
     }
+  }
+
+  clearForm() {
+    this.setState({
+      permit: permitUtils.DEFAULT_PERMIT,
+      specimens: [permitUtils.DEFAULT_SPECIMEN],
+      txStatus: '',
+      modal: {
+        show: false,
+        text: ''
+      }
+    })
   }
 
   render() {
     const { permitForm, permit, specimens } = this.state
     return (
       <Box>
-        {this.state.toast.show && (
-          <Toast
-            status={this.state.toast.status}
-            onClose={() =>
-              this.setState({
-                txStatus: '',
-                toast: { show: false }
-              })
-            }>
-            {this.state.toast.text}
-          </Toast>
+        {this.state.modal.show && (
+          <PendingTxModal
+            txStatus={this.state.txStatus}
+            text={this.state.modal.text}
+            onSuccessActions={
+              <Columns justify={'between'} size={'small'}>
+                <Button label={'New permit'} onClick={() => this.clearForm()} />
+                <Button label={'Go to permit'} path={'/permits'} />
+              </Columns>
+            }
+            onFailActions={
+              <Columns justify={'between'} size={'small'}>
+                <Button label={'New permit'} onClick={() => this.clearForm()} />
+                <Button label={'Try again'} onClick={() => this.addSpecies()} />
+              </Columns>
+            }
+          />
         )}
         <Heading align={'center'} margin={'medium'}>
           CITES Permit
