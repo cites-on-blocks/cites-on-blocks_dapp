@@ -3,13 +3,16 @@ import PropTypes from 'prop-types'
 import { Box, Table, TableRow, Timestamp } from 'grommet'
 import Web3, { utils } from 'web3'
 
+import PermitDetailsModal from '../../components/PermitDetailsModal'
 import { trimHash } from '../../util/stringUtils'
+import { parseRawPermit, parseRawSpecimen } from '../../util/permitUtils'
 
 class Permits extends Component {
   constructor(props, context) {
     super(props)
     this.state = {
-      events: []
+      events: [],
+      selectedPermit: ''
     }
     this.contracts = context.drizzle.contracts
     // NOTE: We have to iniate a new web3 instance for retrieving event via `getPastEvents`.
@@ -26,12 +29,6 @@ class Permits extends Component {
 
   getEvents(from = 0) {
     const options = {
-      // TODO use filter
-      // filter: {
-      //   permitHash: '',
-      //   exportCountry: '',
-      //   importCountry: ''
-      // },
       fromBlock: from
     }
     Promise.all([
@@ -70,6 +67,7 @@ class Permits extends Component {
       .then(blocks => {
         const eventsWithTime = events.map((e, i) => ({
           ...e,
+          // convert seconds into miliseconds
           timestamp: blocks[i].timestamp * 1000
         }))
         this.setState({
@@ -80,9 +78,50 @@ class Permits extends Component {
       .catch(error => console.log(error))
   }
 
+  handleSelect(event) {
+    let selectedPermit
+    this.contracts.PermitFactory.methods
+      .getPermit(event.permitHash)
+      .call()
+      .then(rawPermit => parseRawPermit(rawPermit))
+      .then(parsedPermit => {
+        selectedPermit = parsedPermit
+        const specimenPromises = parsedPermit.specimenHashes.map(s =>
+          this.contracts.PermitFactory.methods.specimens(s).call()
+        )
+        return Promise.all(specimenPromises)
+      })
+      .then(rawSpecimens => {
+        const parsedSpecimens = rawSpecimens.map(s => parseRawSpecimen(s))
+        this.setState({
+          selectedPermit: {
+            ...selectedPermit,
+            specimens: parsedSpecimens,
+            status: event.status,
+            timestamp: event.timestamp,
+            permitHash: event.permitHash
+          }
+        })
+        return
+      })
+      .catch(error => console.log(error))
+  }
+
+  onDeselect() {
+    this.setState({
+      selectedPermit: ''
+    })
+  }
+
   render() {
     return (
       <Box>
+        {this.state.selectedPermit && (
+          <PermitDetailsModal
+            permit={this.state.selectedPermit}
+            onClose={() => this.onDeselect()}
+          />
+        )}
         <Table>
           <thead>
             <tr>
@@ -95,7 +134,7 @@ class Permits extends Component {
           </thead>
           <tbody>
             {this.state.events.map((event, i) => (
-              <TableRow key={i}>
+              <TableRow key={i} onClick={() => this.handleSelect(event)}>
                 <td>{trimHash(event.permitHash)}</td>
                 <td>{event.exportCountry}</td>
                 <td>{event.importCountry}</td>
@@ -113,7 +152,8 @@ class Permits extends Component {
 }
 
 Permits.propTypes = {
-  accounts: PropTypes.object
+  accounts: PropTypes.object,
+  PermitFactory: PropTypes.object
 }
 
 Permits.contextTypes = {
