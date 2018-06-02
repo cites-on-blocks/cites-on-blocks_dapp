@@ -91,11 +91,65 @@ class PermitCreate extends Component {
     }
   }
 
+  /**
+   * DRIZZLE HANDLERS
+   */
+
   setAuthToCountryKey() {
     // return key for data and cache result in PermitFatory prop
     this.authToCountryKey = this.contracts.PermitFactory.methods.authorityToCountry.cacheCall(
       this.props.accounts[0]
     )
+  }
+
+  createPermit() {
+    const { permit, specimens } = this.state
+    const specimensAsArrays = permitUtils.convertSpecimensToArrays(specimens)
+    // stack id used for monitoring transaction
+    this.stackId = this.contracts.PermitFactory.methods.createPermit.cacheSend(
+      utils.asciiToHex(permit.exportCountry),
+      utils.asciiToHex(permit.importCountry),
+      permitUtils.PERMIT_TYPES.indexOf(permit.permitType),
+      permit.importer.map(address => utils.asciiToHex(address)),
+      permit.exporter.map(address => utils.asciiToHex(address)),
+      specimensAsArrays.quantities,
+      specimensAsArrays.scientificNames.map(e => utils.asciiToHex(e)),
+      specimensAsArrays.commonNames.map(e => utils.asciiToHex(e)),
+      specimensAsArrays.descriptions.map(e => utils.asciiToHex(e)),
+      specimensAsArrays.originHashes.map(e => utils.asciiToHex(e)),
+      specimensAsArrays.reExportHashes.map(e => utils.asciiToHex(e)),
+      { from: this.props.accounts[0] }
+    )
+  }
+
+  changeTxState(newTxState) {
+    if (newTxState === 'pending') {
+      this.setState({
+        txStatus: 'pending',
+        modal: {
+          show: true,
+          text: 'Permit creation pending...'
+        }
+      })
+    } else if (newTxState === 'success') {
+      this.stackId = ''
+      this.setState({
+        txStatus: 'success',
+        modal: {
+          show: true,
+          text: 'Permit creation successful!'
+        }
+      })
+    } else {
+      this.stackId = ''
+      this.setState({
+        txStatus: 'failed',
+        modal: {
+          show: true,
+          text: 'Permit creation has failed.'
+        }
+      })
+    }
   }
 
   /**
@@ -144,59 +198,6 @@ class PermitCreate extends Component {
     const { specimens } = this.state
     specimens.splice(index, 1)
     this.setState({ specimens })
-  }
-
-  /**
-   * DRIZZLE HANDLERS
-   */
-
-  createPermit() {
-    const { permit, specimens } = this.state
-    const specimensAsArrays = permitUtils.convertSpecimensToArrays(specimens)
-    this.stackId = this.contracts.PermitFactory.methods.createPermit.cacheSend(
-      utils.asciiToHex(permit.exportCountry),
-      utils.asciiToHex(permit.importCountry),
-      permitUtils.PERMIT_TYPES.indexOf(permit.permitType),
-      permit.importer.map(address => utils.asciiToHex(address)),
-      permit.exporter.map(address => utils.asciiToHex(address)),
-      specimensAsArrays.quantities,
-      specimensAsArrays.scientificNames.map(e => utils.asciiToHex(e)),
-      specimensAsArrays.commonNames.map(e => utils.asciiToHex(e)),
-      specimensAsArrays.descriptions.map(e => utils.asciiToHex(e)),
-      specimensAsArrays.originHashes.map(e => utils.asciiToHex(e)),
-      specimensAsArrays.reExportHashes.map(e => utils.asciiToHex(e)),
-      { from: this.props.accounts[0] }
-    )
-  }
-
-  changeTxState(newTxState) {
-    if (newTxState === 'pending') {
-      this.setState({
-        txStatus: 'pending',
-        modal: {
-          show: true,
-          text: 'Permit creation pending...'
-        }
-      })
-    } else if (newTxState === 'success') {
-      this.stackId = ''
-      this.setState({
-        txStatus: 'success',
-        modal: {
-          show: true,
-          text: 'Permit creation successful!'
-        }
-      })
-    } else {
-      this.stackId = ''
-      this.setState({
-        txStatus: 'failed',
-        modal: {
-          show: true,
-          text: 'Permit creation has failed.'
-        }
-      })
-    }
   }
 
   clearForm() {
