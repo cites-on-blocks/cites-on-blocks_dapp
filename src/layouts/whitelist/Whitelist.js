@@ -17,9 +17,9 @@ class Whitelist extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.dataKeyAddresses in this.props.PermitFactory.authorityMapping) {
+    if (this.dataKeyAddresses in this.props.PermitFactory.getCountry) {
       console.log(
-        this.props.PermitFactory.authorityMapping[this.dataKeyAddresses].value
+        this.props.PermitFactory.getCountry[this.dataKeyAddresses].value
       )
     }
     if (this.props.accounts[0] !== prevProps.accounts[0]) {
@@ -36,9 +36,8 @@ class Whitelist extends Component {
   }
 
   getAddressesFromCountry(countryCode) {
-    const dataKeyAddresses = this.contracts.PermitFactory.methods.authorityMapping.cacheCall(
-      utils.asciiToHex(countryCode),
-      0
+    const dataKeyAddresses = this.contracts.PermitFactory.methods.getCountry.cacheCall(
+      utils.asciiToHex(countryCode)
     )
     this.setState({ dataKeyAddresses })
   }
@@ -57,7 +56,6 @@ class Whitelist extends Component {
   }
 
   render() {
-    console.log(this.props.PermitFactory)
     return (
       <main>
         <Box pad={{ horizontal: 'large', vertical: 'large' }}>

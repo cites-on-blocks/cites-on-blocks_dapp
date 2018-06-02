@@ -10,18 +10,18 @@ import WhitelistModal from './WhitelistModal'
 
 const DATA = [
   {
-    country: 'Senegal',
-    language: 'SN',
-    iso: 'SN',
-    region: 'Africa',
+    country: 'France',
+    language: 'FR',
+    iso: 'FR',
+    region: 'Europe',
     entry: '12/02/1974',
     join: '01/07/1975'
   },
   {
-    country: 'Jordan',
-    language: 'JO',
-    iso: 'JO',
-    region: 'Asia',
+    country: 'Togo',
+    language: 'TG',
+    iso: 'TG',
+    region: 'Africa',
     entry: '14/01/1974',
     join: '01/07/1975'
   },
@@ -48,37 +48,43 @@ const DATA = [
     region: 'Europe',
     entry: '20/08/1974',
     join: '01/07/1975'
+  },
+  {
+    country: 'Russian Federation',
+    language: 'RU',
+    iso: 'RU',
+    region: 'Europe',
+    entry: '20/08/1974',
+    join: '01/07/1975'
+  },
+  {
+    country: 'Germany',
+    language: 'DE',
+    iso: 'DE',
+    region: 'Europe',
+    entry: '20/08/1974',
+    join: '01/07/1975'
   }
 ]
 
 class WhitelistTable extends Component {
   constructor(props) {
     super(props)
-    this.onMore = this.onMore.bind(this)
     this.state = {
       data: DATA,
       layerActive: false,
       countryCode: '',
-      addresses: []
+      addresses: [],
+      countryToModal: null
     }
   }
 
   onClick(id) {
     this.setState({ layerActive: true })
     this.props.getAddressesFromCountry(this.state.data[id].iso)
-  }
-
-  onMore() {
-    let data = this.state.data.slice(0)
-    if (data.length < 20) {
-      data = data.concat(
-        DATA.map((d, i) => ({
-          ...d,
-          uid: data.length + i + 1
-        }))
-      )
-    }
-    this.setState({ data })
+    this.setState({
+      countryToModal: this.state.data[id]
+    })
   }
 
   render() {
@@ -94,6 +100,7 @@ class WhitelistTable extends Component {
           })
         }}>
         <WhitelistModal
+          country={this.state.countryToModal}
           PermitFactory={this.props.PermitFactory}
           isOwner={this.state.isOwner}
           dataKeyAddresses={this.props.dataKeyAddresses}
@@ -103,7 +110,7 @@ class WhitelistTable extends Component {
 
     let rows = data.map((data, i) => {
       return (
-        <TableRow onClick={this.onClick.bind(this, i)}>
+        <TableRow onClick={this.onClick.bind(this, i)} key={i}>
           <td>{data.country}</td>
           <td>
             <FlagIcon code={data.iso.toLowerCase()} size="lg" />
@@ -119,9 +126,7 @@ class WhitelistTable extends Component {
     return (
       <main>
         {layer}
-        <Table
-          responsive={false}
-          onMore={data.length < 20 ? this.onMore : undefined}>
+        <Table responsive={false}>
           <thead>
             <tr>
               <th>{local.whitelist.table.country}</th>
@@ -142,6 +147,7 @@ class WhitelistTable extends Component {
 WhitelistTable.propTypes = {
   getAddressesFromCountry: PropTypes.func,
   PermitFactory: PropTypes.object,
+  countryToModal: PropTypes.object,
   dataKeyAddresses: PropTypes.string
 }
 
