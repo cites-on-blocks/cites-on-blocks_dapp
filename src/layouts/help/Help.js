@@ -1,18 +1,29 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-import { Box, Heading, AccordionPanel, Accordion, Paragraph } from 'grommet'
+import {
+  Box,
+  Heading,
+  AccordionPanel,
+  Accordion,
+  Paragraph,
+  TextInput,
+  FormField,
+  Form,
+  Footer,
+  Button
+} from 'grommet'
 import local from '../../localization/localizedStrings'
 
 class Help extends Component {
   render() {
     return (
       <main>
-        <Box pad={{ horizontal: 'large', vertical: 'large' }}>
+        <Box full={true} pad={{ horizontal: 'large' }}>
           <Heading align="center" tag="h2">
             {local.help.headline}
           </Heading>
-          <Heading align="left" tag="h3">
+          <Heading align="start" tag="h3">
             {local.help.accordionHeadline}
           </Heading>
           <Accordion>
@@ -49,6 +60,23 @@ class Help extends Component {
               </Paragraph>
             </AccordionPanel>
           </Accordion>
+          <Heading align="left" tag="h3">
+            {local.help.contact}
+          </Heading>
+          <Form>
+            <FormField label="Name">
+              <TextInput />
+            </FormField>
+            <FormField label="E-Mail">
+              <TextInput />
+            </FormField>
+            <FormField label="Text">
+              <TextInput />
+            </FormField>
+            <Footer pad={{ vertical: 'medium' }}>
+              <Button label="Submit" type="submit" primary={true} />
+            </Footer>
+          </Form>
         </Box>
       </main>
     )
