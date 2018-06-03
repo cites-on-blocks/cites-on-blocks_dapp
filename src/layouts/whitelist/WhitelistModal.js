@@ -5,16 +5,20 @@ import local from '../../localization/localizedStrings'
 import Table from 'grommet/components/Table'
 import TableRow from 'grommet/components/TableRow'
 import FlagIconFactory from 'react-flag-icon-css'
+import { utils } from 'web3'
 import '../../css/whitelist.css'
 
 var adresses = []
 
 class WhitelistModal extends Component {
-  constructor(props) {
+  constructor(props, context) {
     super(props)
     this.state = {
       adresses: []
     }
+    console.warn('Context: ' + context)
+    console.warn('Drizzle: ' + context.drizzle)
+    this.contracts = context.drizzle.contracts
   }
 
   componentDidUpdate() {
@@ -22,6 +26,12 @@ class WhitelistModal extends Component {
       adresses = this.props.PermitFactory.getCountry[
         this.props.dataKeyAddresses
       ].value
+    }
+  }
+
+  removeAddressFromWhitelist(address) {
+    if (utils.isAddress(address)) {
+      console.warn('Is address')
     }
   }
 
@@ -36,6 +46,9 @@ class WhitelistModal extends Component {
             <td>{index + 1}</td>
             <td>{data}</td>
             <td />
+            <td onClick={this.removeAddressFromWhitelist.bind(this, data)}>
+              <a>Remove</a>
+            </td>
           </TableRow>
         )
       })
@@ -77,6 +90,7 @@ class WhitelistModal extends Component {
                 <th>{local.whitelist.layer.number}</th>
                 <th>{local.whitelist.layer.publicID}</th>
                 <th>{local.whitelist.layer.entry}</th>
+                <th />
               </tr>
             </thead>
             <tbody>{rows}</tbody>
@@ -91,7 +105,12 @@ WhitelistModal.propTypes = {
   getCountry: PropTypes.func,
   PermitFactory: PropTypes.object,
   country: PropTypes.object,
+  contracts: PropTypes.object,
   dataKeyAddresses: PropTypes.string
+}
+
+WhitelistModal.contextTypes = {
+  drizzle: PropTypes.object
 }
 
 export default WhitelistModal

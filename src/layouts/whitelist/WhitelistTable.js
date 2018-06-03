@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Table from 'grommet/components/Table'
-import TableRow from 'grommet/components/TableRow'
-import Layer from 'grommet/components/Layer'
+import { Layer, Table, TableRow } from 'grommet'
 import local from '../../localization/localizedStrings'
 import FlagIconFactory from 'react-flag-icon-css'
 
@@ -79,12 +77,17 @@ class WhitelistTable extends Component {
     }
   }
 
-  onClick(id) {
+  showDetails(id) {
     this.setState({ layerActive: true })
     this.props.getAddressesFromCountry(this.state.data[id].iso)
     this.setState({
       countryToModal: this.state.data[id]
     })
+  }
+
+  removeCountryFromWhitelist(id) {
+    console.log('##### LOL ##### LOL ######')
+    console.log(id)
   }
 
   render() {
@@ -110,15 +113,20 @@ class WhitelistTable extends Component {
 
     let rows = data.map((data, i) => {
       return (
-        <TableRow onClick={this.onClick.bind(this, i)} key={i}>
-          <td>{data.country}</td>
-          <td>
+        <TableRow key={i}>
+          <td onClick={this.showDetails.bind(this, i)}>{data.country}</td>
+          <td onClick={this.showDetails.bind(this, i)}>
             <FlagIcon code={data.iso.toLowerCase()} size="lg" />
           </td>
-          <td>{data.iso}</td>
-          <td>{data.region}</td>
-          <td>{data.entry}</td>
-          <td>{data.join}</td>
+          <td onClick={this.showDetails.bind(this, i)}>{data.iso}</td>
+          <td onClick={this.showDetails.bind(this, i)}>{data.region}</td>
+          <td onClick={this.showDetails.bind(this, i)}>{data.entry}</td>
+          <td onClick={this.showDetails.bind(this, i)}>{data.join}</td>
+          {!this.props.isOwner && (
+            <td onClick={this.removeCountryFromWhitelist.bind(this, i)}>
+              <a>Remove</a>
+            </td>
+          )}
         </TableRow>
       )
     })
@@ -135,6 +143,7 @@ class WhitelistTable extends Component {
               <th>{local.whitelist.table.region}</th>
               <th>{local.whitelist.table.entry}</th>
               <th>{local.whitelist.table.joining}</th>
+              {!this.props.isOwner && <th />}
             </tr>
           </thead>
           <tbody>{rows}</tbody>
@@ -146,6 +155,7 @@ class WhitelistTable extends Component {
 
 WhitelistTable.propTypes = {
   getAddressesFromCountry: PropTypes.func,
+  isOwner: PropTypes.bool,
   PermitFactory: PropTypes.object,
   countryToModal: PropTypes.object,
   dataKeyAddresses: PropTypes.string
