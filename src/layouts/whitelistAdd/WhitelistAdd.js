@@ -5,13 +5,16 @@ import {
   FormField,
   TextInput,
   Select,
+  Columns,
   Button,
-  AddIcon
+  AddIcon,
+  DocumentUploadIcon
 } from 'grommet'
 import { utils } from 'web3'
 import PropTypes from 'prop-types'
 
 import * as options from '../../util/options'
+import PendingTxModal from '../../components/PendingTxModal'
 
 class WhitelistAdd extends Component {
   constructor(props, context) {
@@ -20,7 +23,12 @@ class WhitelistAdd extends Component {
       addressCount: 1,
       addressFieldArray: [0],
       addressesToAdd: [],
-      country: ''
+      country: '',
+      modal: {
+        show: false,
+        text: ''
+      },
+      txStatus: ''
     }
     this.contracts = context.drizzle.contracts
   }
@@ -61,6 +69,57 @@ class WhitelistAdd extends Component {
     this.setState({ address })
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.transactionStack[this.stackId]) {
+      const txHash = this.props.transactionStack[this.stackId]
+      const { status } = this.props.transactions[txHash]
+      // change tx related state is status changed
+      if (prevState.txStatus !== status) {
+        this.changeTxState(status)
+      }
+    }
+  }
+
+  changeTxState(newTxState) {
+    if (newTxState === 'pending') {
+      this.setState({
+        txStatus: 'pending',
+        modal: {
+          show: true,
+          text: 'Adding addresses pending...'
+        }
+      })
+    } else if (newTxState === 'success') {
+      this.stackId = ''
+      this.setState({
+        txStatus: 'success',
+        modal: {
+          show: true,
+          text: 'Successfully added addresses!'
+        }
+      })
+    } else {
+      this.stackId = ''
+      this.setState({
+        txStatus: 'failed',
+        modal: {
+          show: true,
+          text: 'Adding addresses has failed.'
+        }
+      })
+    }
+  }
+
+  clearForm() {
+    this.setState({
+      txStatus: '',
+      modal: {
+        show: false,
+        text: ''
+      }
+    })
+  }
+
   render() {
     var addressFields = this.state.addressFieldArray.map(field => {
       return (
@@ -75,6 +134,33 @@ class WhitelistAdd extends Component {
     })
     return (
       <Box>
+        {this.state.modal.show && (
+          <PendingTxModal
+            txStatus={this.state.txStatus}
+            text={this.state.modal.text}
+            onSuccessActions={
+              <Columns justify={'between'} size={'small'}>
+                <Button
+                  label={'Add more addresses'}
+                  onClick={() => this.clearForm()}
+                />
+                <Button label={'Go to whitelist'} path={'/whitelist'} />
+              </Columns>
+            }
+            onFailActions={
+              <Columns justify={'between'} size={'small'}>
+                <Button
+                  label={'Add new addresses'}
+                  onClick={() => this.clearForm()}
+                />
+                <Button
+                  label={'Try again'}
+                  onClick={() => this.addAddresses()}
+                />
+              </Columns>
+            }
+          />
+        )}
         <Heading align={'center'} margin={'medium'}>
           Whitelisting
         </Heading>
@@ -94,8 +180,9 @@ class WhitelistAdd extends Component {
           onClick={() => this.addAddressField()}
         />
         <Button
+          primary={true}
           label={'Add Addresses to Whitelist'}
-          icon={<AddIcon />}
+          icon={<DocumentUploadIcon />}
           onClick={() => this.addAddresses()}
         />
       </Box>
@@ -105,10 +192,10 @@ class WhitelistAdd extends Component {
 
 WhitelistAdd.propTypes = {
   accounts: PropTypes.object,
-  addressCount: PropTypes.number,
-  addressFieldArray: PropTypes.array,
-  addressesToAdd: PropTypes.array,
-  country: PropTypes.string
+  drizzleStatus: PropTypes.object,
+  contracts: PropTypes.object,
+  transactionStack: PropTypes.array,
+  transactions: PropTypes.object
 }
 
 WhitelistAdd.contextTypes = {
