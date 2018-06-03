@@ -5,7 +5,7 @@ import { Article, Layer, Box, Columns, Title, Timestamp } from 'grommet'
 import { trimHash } from '../../util/stringUtils'
 
 /**
- * Component for form elements of addresses of exporter / importer
+ * Component for detailed permit information
  */
 class PermitDetailsModal extends Component {
   render() {
