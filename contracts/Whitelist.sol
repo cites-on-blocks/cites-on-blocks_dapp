@@ -59,6 +59,18 @@ contract Whitelist is Ownable {
   }
 
   /**
+   * Return the list of addresses related to a given country.
+   * @param _country country code to get the addresses for
+   * @return the list of addresses linked to the country
+   */
+  function getCountry(bytes2 _country) external view returns(address[]) {
+    // Make sure the passed country exist.
+    require(authorityMapping[_country].length > 0);
+
+    return authorityMapping[_country];
+  }
+
+  /**
    * Removes a list of addresses from the whitelist.
    * @dev Is a wrapper function for the removeAddresses function.
    * @param _addressList addresses that will be removed from the whitelist
@@ -86,8 +98,8 @@ contract Whitelist is Ownable {
 
     for (uint i = 0; i < countryAddresses.length; i++) {
       removeAddress(countryAddresses[i]);
-
     }
+
     emit CountryRemovedFromWhitelist(_country);
   }
 

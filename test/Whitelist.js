@@ -34,6 +34,7 @@ contract('Whitelist', async accounts => {
   const ACC_NO_OWNER = accounts[1] // Another account used as counter to be not the owner of the contract.
   const ACC_NEW = accounts[2] // Address of the account to add to the whitelist.
   const ACC_NEW_LIST = accounts.slice(2, 4) // A list of addresses to add to the whitelist.
+  const ACC_ANYONE = accounts[5] // Address that is not the owner and also not on the whitelist.
   const COUNTRY = string2Hex('DE') // Example country code converted to hexadecimal bytecode.
 
   /*
@@ -269,6 +270,59 @@ contract('Whitelist', async accounts => {
         })
 
         assert(false, 'Add addresses as non-owner should not been successful!')
+      } catch (err) {
+        // Expected to fail here.
+      }
+    })
+  })
+
+  /*
+   * Tests for the getCountry function.
+   */
+  describe('getCountry()', () => {
+    /**
+     * Add a list of new addresses to the same country to check them out.
+     */
+    beforeEach(async () => {
+      await whitelist.addAddresses(ACC_NEW_LIST, COUNTRY, { from: ACC_OWNER })
+    })
+
+    /**
+     * Get the list of addresses related to a country.
+     * Should work with any account, which also not have to be on the whitelist.
+     * Check if the retrived list is correct.
+     */
+    it('Anyone can get the list of addresses related to a country.', async () => {
+      const result = await whitelist.getCountry(COUNTRY, { from: ACC_ANYONE })
+
+      // Make sure list of returned address is complete.
+      assert.equal(
+        result.length,
+        ACC_NEW_LIST.length,
+        'The list of returned addresses is not as long as the number of added addresses!'
+      )
+
+      // Check each entry in the returned list to be equal with the added list.
+      for (let i = 0; i < result.length; i++) {
+        assert.equal(
+          result[i],
+          ACC_NEW_LIST[i],
+          'An entry in the returned address list is not the same as in the added list. (order matters)'
+        )
+      }
+    })
+
+    /**
+     * Try to get a country that does not have any addresses on the whitelist.
+     * As assumption no address have to be added for the used country code.
+     * Expect an exception to be thrown.
+     */
+    it('Can not get a list of addresses for a country that does not exist.', async () => {
+      // Try to get all addresses of a country no addresses have been added for.
+      try {
+        await whitelist.getCountry(string2hex('EN'), { from: ACC_ANYONE })
+
+        assert(false, 'Get a non-existing country should not been successful!')
       } catch (err) {
         // Expected to fail here.
       }
@@ -548,7 +602,7 @@ contract('Whitelist', async accounts => {
 
         assert(
           false,
-          'Remove a non-existing country should not been successful'
+          'Remove a non-existing country should not been successful!'
         )
       } catch (err) {
         // Expected to fail here.
