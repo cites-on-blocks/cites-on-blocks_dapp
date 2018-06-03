@@ -52,7 +52,9 @@ class PermitCreate extends Component {
         text: ''
       },
       // tx status
-      txStatus: ''
+      txStatus: '',
+      // used for form validation
+      isValid: 'initial'
     }
     // for convinience
     this.contracts = context.drizzle.contracts
@@ -103,23 +105,27 @@ class PermitCreate extends Component {
   }
 
   createPermit() {
-    const { permit, specimens } = this.state
-    const specimensAsArrays = permitUtils.convertSpecimensToArrays(specimens)
-    // stack id used for monitoring transaction
-    this.stackId = this.contracts.PermitFactory.methods.createPermit.cacheSend(
-      utils.asciiToHex(permit.exportCountry),
-      utils.asciiToHex(permit.importCountry),
-      permitUtils.PERMIT_TYPES.indexOf(permit.permitType),
-      permit.importer.map(address => utils.asciiToHex(address)),
-      permit.exporter.map(address => utils.asciiToHex(address)),
-      specimensAsArrays.quantities,
-      specimensAsArrays.scientificNames.map(e => utils.asciiToHex(e)),
-      specimensAsArrays.commonNames.map(e => utils.asciiToHex(e)),
-      specimensAsArrays.descriptions.map(e => utils.asciiToHex(e)),
-      specimensAsArrays.originHashes.map(e => utils.asciiToHex(e)),
-      specimensAsArrays.reExportHashes.map(e => utils.asciiToHex(e)),
-      { from: this.props.accounts[0] }
-    )
+    const isValid = this.isFormValid()
+    this.setState({ isValid })
+    if (isValid) {
+      const { permit, specimens } = this.state
+      const specimensAsArrays = permitUtils.convertSpecimensToArrays(specimens)
+      // stack id used for monitoring transaction
+      this.stackId = this.contracts.PermitFactory.methods.createPermit.cacheSend(
+        utils.asciiToHex(permit.exportCountry),
+        utils.asciiToHex(permit.importCountry),
+        permitUtils.PERMIT_TYPES.indexOf(permit.permitType),
+        permit.importer.map(address => utils.asciiToHex(address)),
+        permit.exporter.map(address => utils.asciiToHex(address)),
+        specimensAsArrays.quantities,
+        specimensAsArrays.scientificNames.map(e => utils.asciiToHex(e)),
+        specimensAsArrays.commonNames.map(e => utils.asciiToHex(e)),
+        specimensAsArrays.descriptions.map(e => utils.asciiToHex(e)),
+        specimensAsArrays.originHashes.map(e => utils.asciiToHex(e)),
+        specimensAsArrays.reExportHashes.map(e => utils.asciiToHex(e)),
+        { from: this.props.accounts[0] }
+      )
+    }
   }
 
   changeTxState(newTxState) {
@@ -212,8 +218,28 @@ class PermitCreate extends Component {
     })
   }
 
+  isFormValid() {
+    const { permit, specimens } = this.state
+    const permitValid =
+      permit.exportCountry &&
+      permit.importCountry &&
+      permit.permitType &&
+      permit.importer &&
+      permit.exporter
+    const specimensValid = specimens.reduce((isValid, specimen) => {
+      const { quantity, scientificName, commonName } = specimen
+      return quantity > 0 && scientificName && commonName
+    }, false)
+    return permitValid && specimensValid
+  }
+
+  getError(value, errText) {
+    const { isValid } = this.state
+    return isValid === 'initial' ? '' : !value && !isValid && errText
+  }
+
   render() {
-    const { permitForm, permit, specimens } = this.state
+    const { permitForm, permit, specimens, isValid } = this.state
     return (
       <Box>
         {this.state.modal.show && (
@@ -258,7 +284,9 @@ class PermitCreate extends Component {
           </FormField>
         </Columns>
         <Columns justify={'between'} size={'large'}>
-          <FormField label={'Country of export'}>
+          <FormField
+            label={'Country of export'}
+            error={this.getError(permit.exportCountry, 'required')}>
             <Select
               value={permit.exportCountry}
               options={COUNTRIES}
@@ -267,7 +295,9 @@ class PermitCreate extends Component {
               }}
             />
           </FormField>
-          <FormField label={'Country of import'}>
+          <FormField
+            label={'Country of import'}
+            error={this.getError(permit.importCountry, 'required')}>
             <Select
               value={permit.importCountry}
               options={COUNTRIES}
@@ -284,6 +314,7 @@ class PermitCreate extends Component {
             onChange={(recipient, index, newValue) => {
               this.handleAddressChange(index, recipient, newValue)
             }}
+            isValid={isValid}
           />
           <AddressInputs
             address={permit.importer}
@@ -291,6 +322,7 @@ class PermitCreate extends Component {
             onChange={(recipient, index, newValue) => {
               this.handleAddressChange(index, recipient, newValue)
             }}
+            isValid={isValid}
           />
         </Columns>
         <Box
@@ -316,6 +348,7 @@ class PermitCreate extends Component {
             onRemove={index => {
               this.removeSpecies(index)
             }}
+            isValid={isValid}
           />
         ))}
         <Box

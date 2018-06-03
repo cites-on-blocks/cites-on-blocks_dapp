@@ -15,6 +15,11 @@ import {
  * Component for form elements of species information
  */
 class SpeciesInputs extends Component {
+  getError(value, errText) {
+    const { isValid } = this.props
+    return isValid === 'initial' ? '' : !value && !isValid && errText
+  }
+
   render() {
     const { index, species, onChange, onRemove } = this.props
     return (
@@ -30,13 +35,17 @@ class SpeciesInputs extends Component {
           )}
         </Box>
         <Columns justify={'between'} size={'large'}>
-          <FormField label={'Scientific name'}>
+          <FormField
+            label={'Scientific name'}
+            error={this.getError(species.scientificName, 'required')}>
             <TextInput
               value={species.scientificName}
               onDOMChange={e => onChange('scientificName', e.target.value)}
             />
           </FormField>
-          <FormField label={'Common name'}>
+          <FormField
+            label={'Common name'}
+            error={this.getError(species.commonName, 'required')}>
             <TextInput
               value={species.commonName}
               onDOMChange={e => onChange('commonName', e.target.value)}
@@ -49,7 +58,9 @@ class SpeciesInputs extends Component {
             onDOMChange={e => onChange('description', e.target.value)}
           />
         </FormField>
-        <FormField label={'Quantity'}>
+        <FormField
+          label={'Quantity'}
+          error={this.getError(species.quantity, 'required')}>
           <NumberInput
             value={species.quantity}
             step={1}
@@ -78,7 +89,8 @@ SpeciesInputs.propTypes = {
   index: PropTypes.number,
   species: PropTypes.object,
   onChange: PropTypes.func,
-  onRemove: PropTypes.func
+  onRemove: PropTypes.func,
+  isValid: PropTypes.any
 }
 
 export default SpeciesInputs
