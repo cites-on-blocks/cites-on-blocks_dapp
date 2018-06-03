@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Article, Layer, Box, Columns, Title } from 'grommet'
+import { Article, Layer, Box, Columns, Title, Timestamp } from 'grommet'
 
 import { trimHash } from '../../util/stringUtils'
 
@@ -10,7 +10,6 @@ import { trimHash } from '../../util/stringUtils'
 class PermitDetailsModal extends Component {
   render() {
     const { permit, onClose } = this.props
-    console.log(permit)
     return (
       <Layer closer={true} overlayClose={true} onClose={() => onClose()}>
         <Article size={'large'}>
@@ -57,7 +56,7 @@ class PermitDetailsModal extends Component {
           <Columns justify={'between'} size={'small'}>
             <Box margin={{ vertical: 'small' }}>
               <b>Timestamp</b>
-              {permit.timestamp}
+              <Timestamp value={permit.timestamp} />
             </Box>
             <Box margin={{ vertical: 'small' }}>
               <b>Status</b>
@@ -65,13 +64,13 @@ class PermitDetailsModal extends Component {
             </Box>
           </Columns>
           {permit.specimens.map((specimen, i) => (
-            <Box margin={{ vertical: 'medium' }}>
+            <Box key={i} margin={{ vertical: 'medium' }}>
               <hr />
               <Box
                 direction={'row'}
                 justify={'center'}
                 pad={{ vertical: 'medium' }}>
-                <Title>Specimen {i + 1}</Title>
+                <Title>{`Specimen ${i + 1}`}</Title>
               </Box>
               <Columns justify={'between'} size={'small'}>
                 <Box margin={{ vertical: 'small' }}>

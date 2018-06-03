@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Box, Table, TableRow, Timestamp } from 'grommet'
+import { Box, Table, TableRow, Timestamp, Heading } from 'grommet'
 import Web3, { utils } from 'web3'
 
 import PermitDetailsModal from '../../components/PermitDetailsModal'
@@ -122,6 +122,9 @@ class Permits extends Component {
             onClose={() => this.onDeselect()}
           />
         )}
+        <Heading tag={'h2'} align={'center'} margin={'medium'}>
+          Permits
+        </Heading>
         <Table>
           <thead>
             <tr>
