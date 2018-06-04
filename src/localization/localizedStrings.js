@@ -23,7 +23,9 @@ let local = new LocalizedStrings({
         number: 'Number',
         publicID: 'Public-ID',
         entry: 'created'
-      }
+      },
+      remove: 'Remove',
+      removeSelected: 'Remove all selected'
     },
     help: {
       headline: 'Help',
@@ -63,7 +65,9 @@ let local = new LocalizedStrings({
         number: 'Nummer',
         publicID: 'Public-ID',
         entry: 'erstellt am'
-      }
+      },
+      remove: 'Entfernen',
+      removeSelected: 'Alle Markierten entfernen'
     },
     help: {
       headline: 'Hilfe',

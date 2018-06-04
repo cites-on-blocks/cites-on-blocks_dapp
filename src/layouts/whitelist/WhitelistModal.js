@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Box, Headline, Label } from 'grommet'
+import { Button, Box, CheckBox, Headline, Label } from 'grommet'
 import PropTypes from 'prop-types'
 import local from '../../localization/localizedStrings'
 import Table from 'grommet/components/Table'
@@ -11,14 +11,12 @@ import '../../css/whitelist.css'
 var adresses = []
 
 class WhitelistModal extends Component {
-  constructor(props, context) {
+  constructor(props) {
     super(props)
     this.state = {
-      adresses: []
+      adresses: [],
+      selectedAddresses: []
     }
-    console.warn('Context: ' + context)
-    console.warn('Drizzle: ' + context.drizzle)
-    this.contracts = context.drizzle.contracts
   }
 
   componentDidUpdate() {
@@ -31,8 +29,37 @@ class WhitelistModal extends Component {
 
   removeAddressFromWhitelist(address) {
     if (utils.isAddress(address)) {
-      console.warn('Is address')
+      this.props.Contracts.PermitFactory.methods.removeAddress.cacheSend(
+        address,
+        {
+          from: this.props.accounts[0]
+        }
+      )
     }
+  }
+
+  removeAllSelected() {
+    if (
+      this.state.selectedAddresses !== undefined &&
+      this.state.selectedAddresses.length !== 0
+    ) {
+      this.props.Contracts.PermitFactory.methods.removeAddresses.cacheSend(
+        this.state.selectedAddresses,
+        {
+          from: this.props.accounts[0]
+        }
+      )
+    }
+  }
+
+  checkBoxStateDidChange(address) {
+    let addresses = this.state.selectedAddresses
+    if (!this.state.selectedAddresses.includes(address)) {
+      addresses.push(address)
+    } else {
+      addresses.splice(addresses.indexOf(address), 1)
+    }
+    this.setState({ selectedAddresses: addresses })
   }
 
   render() {
@@ -43,12 +70,21 @@ class WhitelistModal extends Component {
       rows = adresses.map((data, index) => {
         return (
           <TableRow key={index}>
+            {this.props.isOwner && (
+              <td>
+                <CheckBox
+                  onChange={this.checkBoxStateDidChange.bind(this, data)}
+                />
+              </td>
+            )}
             <td>{index + 1}</td>
             <td>{data}</td>
             <td />
-            <td onClick={this.removeAddressFromWhitelist.bind(this, data)}>
-              <a>Remove</a>
-            </td>
+            {this.props.isOwner && (
+              <td onClick={this.removeAddressFromWhitelist.bind(this, data)}>
+                <a>{local.whitelist.remove}</a>
+              </td>
+            )}
           </TableRow>
         )
       })
@@ -87,14 +123,18 @@ class WhitelistModal extends Component {
           <Table responsive={false}>
             <thead>
               <tr>
+                {this.props.isOwner && <th />}
                 <th>{local.whitelist.layer.number}</th>
                 <th>{local.whitelist.layer.publicID}</th>
                 <th>{local.whitelist.layer.entry}</th>
-                <th />
+                {this.props.isOwner && <th />}
               </tr>
             </thead>
             <tbody>{rows}</tbody>
           </Table>
+          <Button primary={true} onClick={this.removeAllSelected.bind(this)}>
+            {local.whitelist.removeSelected}
+          </Button>
         </Box>
       </main>
     )
@@ -104,13 +144,11 @@ class WhitelistModal extends Component {
 WhitelistModal.propTypes = {
   getCountry: PropTypes.func,
   PermitFactory: PropTypes.object,
+  accounts: PropTypes.object,
+  Contracts: PropTypes.object,
   country: PropTypes.object,
-  contracts: PropTypes.object,
-  dataKeyAddresses: PropTypes.string
-}
-
-WhitelistModal.contextTypes = {
-  drizzle: PropTypes.object
+  dataKeyAddresses: PropTypes.string,
+  isOwner: PropTypes.bool
 }
 
 export default WhitelistModal

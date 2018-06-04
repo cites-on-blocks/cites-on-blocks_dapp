@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Layer, Table, TableRow } from 'grommet'
 import local from '../../localization/localizedStrings'
 import FlagIconFactory from 'react-flag-icon-css'
+import { utils } from 'web3'
 
 import WhitelistModal from './WhitelistModal'
 
@@ -85,9 +86,13 @@ class WhitelistTable extends Component {
     })
   }
 
-  removeCountryFromWhitelist(id) {
-    console.log('##### LOL ##### LOL ######')
-    console.log(id)
+  removeCountryFromWhitelist(countryCode) {
+    this.props.Contracts.PermitFactory.methods.removeCountry.cacheSend(
+      utils.asciiToHex(countryCode),
+      {
+        from: this.props.accounts[0]
+      }
+    )
   }
 
   render() {
@@ -105,6 +110,8 @@ class WhitelistTable extends Component {
         <WhitelistModal
           country={this.state.countryToModal}
           PermitFactory={this.props.PermitFactory}
+          Contracts={this.props.Contracts}
+          accounts={this.props.accounts}
           isOwner={this.state.isOwner}
           dataKeyAddresses={this.props.dataKeyAddresses}
         />
@@ -122,9 +129,9 @@ class WhitelistTable extends Component {
           <td onClick={this.showDetails.bind(this, i)}>{data.region}</td>
           <td onClick={this.showDetails.bind(this, i)}>{data.entry}</td>
           <td onClick={this.showDetails.bind(this, i)}>{data.join}</td>
-          {!this.props.isOwner && (
-            <td onClick={this.removeCountryFromWhitelist.bind(this, i)}>
-              <a>Remove</a>
+          {this.props.isOwner && (
+            <td onClick={this.removeCountryFromWhitelist.bind(this, data.iso)}>
+              <a>{local.whitelist.remove}</a>
             </td>
           )}
         </TableRow>
@@ -143,7 +150,7 @@ class WhitelistTable extends Component {
               <th>{local.whitelist.table.region}</th>
               <th>{local.whitelist.table.entry}</th>
               <th>{local.whitelist.table.joining}</th>
-              {!this.props.isOwner && <th />}
+              {this.props.isOwner && <th />}
             </tr>
           </thead>
           <tbody>{rows}</tbody>
@@ -155,8 +162,10 @@ class WhitelistTable extends Component {
 
 WhitelistTable.propTypes = {
   getAddressesFromCountry: PropTypes.func,
+  accounts: PropTypes.object,
   isOwner: PropTypes.bool,
   PermitFactory: PropTypes.object,
+  Contracts: PropTypes.object,
   countryToModal: PropTypes.object,
   dataKeyAddresses: PropTypes.string
 }

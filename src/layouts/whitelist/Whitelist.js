@@ -64,7 +64,9 @@ class Whitelist extends Component {
           </Heading>
           <Table
             dataKeyAddresses={this.state.dataKeyAddresses}
+            accounts={this.props.accounts}
             PermitFactory={this.props.PermitFactory}
+            Contracts={this.contracts}
             getAddressesFromCountry={countryCode =>
               this.getAddressesFromCountry(countryCode)
             }
