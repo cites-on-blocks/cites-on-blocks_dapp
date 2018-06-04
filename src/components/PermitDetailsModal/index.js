@@ -104,6 +104,12 @@ class PermitDetailsModal extends Component {
               </Columns>
             </Box>
           ))}
+          <Box
+            direction={'row'}
+            justify={'center'}
+            pad={{ vertical: 'medium' }}>
+            {this.props.detailsActions}
+          </Box>
         </Article>
       </Layer>
     )
@@ -112,7 +118,8 @@ class PermitDetailsModal extends Component {
 
 PermitDetailsModal.propTypes = {
   permit: PropTypes.object,
-  onClose: PropTypes.func
+  onClose: PropTypes.func,
+  detailsActions: PropTypes.any
 }
 
 export default PermitDetailsModal
