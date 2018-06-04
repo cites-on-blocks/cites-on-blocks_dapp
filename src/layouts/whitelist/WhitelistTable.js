@@ -112,7 +112,7 @@ class WhitelistTable extends Component {
           PermitFactory={this.props.PermitFactory}
           Contracts={this.props.Contracts}
           accounts={this.props.accounts}
-          isOwner={this.state.isOwner}
+          isOwner={this.props.isOwner}
           dataKeyAddresses={this.props.dataKeyAddresses}
         />
       </Layer>
