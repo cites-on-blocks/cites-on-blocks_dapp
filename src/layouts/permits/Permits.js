@@ -1,18 +1,44 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Box, Table, TableRow, Timestamp, Heading } from 'grommet'
+import {
+  Box,
+  Columns,
+  Button,
+  Table,
+  TableRow,
+  Timestamp,
+  Heading
+} from 'grommet'
 import Web3, { utils } from 'web3'
 
 import PermitDetailsModal from '../../components/PermitDetailsModal'
+import PendingTxModal from '../../components/PendingTxModal'
+
 import { trimHash } from '../../util/stringUtils'
-import { parseRawPermit, parseRawSpecimen } from '../../util/permitUtils'
+import {
+  parseRawPermit,
+  parseRawSpecimen,
+  mergePermitEvents
+} from '../../util/permitUtils'
 
 class Permits extends Component {
   constructor(props, context) {
     super(props)
     this.state = {
+      // permit events
       events: [],
-      selectedPermit: ''
+      // selected permit for detailed information
+      selectedPermit: '',
+      // latest block for retrieved events
+      latestBlock: 0,
+      // country of user
+      authCountry: '',
+      // tx information modal
+      modal: {
+        show: false,
+        text: ''
+      },
+      txStatus: ''
     }
     this.contracts = context.drizzle.contracts
     // NOTE: We have to iniate a new web3 instance for retrieving event via `getPastEvents`.
@@ -25,6 +51,40 @@ class Permits extends Component {
 
   componentDidMount() {
     this.getEvents()
+    this.setAuthCountry()
+    // NOTE: Initiate our own event listener because we can not use reactive event data with
+    //       MetaMask and Drizzle.
+    this.intervalId = setInterval(() => {
+      this.web3.eth
+        .getBlockNumber()
+        .then(blockNumber => {
+          if (blockNumber > this.state.latestBlock) {
+            this.getEvents(blockNumber)
+          }
+          return
+        })
+        .catch(e => console.log(e))
+    }, 3000)
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // check if accounts changed
+    if (this.props.accounts[0] !== prevProps.accounts[0]) {
+      this.setAuthCountry()
+    }
+    // check if tx for stack id exists
+    if (this.props.transactionStack[this.stackId]) {
+      const txHash = this.props.transactionStack[this.stackId]
+      const { status } = this.props.transactions[txHash]
+      // change tx related state is status changed
+      if (prevState.txStatus !== status) {
+        this.changeTxState(status)
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalId)
   }
 
   getEvents(from = 0) {
@@ -38,9 +98,11 @@ class Permits extends Component {
       .then(([createdPermits, confirmedPermits]) => {
         const events = createdPermits
           .concat(confirmedPermits)
-          .sort((a, b) => a.blockNumber < b.blockNumber)
           .map(e => this.formatEvent(e))
-        this.blockNumberToUnix(events)
+        if (events.length > 0) {
+          this.setState({ latestBlock: events[0].blockNumber })
+          this.blockNumberToUnix(events)
+        }
         return
       })
       .catch(error => console.log(error))
@@ -65,13 +127,17 @@ class Permits extends Component {
     )
     Promise.all(blockPromises)
       .then(blocks => {
-        const eventsWithTime = events.map((e, i) => ({
+        const newEvents = events.map((e, i) => ({
           ...e,
           // convert seconds into miliseconds
           timestamp: blocks[i].timestamp * 1000
         }))
+        const oldEvents = this.state.events
+        const mergedEvents = mergePermitEvents(oldEvents, newEvents).sort(
+          (a, b) => b.blockNumber - a.blockNumber
+        )
         this.setState({
-          events: eventsWithTime
+          events: mergedEvents
         })
         return
       })
@@ -113,13 +179,100 @@ class Permits extends Component {
     })
   }
 
+  closeTxModal() {
+    this.setState({
+      txStatus: '',
+      modal: {
+        show: false,
+        text: ''
+      }
+    })
+  }
+
+  setAuthCountry() {
+    this.PermitFactory.methods
+      .authorityToCountry(this.props.accounts[0])
+      .call()
+      .then(country =>
+        this.setState({
+          authCountry: utils.hexToUtf8(country)
+        })
+      )
+      .catch(e => console.log(e))
+  }
+
+  processPermit(isAccepted) {
+    // stack id used for monitoring transaction
+    this.stackId = this.contracts.PermitFactory.methods.confirmPermit.cacheSend(
+      this.state.selectedPermit.permitHash,
+      this.state.selectedPermit.specimenHashes,
+      isAccepted,
+      { from: this.props.accounts[0] }
+    )
+  }
+
+  changeTxState(newTxState) {
+    this.onDeselect()
+    if (newTxState === 'pending') {
+      this.setState({
+        txStatus: 'pending',
+        modal: {
+          show: true,
+          text: 'Permit accept pending...'
+        }
+      })
+    } else if (newTxState === 'success') {
+      this.stackId = ''
+      this.setState({
+        txStatus: 'success',
+        modal: {
+          show: true,
+          text: 'Permit creation successful!'
+        }
+      })
+    } else {
+      this.stackId = ''
+      this.setState({
+        txStatus: 'failed',
+        modal: {
+          show: true,
+          text: 'Permit creation has failed.'
+        }
+      })
+    }
+  }
+
   render() {
+    const { selectedPermit, authCountry } = this.state
     return (
       <Box>
-        {this.state.selectedPermit && (
+        {selectedPermit && (
           <PermitDetailsModal
-            permit={this.state.selectedPermit}
+            permit={selectedPermit}
             onClose={() => this.onDeselect()}
+            detailsActions={
+              selectedPermit.importCountry === authCountry &&
+              selectedPermit.status !== 'processed' && (
+                <Columns justify={'between'} size={'small'}>
+                  <Button
+                    secondary={true}
+                    label={'Decline'}
+                    onClick={() => this.processPermit(false)}
+                  />
+                  <Button
+                    label={'Confirm'}
+                    onClick={() => this.processPermit(true)}
+                  />
+                </Columns>
+              )
+            }
+          />
+        )}
+        {this.state.modal.show && (
+          <PendingTxModal
+            txStatus={this.state.txStatus}
+            text={this.state.modal.text}
+            onClose={() => this.closeTxModal()}
           />
         )}
         <Heading tag={'h2'} align={'center'} margin={'medium'}>
@@ -131,7 +284,7 @@ class Permits extends Component {
               <th>Permit number</th>
               <th>Country of export</th>
               <th>Country of import</th>
-              <th>Date</th>
+              <th>Last update</th>
               <th>Status</th>
             </tr>
           </thead>
@@ -156,7 +309,9 @@ class Permits extends Component {
 
 Permits.propTypes = {
   accounts: PropTypes.object,
-  PermitFactory: PropTypes.object
+  PermitFactory: PropTypes.object,
+  transactionStack: PropTypes.array,
+  transactions: PropTypes.object
 }
 
 Permits.contextTypes = {

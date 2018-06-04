@@ -74,3 +74,19 @@ export function parseRawSpecimen(rawSpecimen) {
     reExportHash: rawSpecimen[6]
   }
 }
+
+export function mergePermitEvents(oldEvents, newEvents) {
+  const mergedEvents = newEvents.concat(oldEvents)
+  return mergedEvents.reduce((result, current) => {
+    const index = result.findIndex(
+      elem => elem.permitHash === current.permitHash
+    )
+    if (index === -1) {
+      result.push(current)
+    } else if (current.status === 'processed') {
+      result.splice(index, 1)
+      result.push(current)
+    }
+    return result
+  }, [])
+}
