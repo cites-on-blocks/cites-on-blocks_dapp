@@ -132,9 +132,11 @@ class WhitelistModal extends Component {
             </thead>
             <tbody>{rows}</tbody>
           </Table>
-          <Button primary={true} onClick={this.removeAllSelected.bind(this)}>
-            {local.whitelist.removeSelected}
-          </Button>
+          {this.props.isOwner && (
+            <Button primary={true} onClick={this.removeAllSelected.bind(this)}>
+              {local.whitelist.removeSelected}
+            </Button>
+          )}
         </Box>
       </main>
     )
