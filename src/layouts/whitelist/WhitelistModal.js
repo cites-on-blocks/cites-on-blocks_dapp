@@ -38,11 +38,15 @@ class WhitelistModal extends Component {
     }
   }
 
-  removeAllSelected() {
-    if (
+  isAddressSelected() {
+    let isSelected =
       this.state.selectedAddresses !== undefined &&
       this.state.selectedAddresses.length !== 0
-    ) {
+    return isSelected
+  }
+
+  removeAllSelected() {
+    if (this.isAddressSelected()) {
       this.props.Contracts.PermitFactory.methods.removeAddresses.cacheSend(
         this.state.selectedAddresses,
         {
@@ -63,6 +67,9 @@ class WhitelistModal extends Component {
   }
 
   render() {
+    let removeAddressesHandler = this.isAddressSelected()
+      ? this.removeAllSelected.bind(this)
+      : undefined
     const FlagIcon = FlagIconFactory(React, { useCssModules: false })
     console.log(adresses)
     let rows
@@ -133,7 +140,7 @@ class WhitelistModal extends Component {
             <tbody>{rows}</tbody>
           </Table>
           {this.props.isOwner && (
-            <Button primary={true} onClick={this.removeAllSelected.bind(this)}>
+            <Button primary={true} onClick={removeAddressesHandler}>
               {local.whitelist.removeSelected}
             </Button>
           )}
