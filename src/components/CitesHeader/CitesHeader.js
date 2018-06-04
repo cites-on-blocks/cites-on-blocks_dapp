@@ -27,12 +27,18 @@ class CitesHeader extends Component {
           <Link to="/whitelist">{local.header.whitelist}</Link>
           <Menu
             responsive={true}
-            label={local.permits}
+            label={local.header.permits}
             inline={false}
             direction={'column'}>
-            <Anchor path="/permits">List Permits</Anchor>
-            <Anchor path="/permits/create">Create Permit</Anchor>
-            <Anchor path="/permits/process">Process Permit</Anchor>
+            <Anchor path="/permits">
+              {local.header.permitsMenu.listPermits}
+            </Anchor>
+            <Anchor path="/permits/create">
+              {local.header.permitsMenu.createPermit}
+            </Anchor>
+            <Anchor path="/permits/process">
+              {local.header.permitsMenu.processPermit}
+            </Anchor>
           </Menu>
           <Link to="/analytics">{local.header.analytics}</Link>
           <Link to="/import-export">{local.header.importExport}</Link>

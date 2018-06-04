@@ -5,6 +5,11 @@ let local = new LocalizedStrings({
     header: {
       whitelist: 'Whitelist',
       permits: 'Permits',
+      permitsMenu: {
+        listPermits: 'List Permits',
+        createPermit: 'Create Permit',
+        processPermit: 'Process Permit'
+      },
       analytics: 'Analytics',
       importExport: 'Import/Export',
       help: 'Help'
@@ -47,6 +52,11 @@ let local = new LocalizedStrings({
     header: {
       whitelist: 'Whitelist',
       permits: 'Genehmigungen',
+      permitsMenu: {
+        listPermits: 'Genehmigungen auflisten',
+        createPermit: 'Genehmigung erstellen',
+        processPermit: 'Genehmigung verarbeiten'
+      },
       analytics: 'Analyse',
       importExport: 'Import/Export',
       help: 'Hilfe'
