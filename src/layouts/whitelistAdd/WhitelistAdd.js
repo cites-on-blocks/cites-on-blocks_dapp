@@ -112,12 +112,17 @@ class WhitelistAdd extends Component {
 
   clearForm() {
     this.setState({
-      txStatus: '',
+      addressCount: 1,
+      addressFieldArray: [0],
+      addressesToAdd: [],
+      country: '',
       modal: {
         show: false,
         text: ''
-      }
+      },
+      txStatus: ''
     })
+    window.location.reload() //Stupid
   }
 
   render() {
@@ -125,6 +130,7 @@ class WhitelistAdd extends Component {
       return (
         <FormField label={'Address'} key={field}>
           <TextInput
+            id={field + ''}
             onBlur={event => {
               this.addAddressToArray(event.target.value, field)
             }}
@@ -166,6 +172,7 @@ class WhitelistAdd extends Component {
         </Heading>
         <FormField label={'Country'}>
           <Select
+            id={'select'}
             options={options.countries}
             value={this.state.country}
             onChange={option => {
@@ -195,7 +202,8 @@ WhitelistAdd.propTypes = {
   drizzleStatus: PropTypes.object,
   contracts: PropTypes.object,
   transactionStack: PropTypes.array,
-  transactions: PropTypes.object
+  transactions: PropTypes.object,
+  history: PropTypes.object
 }
 
 WhitelistAdd.contextTypes = {
