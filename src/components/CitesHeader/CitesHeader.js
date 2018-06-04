@@ -19,7 +19,9 @@ class CitesHeader extends Component {
         separator="bottom"
         pad={{ horizontal: 'small' }}>
         <Title>
-          <Image src={logo} alt="logo" size="thumb" />
+          <Link to="/">
+            <Image src={logo} alt="logo" size="thumb" />
+          </Link>
         </Title>
         <Menu direction={'row'}>
           <Link to="/whitelist">{local.header.whitelist}</Link>
