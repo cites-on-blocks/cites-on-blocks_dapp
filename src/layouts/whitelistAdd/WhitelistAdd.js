@@ -7,6 +7,7 @@ import {
   Select,
   Columns,
   Button,
+  CloseIcon,
   AddIcon,
   DocumentUploadIcon
 } from 'grommet'
@@ -125,16 +126,26 @@ class WhitelistAdd extends Component {
     window.location.reload() //Stupid
   }
 
+  removeAddressField(id) {
+    var toRemove = document.getElementById(id)
+    toRemove.parentNode.removeChild(toRemove)
+    var addresses = this.state.addressesToAdd
+    addresses.splice(id, 1)
+    this.state = {
+      addressesToAdd: addresses
+    }
+  }
+
   render() {
     var addressFields = this.state.addressFieldArray.map(field => {
       return (
-        <FormField label={'Address'} key={field}>
+        <FormField label={'Address'} key={field} id={field + ''}>
           <TextInput
-            id={field + ''}
             onBlur={event => {
               this.addAddressToArray(event.target.value, field)
             }}
           />
+          <CloseIcon onClick={() => this.removeAddressField(field)} />
         </FormField>
       )
     })
