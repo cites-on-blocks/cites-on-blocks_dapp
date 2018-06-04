@@ -22,11 +22,15 @@ class PendingTxModal extends Component {
       text,
       onPendingActions,
       onSuccessActions,
-      onFailActions
+      onFailActions,
+      onClose
     } = this.props
     const statusValue = this.getStatusValue(txStatus)
     return (
-      <Layer>
+      <Layer
+        closer={txStatus === 'success' || txStatus === 'failed'}
+        overlayClose={txStatus === 'success' || txStatus === 'failed'}
+        onClose={() => onClose()}>
         <Box pad={{ vertical: 'medium' }}>
           <Box
             direction={'row'}
@@ -59,7 +63,8 @@ PendingTxModal.propTypes = {
   text: PropTypes.string,
   onPendingActions: PropTypes.any,
   onSuccessActions: PropTypes.any,
-  onFailActions: PropTypes.any
+  onFailActions: PropTypes.any,
+  onClose: PropTypes.func
 }
 
 export default PendingTxModal
