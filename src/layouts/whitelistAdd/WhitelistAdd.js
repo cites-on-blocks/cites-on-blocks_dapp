@@ -21,9 +21,9 @@ class WhitelistAdd extends Component {
   constructor(props, context) {
     super(props)
     this.state = {
-      addressCount: 1,
-      addressFieldArray: [0],
-      addressesToAdd: [],
+      addressCount: 0,
+      formObject: {},
+      addressObject: {},
       country: '',
       modal: {
         show: false,
@@ -33,31 +33,50 @@ class WhitelistAdd extends Component {
     }
     this.contracts = context.drizzle.contracts
   }
+  //find a better fitting name
   addAddressField() {
-    console.log(this.state.addressCount)
     this.createAddressFields(this.state.addressCount++)
   }
-
+  //find a better fitting name as well
   createAddressFields(count) {
-    this.state.addressFieldArray.push(count)
-    console.log(this.state.addressFieldArray)
+    var fields = this.state.formObject
+    fields[count] = (
+      <FormField label={'Address'} key={count} id={count + ''}>
+        <TextInput
+          onBlur={event => {
+            this.addAddressToObject(event.target.value, count)
+          }}
+        />
+        <CloseIcon onClick={() => this.removeAddressField(count)} />
+      </FormField>
+    )
   }
 
-  addAddressToArray(address, index) {
-    var addresses = this.state.addressesToAdd
+  addAddressToObject(address, index) {
+    var addresses = this.state.addressObject
     addresses[index] = address
+  }
 
-    this.state = {
-      addressesToAdd: addresses
+  getAddressObjectPropsAsArray() {
+    var addresses = []
+    var keys = Object.keys(this.state.addressObject)
+    var addrObject = this.state.addressObject
+    for (var i = 0; i !== keys.length; i++) {
+      addresses.push(addrObject[keys[i]])
     }
+    return addresses
   }
 
   addAddresses() {
-    console.log(this.state.addressesToAdd)
+    var addressesToAdd = this.getAddressObjectPropsAsArray()
+    console.log(addressesToAdd)
     console.log(this.state.country)
-    if (this.state.addressesToAdd.every(ad => utils.isAddress(ad))) {
+    if (
+      addressesToAdd.every(ad => utils.isAddress(ad)) &&
+      this.state.country !== ''
+    ) {
       this.stackId = this.contracts.Whitelist.methods.addAddresses.cacheSend(
-        this.state.addressesToAdd,
+        addressesToAdd,
         utils.asciiToHex(this.state.country),
         { from: this.props.accounts[0] }
       )
@@ -68,6 +87,10 @@ class WhitelistAdd extends Component {
     var address = this.state
     address.country = addressCountry.value
     this.setState({ address })
+  }
+
+  componentDidMount() {
+    this.addAddressField()
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -112,43 +135,31 @@ class WhitelistAdd extends Component {
   }
 
   clearForm() {
-    this.setState({
-      addressCount: 1,
-      addressFieldArray: [0],
-      addressesToAdd: [],
+    this.state = {
+      addressCount: 0,
+      formObject: {},
+      addressObject: {},
       country: '',
       modal: {
         show: false,
         text: ''
       },
       txStatus: ''
-    })
-    window.location.reload() //Stupid
+    }
+    //window.location.reload() //Stupid
   }
 
   removeAddressField(id) {
-    var toRemove = document.getElementById(id)
-    toRemove.parentNode.removeChild(toRemove)
-    var addresses = this.state.addressesToAdd
-    addresses.splice(id, 1)
-    this.state = {
-      addressesToAdd: addresses
-    }
+    delete this.state.formObject[id]
+    delete this.state.addressObject[id]
   }
 
   render() {
-    var addressFields = this.state.addressFieldArray.map(field => {
-      return (
-        <FormField label={'Address'} key={field} id={field + ''}>
-          <TextInput
-            onBlur={event => {
-              this.addAddressToArray(event.target.value, field)
-            }}
-          />
-          <CloseIcon onClick={() => this.removeAddressField(field)} />
-        </FormField>
-      )
-    })
+    var keys = Object.keys(this.state.formObject)
+    var addressFields = []
+    for (var i = 0; i !== keys.length; i++) {
+      addressFields.push(this.state.formObject[keys[i]])
+    }
     return (
       <Box>
         {this.state.modal.show && (
@@ -198,6 +209,7 @@ class WhitelistAdd extends Component {
           onClick={() => this.addAddressField()}
         />
         <Button
+          disabled={true} //this.forbiddenArrayState(this.state.addressesToAdd)
           primary={true}
           label={'Add Addresses to Whitelist'}
           icon={<DocumentUploadIcon />}
