@@ -6,6 +6,7 @@ import {
   TextInput,
   Select,
   Columns,
+  Paragraph,
   Button,
   CloseIcon,
   AddIcon,
@@ -29,9 +30,11 @@ class WhitelistAdd extends Component {
         show: false,
         text: ''
       },
+      valid: true,
       txStatus: ''
     }
     this.contracts = context.drizzle.contracts
+    console.log(this.props.isOwner)
   }
   //find a better fitting name
   addAddressField() {
@@ -43,9 +46,7 @@ class WhitelistAdd extends Component {
     fields[count] = (
       <FormField label={'Address'} key={count} id={count + ''}>
         <TextInput
-          onBlur={event => {
-            this.addAddressToObject(event.target.value, count)
-          }}
+          onBlur={event => this.addAddressToObject(event.target.value, count)}
         />
         <CloseIcon onClick={() => this.removeAddressField(count)} />
       </FormField>
@@ -80,6 +81,10 @@ class WhitelistAdd extends Component {
         utils.asciiToHex(this.state.country),
         { from: this.props.accounts[0] }
       )
+    } else {
+      var add = this.state
+      add.valid = false
+      this.setState({ add })
     }
   }
 
@@ -135,23 +140,31 @@ class WhitelistAdd extends Component {
   }
 
   clearForm() {
-    this.state = {
-      addressCount: 0,
-      formObject: {},
-      addressObject: {},
-      country: '',
-      modal: {
-        show: false,
-        text: ''
-      },
-      txStatus: ''
-    }
-    //window.location.reload() //Stupid
+    window.location.reload() //Stupid
   }
 
   removeAddressField(id) {
     delete this.state.formObject[id]
     delete this.state.addressObject[id]
+  }
+
+  allInputIsValid() {
+    var keys = Object.keys(this.state.addressObject)
+    var asArray = this.getAddressObjectPropsAsArray()
+
+    var isCountry = this.state.country !== ''
+    var isNotEmpty1 = keys.length !== 0
+    var isNotEmpty2 = this.state.addressObject.constructor === Object
+    var asArrayIsNotEmpty = asArray.length >= 1
+    var allAddresses = asArray.every(ad => utils.isAddress(ad))
+
+    return (
+      isCountry &&
+      isNotEmpty1 &&
+      isNotEmpty2 &&
+      asArrayIsNotEmpty &&
+      allAddresses
+    )
   }
 
   render() {
@@ -160,63 +173,82 @@ class WhitelistAdd extends Component {
     for (var i = 0; i !== keys.length; i++) {
       addressFields.push(this.state.formObject[keys[i]])
     }
-    return (
-      <Box>
-        {this.state.modal.show && (
-          <PendingTxModal
-            txStatus={this.state.txStatus}
-            text={this.state.modal.text}
-            onSuccessActions={
-              <Columns justify={'between'} size={'small'}>
-                <Button
-                  label={'Add more addresses'}
-                  onClick={() => this.clearForm()}
-                />
-                <Button label={'Go to whitelist'} path={'/whitelist'} />
-              </Columns>
-            }
-            onFailActions={
-              <Columns justify={'between'} size={'small'}>
-                <Button
-                  label={'Add new addresses'}
-                  onClick={() => this.clearForm()}
-                />
-                <Button
-                  label={'Try again'}
-                  onClick={() => this.addAddresses()}
-                />
-              </Columns>
-            }
+    var error = ''
+    if (!this.state.valid) {
+      error = (
+        <Paragraph style={{ color: 'red' }}>
+          Invalid input. Make sure all addresses are valid Ethereum addresses
+          and that you have selected a country
+        </Paragraph>
+      )
+    }
+    //remove the undefined
+    if (this.props.isOwner || this.props.isOwner === undefined) {
+      return (
+        <Box>
+          {this.state.modal.show && (
+            <PendingTxModal
+              txStatus={this.state.txStatus}
+              text={this.state.modal.text}
+              onSuccessActions={
+                <Columns justify={'between'} size={'small'}>
+                  <Button
+                    label={'Add more addresses'}
+                    onClick={() => this.clearForm()}
+                  />
+                  <Button label={'Go to whitelist'} path={'/whitelist'} />
+                </Columns>
+              }
+              onFailActions={
+                <Columns justify={'between'} size={'small'}>
+                  <Button
+                    label={'Add new addresses'}
+                    onClick={() => this.clearForm()}
+                  />
+                  <Button
+                    label={'Try again'}
+                    onClick={() => this.addAddresses()}
+                  />
+                </Columns>
+              }
+            />
+          )}
+          <Heading align={'center'} margin={'medium'}>
+            Whitelisting
+          </Heading>
+          <FormField label={'Country'}>
+            <Select
+              id={'select'}
+              options={options.countries}
+              value={this.state.country}
+              onChange={option => {
+                this.setCountry(option.value)
+              }}
+            />
+          </FormField>
+          {addressFields}
+          <Button
+            label={'Add more Addresses'}
+            icon={<AddIcon />}
+            onClick={() => this.addAddressField()}
           />
-        )}
-        <Heading align={'center'} margin={'medium'}>
-          Whitelisting
-        </Heading>
-        <FormField label={'Country'}>
-          <Select
-            id={'select'}
-            options={options.countries}
-            value={this.state.country}
-            onChange={option => {
-              this.setCountry(option.value)
-            }}
+          <Button
+            primary={true}
+            label={'Add Addresses to Whitelist'}
+            icon={<DocumentUploadIcon />}
+            onClick={() => this.addAddresses()}
           />
-        </FormField>
-        {addressFields}
-        <Button
-          label={'Add more Addresses'}
-          icon={<AddIcon />}
-          onClick={() => this.addAddressField()}
-        />
-        <Button
-          disabled={true} //this.forbiddenArrayState(this.state.addressesToAdd)
-          primary={true}
-          label={'Add Addresses to Whitelist'}
-          icon={<DocumentUploadIcon />}
-          onClick={() => this.addAddresses()}
-        />
-      </Box>
-    )
+          {error}
+        </Box>
+      )
+    } else {
+      return (
+        <Paragraph style={{ color: 'red' }}>
+          Adding addresses to the Whitelist is only possible when logged in as
+          an Owner
+        </Paragraph>
+      )
+    }
   }
 }
 
@@ -226,7 +258,9 @@ WhitelistAdd.propTypes = {
   contracts: PropTypes.object,
   transactionStack: PropTypes.array,
   transactions: PropTypes.object,
-  history: PropTypes.object
+  history: PropTypes.object,
+  dataKeyAddresses: PropTypes.string,
+  isOwner: PropTypes.bool
 }
 
 WhitelistAdd.contextTypes = {
