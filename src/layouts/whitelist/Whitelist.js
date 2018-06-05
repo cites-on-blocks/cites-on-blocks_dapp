@@ -17,11 +17,6 @@ class Whitelist extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.dataKeyAddresses in this.props.PermitFactory.getCountry) {
-      console.log(
-        this.props.PermitFactory.getCountry[this.dataKeyAddresses].value
-      )
-    }
     if (this.props.accounts[0] !== prevProps.accounts[0]) {
       this.checkOwner()
     }

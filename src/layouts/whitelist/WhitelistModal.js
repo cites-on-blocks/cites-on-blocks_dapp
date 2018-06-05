@@ -8,22 +8,25 @@ import FlagIconFactory from 'react-flag-icon-css'
 import { utils } from 'web3'
 import '../../css/whitelist.css'
 
-var adresses = []
-
 class WhitelistModal extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      adresses: [],
-      selectedAddresses: []
+      addresses: [],
+      selectedAddresses: [],
+      statuses: []
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
     if (this.props.dataKeyAddresses in this.props.PermitFactory.getCountry) {
-      adresses = this.props.PermitFactory.getCountry[
+      const addresses = this.props.PermitFactory.getCountry[
         this.props.dataKeyAddresses
       ].value
+      if (addresses !== prevState.addresses) {
+        this.setState({ addresses })
+        this.getWhitelistStatuses(addresses)
+      }
     }
   }
 
@@ -66,15 +69,28 @@ class WhitelistModal extends Component {
     this.setState({ selectedAddresses: addresses })
   }
 
+  getWhitelistStatuses(addresses) {
+    const whitelistPromises = addresses.map(address =>
+      this.props.Contracts.PermitFactory.methods
+        .whitelist(address)
+        .call()
+        .then(status => status)
+        .catch(e => console.log(e))
+    )
+    Promise.all(whitelistPromises)
+      .then(statuses => this.setState({ statuses }))
+      .catch(e => console.log(e))
+    return
+  }
+
   render() {
     let removeAddressesHandler = this.isAddressSelected()
       ? this.removeAllSelected.bind(this)
       : undefined
     const FlagIcon = FlagIconFactory(React, { useCssModules: false })
-    console.log(adresses)
     let rows
-    if (adresses !== undefined) {
-      rows = adresses.map((data, index) => {
+    if (this.state.addresses.length > 0) {
+      rows = this.state.addresses.map((data, index) => {
         return (
           <TableRow key={index}>
             {this.props.isOwner && (
@@ -86,6 +102,9 @@ class WhitelistModal extends Component {
             )}
             <td>{index + 1}</td>
             <td>{data}</td>
+            <td>
+              {this.state.statuses[index] ? 'whitelisted' : 'not whitelisted'}
+            </td>
             <td />
             {this.props.isOwner && (
               <td onClick={this.removeAddressFromWhitelist.bind(this, data)}>
@@ -134,6 +153,7 @@ class WhitelistModal extends Component {
                 <th>{local.whitelist.layer.number}</th>
                 <th>{local.whitelist.layer.publicID}</th>
                 <th>{local.whitelist.layer.entry}</th>
+                <th>status</th>
                 {this.props.isOwner && <th />}
               </tr>
             </thead>
