@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Button, Box, CheckBox, Headline, Label } from 'grommet'
+import Spinning from 'grommet/components/icons/Spinning'
 import PropTypes from 'prop-types'
 import local from '../../localization/localizedStrings'
 import Table from 'grommet/components/Table'
@@ -14,7 +15,8 @@ class WhitelistModal extends Component {
     this.state = {
       addresses: [],
       selectedAddresses: [],
-      statuses: []
+      statuses: [],
+      isLoading: true
     }
   }
 
@@ -24,8 +26,12 @@ class WhitelistModal extends Component {
         this.props.dataKeyAddresses
       ].value
       if (addresses !== prevState.addresses) {
-        this.setState({ addresses })
-        this.getWhitelistStatuses(addresses)
+        this.setState({ addresses }, () => {
+          this.getWhitelistStatuses(addresses)
+          this.setState({
+            isLoading: false
+          })
+        })
       }
     }
   }
@@ -70,16 +76,19 @@ class WhitelistModal extends Component {
   }
 
   getWhitelistStatuses(addresses) {
-    const whitelistPromises = addresses.map(address =>
-      this.props.Contracts.PermitFactory.methods
-        .whitelist(address)
-        .call()
-        .then(status => status)
+    if (this.state.addresses !== undefined) {
+      const whitelistPromises = addresses.map(address =>
+        this.props.Contracts.PermitFactory.methods
+          .whitelist(address)
+          .call()
+          .then(status => status)
+          .catch(e => console.log(e))
+      )
+      Promise.all(whitelistPromises)
+        .then(statuses => this.setState({ statuses }))
         .catch(e => console.log(e))
-    )
-    Promise.all(whitelistPromises)
-      .then(statuses => this.setState({ statuses }))
-      .catch(e => console.log(e))
+      return
+    }
     return
   }
 
@@ -89,31 +98,49 @@ class WhitelistModal extends Component {
       : undefined
     const FlagIcon = FlagIconFactory(React, { useCssModules: false })
     let rows
-    if (this.state.addresses.length > 0) {
-      rows = this.state.addresses.map((data, index) => {
-        return (
-          <TableRow key={index}>
-            {this.props.isOwner && (
+    if (this.state.addresses !== undefined) {
+      if (this.state.addresses.length > 0) {
+        rows = this.state.addresses.map((data, index) => {
+          return (
+            <TableRow key={index}>
+              {this.props.isOwner && (
+                <td>
+                  {this.state.statuses[index] === 'whitelited' && (
+                    <CheckBox
+                      onChange={this.checkBoxStateDidChange.bind(this, data)}
+                    />
+                  )}
+                </td>
+              )}
+              <td>{index + 1}</td>
+              <td>{data}</td>
               <td>
-                <CheckBox
-                  onChange={this.checkBoxStateDidChange.bind(this, data)}
-                />
+                {this.state.statuses[index] ? 'whitelisted' : 'not whitelisted'}
               </td>
-            )}
-            <td>{index + 1}</td>
-            <td>{data}</td>
-            <td>
-              {this.state.statuses[index] ? 'whitelisted' : 'not whitelisted'}
-            </td>
-            <td />
-            {this.props.isOwner && (
-              <td onClick={this.removeAddressFromWhitelist.bind(this, data)}>
-                <a>{local.whitelist.remove}</a>
-              </td>
-            )}
-          </TableRow>
-        )
-      })
+              <td />
+              {this.props.isOwner && (
+                <td>
+                  {this.state.statuses[index] ? (
+                    <Button
+                      primary={true}
+                      onClick={this.removeAddressFromWhitelist.bind(this, data)}
+                      label={local.whitelist.remove}
+                    />
+                  ) : (
+                    <Button
+                      primary={true}
+                      onClick={this.removeAddressFromWhitelist.bind(this, data)}
+                      label="Add"
+                    />
+                  )}
+                </td>
+              )}
+            </TableRow>
+          )
+        })
+      } else {
+        rows = null
+      }
     } else {
       rows = null
     }
@@ -146,23 +173,31 @@ class WhitelistModal extends Component {
               </Label>
             </Box>
           </Box>
-          <Table responsive={false}>
-            <thead>
-              <tr>
-                {this.props.isOwner && <th />}
-                <th>{local.whitelist.layer.number}</th>
-                <th>{local.whitelist.layer.publicID}</th>
-                <th>{local.whitelist.layer.entry}</th>
-                <th>status</th>
-                {this.props.isOwner && <th />}
-              </tr>
-            </thead>
-            <tbody>{rows}</tbody>
-          </Table>
-          {this.props.isOwner && (
-            <Button primary={true} onClick={removeAddressesHandler}>
-              {local.whitelist.removeSelected}
-            </Button>
+          {this.state.isLoading ? (
+            <Spinning size="large" />
+          ) : (
+            <Box full={true} align="center">
+              <Table responsive={false}>
+                <thead>
+                  <tr>
+                    {this.props.isOwner && <th />}
+                    <th>{local.whitelist.layer.number}</th>
+                    <th>{local.whitelist.layer.publicID}</th>
+                    <th>{local.whitelist.layer.entry}</th>
+                    <th>status</th>
+                    {this.props.isOwner && <th />}
+                  </tr>
+                </thead>
+                <tbody>{rows}</tbody>
+              </Table>
+              {this.props.isOwner && (
+                <Button
+                  primary={true}
+                  onClick={removeAddressesHandler}
+                  label={local.whitelist.removeSelected}
+                />
+              )}
+            </Box>
           )}
         </Box>
       </main>
