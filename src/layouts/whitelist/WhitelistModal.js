@@ -32,6 +32,8 @@ class WhitelistModal extends Component {
             isLoading: false
           })
         })
+      } else {
+        this.getWhitelistStatuses(addresses)
       }
     }
   }
@@ -105,7 +107,8 @@ class WhitelistModal extends Component {
             <TableRow key={index}>
               {this.props.isOwner && (
                 <td>
-                  {this.state.statuses[index] === 'whitelited' && (
+                  {this.state.statuses[index] ===
+                    local.whitelist.whitelisted && (
                     <CheckBox
                       onChange={this.checkBoxStateDidChange.bind(this, data)}
                     />
@@ -115,9 +118,10 @@ class WhitelistModal extends Component {
               <td>{index + 1}</td>
               <td>{data}</td>
               <td>
-                {this.state.statuses[index] ? 'whitelisted' : 'not whitelisted'}
+                {this.state.statuses[index]
+                  ? local.whitelist.whitelisted
+                  : local.whitelist.notWhitelisted}
               </td>
-              <td />
               {this.props.isOwner && (
                 <td>
                   {this.state.statuses[index] ? (
@@ -127,11 +131,7 @@ class WhitelistModal extends Component {
                       label={local.whitelist.remove}
                     />
                   ) : (
-                    <Button
-                      primary={true}
-                      onClick={this.removeAddressFromWhitelist.bind(this, data)}
-                      label="Add"
-                    />
+                    <Button primary={true} label={local.whitelist.add} />
                   )}
                 </td>
               )}
@@ -183,8 +183,7 @@ class WhitelistModal extends Component {
                     {this.props.isOwner && <th />}
                     <th>{local.whitelist.layer.number}</th>
                     <th>{local.whitelist.layer.publicID}</th>
-                    <th>{local.whitelist.layer.entry}</th>
-                    <th>status</th>
+                    <th>{local.whitelist.status}</th>
                     {this.props.isOwner && <th />}
                   </tr>
                 </thead>

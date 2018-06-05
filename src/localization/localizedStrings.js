@@ -30,7 +30,11 @@ let local = new LocalizedStrings({
         entry: 'created'
       },
       remove: 'Remove',
-      removeSelected: 'Remove all selected'
+      removeSelected: 'Remove all selected',
+      whitelisted: 'whitelisted',
+      notWhitelisted: 'not whitelisted',
+      add: 'Add',
+      status: 'Status'
     },
     help: {
       headline: 'Help',
@@ -77,7 +81,11 @@ let local = new LocalizedStrings({
         entry: 'erstellt am'
       },
       remove: 'Entfernen',
-      removeSelected: 'Alle Markierten entfernen'
+      removeSelected: 'Alle Markierten entfernen',
+      whitelisted: 'Auf der Whitelist',
+      notWhitelisted: 'Nicht auf der Whitelist',
+      add: 'Hinzufügen',
+      status: 'Status'
     },
     help: {
       headline: 'Hilfe',
