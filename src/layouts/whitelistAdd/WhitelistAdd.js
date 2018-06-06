@@ -122,6 +122,17 @@ class WhitelistAdd extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if (this.props.accounts[0] !== prevProps.accounts[0]) {
+      this.checkOwner()
+    }
+    if (this.dataKeyOwner in this.props.Whitelist.owner) {
+      const isOwner =
+        this.props.accounts[0] ===
+        this.props.Whitelist.owner[this.dataKeyOwner].value
+      if (prevState.isOwner !== isOwner) {
+        this.setState({ isOwner })
+      }
+    }
     if (this.props.transactionStack[this.stackId]) {
       const txHash = this.props.transactionStack[this.stackId]
       const { status } = this.props.transactions[txHash]
