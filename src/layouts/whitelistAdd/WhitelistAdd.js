@@ -59,11 +59,18 @@ class WhitelistAdd extends Component {
   createAddressFields(count) {
     var fields = this.state.formObject
     fields[count] = (
-      <FormField label={'Address'} key={count} id={count + ''}>
+      <FormField
+        label={'Address'}
+        key={count}
+        id={count + ''}
+        style={{ position: 'relative' }}>
         <TextInput
           onBlur={event => this.addAddressToObject(event.target.value, count)}
         />
-        <CloseIcon onClick={() => this.removeAddressField(count)} />
+        <CloseIcon
+          onClick={() => this.removeAddressField(count)}
+          style={{ position: 'absolute', top: '0px', right: '0px' }}
+        />
       </FormField>
     )
   }
@@ -200,7 +207,6 @@ class WhitelistAdd extends Component {
         </Paragraph>
       )
     }
-    console.log(this.state.isOwner)
     if (this.state.isOwner) {
       return (
         <Box>
