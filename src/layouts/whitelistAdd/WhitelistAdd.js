@@ -15,7 +15,24 @@ import {
 import { utils } from 'web3'
 import PropTypes from 'prop-types'
 
-import * as options from '../../util/options'
+const options = [
+  {
+    value: 'DE',
+    label: 'DE'
+  },
+  {
+    value: 'FR',
+    label: 'FR'
+  },
+  {
+    value: 'EN',
+    label: 'EN'
+  },
+  {
+    value: 'US',
+    label: 'US'
+  }
+]
 import PendingTxModal from '../../components/PendingTxModal'
 
 class WhitelistAdd extends Component {
@@ -254,7 +271,7 @@ class WhitelistAdd extends Component {
           <FormField label={'Country'}>
             <Select
               id={'select'}
-              options={options.countries}
+              options={options}
               value={this.state.country}
               onChange={option => {
                 this.setCountry(option.value)
