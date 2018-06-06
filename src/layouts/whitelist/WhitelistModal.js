@@ -107,8 +107,7 @@ class WhitelistModal extends Component {
             <TableRow key={index}>
               {this.props.isOwner && (
                 <td>
-                  {this.state.statuses[index] ===
-                    local.whitelist.whitelisted && (
+                  {this.state.statuses[index] && (
                     <CheckBox
                       onChange={this.checkBoxStateDidChange.bind(this, data)}
                     />
