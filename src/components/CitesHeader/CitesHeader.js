@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router'
 import { Header, Image, Menu, Title, Anchor } from 'grommet'
 import logo from '../../imgs/croco.png'
-import s from '../../localization/localizedStrings'
+import local from '../../localization/localizedStrings'
 
 /*
  * Customized Header component to wrap the app in
@@ -23,16 +23,34 @@ class CitesHeader extends Component {
         <Menu direction={'row'}>
           <Menu
             responsive={true}
-            label={s.whitelist}
+            label={local.header.whitelist}
             inline={false}
             direction={'column'}>
-            <Anchor path="/whitelist">Whitelist</Anchor>
-            <Anchor path="/whitelist/add">Add Addresses</Anchor>
+            <Anchor path="/whitelist">
+              {local.header.whitelistMenu.whitelist}
+            </Anchor>
+            <Anchor path="/whitelist/add">
+              {local.header.whitelistMenu.whitelistAdd}
+            </Anchor>
           </Menu>
-          <Link tp="/permits">{s.permits}</Link>
-          <Link to="/analytics">{s.analytics}</Link>
-          <Link to="/import-export">{s.importExport}</Link>
-          <Link to="/help">{s.help}</Link>
+          <Menu
+            responsive={true}
+            label={local.header.permits}
+            inline={false}
+            direction={'column'}>
+            <Anchor path="/permits">
+              {local.header.permitsMenu.listPermits}
+            </Anchor>
+            <Anchor path="/permits/create">
+              {local.header.permitsMenu.createPermit}
+            </Anchor>
+            <Anchor path="/permits/process">
+              {local.header.permitsMenu.processPermit}
+            </Anchor>
+          </Menu>
+          <Link to="/analytics">{local.header.analytics}</Link>
+          <Link to="/import-export">{local.header.importExport}</Link>
+          <Link to="/help">{local.header.help}</Link>
         </Menu>
       </Header>
     )
