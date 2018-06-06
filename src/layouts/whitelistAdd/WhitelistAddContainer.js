@@ -8,7 +8,7 @@ const mapStateToProps = state => {
     drizzleStatus: state.drizzleStatus,
     transactions: state.transactions,
     transactionStack: state.transactionStack,
-    Whitelist: state.contracts.Whitelist
+    PermitFactory: state.contracts.PermitFactory
   }
 }
 

@@ -52,14 +52,14 @@ class WhitelistAdd extends Component {
       isOwner: false
     }
     this.contracts = context.drizzle.contracts
-    this.dataKeyOwner = this.contracts.Whitelist.methods.owner.cacheCall()
+    this.dataKeyOwner = this.contracts.PermitFactory.methods.owner.cacheCall()
     console.log(this.props.isOwner)
   }
   checkOwner() {
-    if (this.dataKeyOwner in this.props.Whitelist.owner) {
+    if (this.dataKeyOwner in this.props.PermitFactory.owner) {
       if (
         this.props.accounts[0] ===
-        this.props.Whitelist.owner[this.dataKeyOwner].value
+        this.props.PermitFactory.owner[this.dataKeyOwner].value
       ) {
         this.setState({ isOwner: true })
       } else {
@@ -115,7 +115,7 @@ class WhitelistAdd extends Component {
       addressesToAdd.every(ad => utils.isAddress(ad)) &&
       this.state.country !== ''
     ) {
-      this.stackId = this.contracts.Whitelist.methods.addAddresses.cacheSend(
+      this.stackId = this.contracts.PermitFactory.methods.addAddresses.cacheSend(
         addressesToAdd,
         utils.asciiToHex(this.state.country),
         { from: this.props.accounts[0] }
@@ -142,10 +142,10 @@ class WhitelistAdd extends Component {
     if (this.props.accounts[0] !== prevProps.accounts[0]) {
       this.checkOwner()
     }
-    if (this.dataKeyOwner in this.props.Whitelist.owner) {
+    if (this.dataKeyOwner in this.props.PermitFactory.owner) {
       const isOwner =
         this.props.accounts[0] ===
-        this.props.Whitelist.owner[this.dataKeyOwner].value
+        this.props.PermitFactory.owner[this.dataKeyOwner].value
       if (prevState.isOwner !== isOwner) {
         this.setState({ isOwner })
       }
@@ -313,7 +313,7 @@ WhitelistAdd.propTypes = {
   history: PropTypes.object,
   dataKeyAddresses: PropTypes.string,
   isOwner: PropTypes.bool,
-  Whitelist: PropTypes.object
+  PermitFactory: PropTypes.object
 }
 
 WhitelistAdd.contextTypes = {
