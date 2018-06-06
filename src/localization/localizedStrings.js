@@ -4,6 +4,10 @@ let local = new LocalizedStrings({
   en: {
     header: {
       whitelist: 'Whitelist',
+      whitelistMenu: {
+        whitelist: 'Whitelist',
+        whitelistAdd: 'Add Address'
+      },
       permits: 'Permits',
       permitsMenu: {
         listPermits: 'List Permits',
