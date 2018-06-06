@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import { Header, Image, Menu, Title, Anchor } from 'grommet'
 import logo from '../../imgs/croco.png'
 import local from '../../localization/localizedStrings'
+import FlagIconFactory from 'react-flag-icon-css'
 
 /*
  * Customized Header component to wrap the app in
@@ -10,6 +11,27 @@ import local from '../../localization/localizedStrings'
 
 class CitesHeader extends Component {
   render() {
+    const FlagIcon = FlagIconFactory(React, { useCssModules: false })
+    const currentLanguage =
+      local.getLanguage() === 'en' ? 'gb' : local.getLanguage()
+    const languages = local
+      .getAvailableLanguages()
+      .map(function(language, index) {
+        if (language === local.getLanguage()) {
+          return
+        } else {
+          let code = language === 'en' ? 'gb' : language
+          return (
+            <Anchor
+              key={index}
+              onClick={() => {
+                local.setLanguage(language)
+              }}>
+              <FlagIcon code={code} size="lg" />
+            </Anchor>
+          )
+        }
+      })
     return (
       <Header
         fixed={true}
@@ -54,6 +76,13 @@ class CitesHeader extends Component {
           <Link to="/analytics">{local.header.analytics}</Link>
           <Link to="/import-export">{local.header.importExport}</Link>
           <Link to="/help">{local.header.help}</Link>
+          <Menu
+            responsive={true}
+            label={<FlagIcon code={currentLanguage} size="lg" />}
+            inline={false}
+            direction={'column'}>
+            {languages}
+          </Menu>
         </Menu>
       </Header>
     )

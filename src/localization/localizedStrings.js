@@ -54,6 +54,14 @@ let local = new LocalizedStrings({
       openingHours: '7 am - 9 pm E.T.',
       contactPhone: '(1-⁠844-⁠627-⁠2871)',
       officeName: 'Cites Office:'
+    },
+    permits: {
+      permits: 'permits',
+      permitNumber: 'Permit number',
+      countryOfExport: 'Country of export',
+      countryOfImport: 'Country of import',
+      lastUpdate: 'Last update',
+      status: 'Status'
     }
   },
   de: {
@@ -105,6 +113,14 @@ let local = new LocalizedStrings({
       openingHours: '7 - 21 Uhr E.T.',
       contactPhone: '(1-⁠844-⁠627-⁠2871)',
       officeName: 'Cites Büro:'
+    },
+    permits: {
+      permits: 'Genehmigungen',
+      permitNumber: 'Genehmigungs-Nr.',
+      countryOfExport: 'Exportland',
+      countryOfImport: 'Importland',
+      lastUpdate: 'Letztes Update',
+      status: 'Status'
     }
   }
 })

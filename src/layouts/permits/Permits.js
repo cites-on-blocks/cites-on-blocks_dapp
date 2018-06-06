@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import local from '../../localization/localizedStrings'
 import {
   Box,
   Columns,
@@ -276,16 +277,16 @@ class Permits extends Component {
           />
         )}
         <Heading tag={'h2'} align={'center'} margin={'medium'}>
-          Permits
+          {local.permits.permits}
         </Heading>
         <Table>
           <thead>
             <tr>
-              <th>Permit number</th>
-              <th>Country of export</th>
-              <th>Country of import</th>
-              <th>Last update</th>
-              <th>Status</th>
+              <th>{local.permits.permitNumber}</th>
+              <th>{local.permits.countryOfExport}</th>
+              <th>{local.permits.countryOfImport}</th>
+              <th>{local.permits.lastUpdate}</th>
+              <th>{local.permits.status}</th>
             </tr>
           </thead>
           <tbody>
