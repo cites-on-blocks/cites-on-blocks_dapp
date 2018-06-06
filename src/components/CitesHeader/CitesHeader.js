@@ -24,7 +24,18 @@ class CitesHeader extends Component {
           </Link>
         </Title>
         <Menu direction={'row'}>
-          <Link to="/whitelist">{local.header.whitelist}</Link>
+          <Menu
+            responsive={true}
+            label={local.header.whitelist}
+            inline={false}
+            direction={'column'}>
+            <Anchor path="/whitelist">
+              {local.header.whitelistMenu.whitelist}
+            </Anchor>
+            <Anchor path="/whitelist/add">
+              {local.header.whitelistMenu.whitelistAdd}
+            </Anchor>
+          </Menu>
           <Menu
             responsive={true}
             label={local.header.permits}
