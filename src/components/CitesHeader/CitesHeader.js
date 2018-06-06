@@ -2,11 +2,12 @@ import React, { Component } from 'react'
 import { Link } from 'react-router'
 import { Header, Image, Menu, Title, Anchor } from 'grommet'
 import logo from '../../imgs/croco.png'
-import s from '../../localization/localizedStrings'
+import local from '../../localization/localizedStrings'
 
 /*
  * Customized Header component to wrap the app in
  */
+
 class CitesHeader extends Component {
   render() {
     return (
@@ -18,22 +19,30 @@ class CitesHeader extends Component {
         separator="bottom"
         pad={{ horizontal: 'small' }}>
         <Title>
-          <Image src={logo} alt="logo" size="thumb" />
+          <Link to="/">
+            <Image src={logo} alt="logo" size="thumb" />
+          </Link>
         </Title>
         <Menu direction={'row'}>
-          <Link to="/whitelist">{s.whitelist}</Link>
+          <Link to="/whitelist">{local.header.whitelist}</Link>
           <Menu
             responsive={true}
-            label={s.permits}
+            label={local.header.permits}
             inline={false}
             direction={'column'}>
-            <Anchor path="/permits">List Permits</Anchor>
-            <Anchor path="/permits/create">Create Permit</Anchor>
-            <Anchor path="/permits/process">Process Permit</Anchor>
+            <Anchor path="/permits">
+              {local.header.permitsMenu.listPermits}
+            </Anchor>
+            <Anchor path="/permits/create">
+              {local.header.permitsMenu.createPermit}
+            </Anchor>
+            <Anchor path="/permits/process">
+              {local.header.permitsMenu.processPermit}
+            </Anchor>
           </Menu>
-          <Link to="/analytics">{s.analytics}</Link>
-          <Link to="/import-export">{s.importExport}</Link>
-          <Link to="/help">{s.help}</Link>
+          <Link to="/analytics">{local.header.analytics}</Link>
+          <Link to="/import-export">{local.header.importExport}</Link>
+          <Link to="/help">{local.header.help}</Link>
         </Menu>
       </Header>
     )
