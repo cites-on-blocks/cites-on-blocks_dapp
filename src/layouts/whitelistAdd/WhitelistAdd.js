@@ -31,10 +31,25 @@ class WhitelistAdd extends Component {
         text: ''
       },
       valid: true,
-      txStatus: ''
+      txStatus: '',
+      isOwner: false
     }
     this.contracts = context.drizzle.contracts
+    this.dataKeyOwner = this.contracts.Whitelist.methods.owner.cacheCall()
     console.log(this.props.isOwner)
+  }
+  checkOwner() {
+    if (this.dataKeyOwner in this.props.Whitelist.owner) {
+      if (
+        this.props.accounts[0] ===
+        this.props.Whitelist.owner[this.dataKeyOwner].value
+      ) {
+        this.setState({ isOwner: true })
+      } else {
+        this.setState({ isOwner: false })
+      }
+    }
+    console.log(this.state.isOwner)
   }
   //find a better fitting name
   addAddressField() {
@@ -95,6 +110,7 @@ class WhitelistAdd extends Component {
   }
 
   componentDidMount() {
+    this.checkOwner()
     this.addAddressField()
   }
 
@@ -182,8 +198,8 @@ class WhitelistAdd extends Component {
         </Paragraph>
       )
     }
-    //remove the undefined
-    if (this.props.isOwner || this.props.isOwner === undefined) {
+    console.log(this.state.isOwner)
+    if (this.state.isOwner) {
       return (
         <Box>
           {this.state.modal.show && (
@@ -260,7 +276,8 @@ WhitelistAdd.propTypes = {
   transactions: PropTypes.object,
   history: PropTypes.object,
   dataKeyAddresses: PropTypes.string,
-  isOwner: PropTypes.bool
+  isOwner: PropTypes.bool,
+  Whitelist: PropTypes.object
 }
 
 WhitelistAdd.contextTypes = {
