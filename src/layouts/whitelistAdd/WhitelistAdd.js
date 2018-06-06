@@ -160,8 +160,10 @@ class WhitelistAdd extends Component {
   }
 
   removeAddressField(id) {
-    delete this.state.formObject[id]
-    delete this.state.addressObject[id]
+    if (Object.keys(this.state.formObject).length > 1) {
+      delete this.state.formObject[id]
+      delete this.state.addressObject[id]
+    }
   }
 
   allInputIsValid() {
