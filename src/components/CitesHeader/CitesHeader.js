@@ -7,6 +7,7 @@ import local from '../../localization/localizedStrings'
 /*
  * Customized Header component to wrap the app in
  */
+
 class CitesHeader extends Component {
   render() {
     return (
@@ -16,9 +17,11 @@ class CitesHeader extends Component {
         align={'end'}
         justify="between"
         separator="bottom"
-        pad={{ horizontal: 'small', vertical: 'small' }}>
+        pad={{ horizontal: 'small' }}>
         <Title>
-          <Image src={logo} alt="logo" size="thumb" />
+          <Link to="/">
+            <Image src={logo} alt="logo" size="thumb" />
+          </Link>
         </Title>
         <Menu direction={'row'}>
           <Menu
