@@ -52,21 +52,15 @@ class Permits extends Component {
     this.web3 = web3
   }
 
-  componentDidMount() {
-    this.getEvents()
-    this.setAuthCountry()
+  async componentDidMount() {
+    await Promise.all([this.getEvents(), this.setAuthCountry()])
     // NOTE: Initiate our own event listener because we can not use reactive event data with
     //       MetaMask and Drizzle.
-    this.intervalId = setInterval(() => {
-      this.web3.eth
-        .getBlockNumber()
-        .then(blockNumber => {
-          if (blockNumber > this.state.latestBlock) {
-            this.getEvents(blockNumber)
-          }
-          return
-        })
-        .catch(e => console.log(e))
+    this.intervalId = setInterval(async () => {
+      const blockNumber = await this.web3.eth.getBlockNumber()
+      if (blockNumber > this.state.latestBlock) {
+        this.getEvents(blockNumber)
+      }
     }, 3000)
   }
 
@@ -109,33 +103,44 @@ class Permits extends Component {
     }
   }
 
-  handleSelect(event) {
-    let selectedPermit
-    this.contracts.PermitFactory.methods
+  async handleSelect(event) {
+    const rawPermit = await this.contracts.PermitFactory.methods
       .getPermit(event.permitHash)
       .call()
-      .then(rawPermit => parseRawPermit(rawPermit))
-      .then(parsedPermit => {
-        selectedPermit = parsedPermit
-        const specimenPromises = parsedPermit.specimenHashes.map(s =>
-          this.contracts.PermitFactory.methods.specimens(s).call()
-        )
-        return Promise.all(specimenPromises)
-      })
-      .then(rawSpecimens => {
-        const parsedSpecimens = rawSpecimens.map(s => parseRawSpecimen(s))
-        this.setState({
-          selectedPermit: {
-            ...selectedPermit,
-            specimens: parsedSpecimens,
-            status: event.status,
-            timestamp: event.timestamp,
-            permitHash: event.permitHash
-          }
-        })
-        return
-      })
-      .catch(error => console.log(error))
+    const parsedPermit = parseRawPermit(rawPermit)
+    const specimenPromises = parsedPermit.specimenHashes.map(s =>
+      this.contracts.PermitFactory.methods.specimens(s).call()
+    )
+    const rawSpecimens = await Promise.all(specimenPromises)
+    const parsedSpecimens = rawSpecimens.map(s => parseRawSpecimen(s))
+    this.setState({
+      selectedPermit: {
+        ...parsedPermit,
+        specimens: parsedSpecimens,
+        status: event.status,
+        timestamp: event.timestamp,
+        permitHash: event.permitHash
+      }
+    })
+  }
+
+  async setAuthCountry() {
+    const country = await this.PermitFactory.methods
+      .authorityToCountry(this.props.accounts[0])
+      .call()
+    this.setState({
+      authCountry: utils.hexToUtf8(country)
+    })
+  }
+
+  processPermit(isAccepted) {
+    // stack id used for monitoring transaction
+    this.stackId = this.contracts.PermitFactory.methods.confirmPermit.cacheSend(
+      this.state.selectedPermit.permitHash,
+      this.state.selectedPermit.specimenHashes,
+      isAccepted,
+      { from: this.props.accounts[0] }
+    )
   }
 
   onDeselect() {
@@ -154,28 +159,6 @@ class Permits extends Component {
     })
   }
 
-  setAuthCountry() {
-    this.PermitFactory.methods
-      .authorityToCountry(this.props.accounts[0])
-      .call()
-      .then(country =>
-        this.setState({
-          authCountry: utils.hexToUtf8(country)
-        })
-      )
-      .catch(e => console.log(e))
-  }
-
-  processPermit(isAccepted) {
-    // stack id used for monitoring transaction
-    this.stackId = this.contracts.PermitFactory.methods.confirmPermit.cacheSend(
-      this.state.selectedPermit.permitHash,
-      this.state.selectedPermit.specimenHashes,
-      isAccepted,
-      { from: this.props.accounts[0] }
-    )
-  }
-
   changeTxState(newTxState) {
     this.onDeselect()
     if (newTxState === 'pending') {
@@ -183,7 +166,7 @@ class Permits extends Component {
         txStatus: 'pending',
         modal: {
           show: true,
-          text: 'Permit accept pending...'
+          text: 'Permit process pending...'
         }
       })
     } else if (newTxState === 'success') {
@@ -192,7 +175,7 @@ class Permits extends Component {
         txStatus: 'success',
         modal: {
           show: true,
-          text: 'Permit creation successful!'
+          text: 'Permit process successful!'
         }
       })
     } else {
@@ -201,7 +184,7 @@ class Permits extends Component {
         txStatus: 'failed',
         modal: {
           show: true,
-          text: 'Permit creation has failed.'
+          text: 'Permit process failed.'
         }
       })
     }
