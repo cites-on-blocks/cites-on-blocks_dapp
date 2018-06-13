@@ -21,6 +21,14 @@ export const DEFAULT_PERMIT = {
   exporter: ['', '', '']
 }
 
+export const PERMITS_TABLE_HEADER_LABELS = [
+  'permitHash',
+  'exportCountry',
+  'importCountry',
+  'timestamp',
+  'status'
+]
+
 export function convertSpecimensToArrays(specimens) {
   return specimens.reduce(
     (result, specimen) => {
@@ -142,4 +150,22 @@ export function mergePermitEvents(oldEvents, newEvents) {
     }
     return result
   }, [])
+}
+
+export function sortPermitEvents(events, attribute, ascending) {
+  return events.sort((a, b) => {
+    if (attribute === 'permitHash' || attribute === 'timestamp') {
+      return ascending
+        ? a[attribute] - b[attribute]
+        : b[attribute] - a[attribute]
+    } else {
+      if (a[attribute] < b[attribute]) {
+        return ascending ? -1 : 1
+      }
+      if (a[attribute] > b[attribute]) {
+        return ascending ? 1 : -1
+      }
+      return 0
+    }
+  })
 }
