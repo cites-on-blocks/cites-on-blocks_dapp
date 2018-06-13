@@ -19,7 +19,9 @@ import { trimHash } from '../../util/stringUtils'
 import {
   parseRawPermit,
   parseRawSpecimen,
-  mergePermitEvents
+  mergePermitEvents,
+  getPermitEvents,
+  blockNumberToUnix
 } from '../../util/permitUtils'
 
 class Permits extends Component {
@@ -88,61 +90,23 @@ class Permits extends Component {
     clearInterval(this.intervalId)
   }
 
-  getEvents(from = 0) {
-    const options = {
-      fromBlock: from
-    }
-    Promise.all([
-      this.PermitFactory.getPastEvents('PermitCreated', options),
-      this.PermitFactory.getPastEvents('PermitConfirmed', options)
+  async getEvents(from = 0) {
+    const [createdPermits, confirmedPermits] = await Promise.all([
+      getPermitEvents(this.PermitFactory, 'PermitCreated', from),
+      getPermitEvents(this.PermitFactory, 'PermitConfirmed', from)
     ])
-      .then(([createdPermits, confirmedPermits]) => {
-        const events = createdPermits
-          .concat(confirmedPermits)
-          .map(e => this.formatEvent(e))
-        if (events.length > 0) {
-          this.setState({ latestBlock: events[0].blockNumber })
-          this.blockNumberToUnix(events)
-        }
-        return
+    const events = createdPermits.concat(confirmedPermits)
+    if (events.length > 0) {
+      const newEvents = await blockNumberToUnix(this.web3, events)
+      const mergedEvents = mergePermitEvents(this.state.events, newEvents).sort(
+        (a, b) => b.blockNumber - a.blockNumber
+      )
+      this.setState({
+        ...this.state,
+        latestBlock: events[0].blockNumber,
+        events: mergedEvents
       })
-      .catch(error => console.log(error))
-  }
-
-  formatEvent(permitEvent) {
-    const { blockNumber, event, returnValues } = permitEvent
-    const { permitHash, exportCountry, importCountry } = returnValues
-    return {
-      event,
-      blockNumber,
-      permitHash,
-      exportCountry: utils.hexToUtf8(exportCountry),
-      importCountry: utils.hexToUtf8(importCountry),
-      status: event === 'PermitCreated' ? 'created' : 'processed'
     }
-  }
-
-  blockNumberToUnix(events) {
-    const blockPromises = events.map(e =>
-      this.web3.eth.getBlock(e.blockNumber, false)
-    )
-    Promise.all(blockPromises)
-      .then(blocks => {
-        const newEvents = events.map((e, i) => ({
-          ...e,
-          // convert seconds into miliseconds
-          timestamp: blocks[i].timestamp * 1000
-        }))
-        const oldEvents = this.state.events
-        const mergedEvents = mergePermitEvents(oldEvents, newEvents).sort(
-          (a, b) => b.blockNumber - a.blockNumber
-        )
-        this.setState({
-          events: mergedEvents
-        })
-        return
-      })
-      .catch(error => console.log(error))
   }
 
   handleSelect(event) {

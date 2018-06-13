@@ -75,6 +75,59 @@ export function parseRawSpecimen(rawSpecimen) {
   }
 }
 
+/**
+ * Fetches event logs from the PermitFactory contract.
+ * @param {object} permitFactory A web3 instance of the PermitFactory contract.
+ * @param {string} eventName Name of the event log -> `PermitCreated` or `PermitConfirmed`.
+ * @param {number} fromBlock Start of block range for query.
+ * @returns An array of formatted PermitFactory event logs.
+ */
+export async function getPermitEvents(permitFactory, eventName, fromBlock = 0) {
+  const events = await permitFactory.getPastEvents(eventName, { fromBlock })
+  return events.map(e => _formatEvent(e))
+}
+
+/**
+ * Formats an event log of the PermitFactory contract. Only for internal use.
+ * @param {object} permitEvent Unformatted PermitFactory event log.
+ * @returns Formatted event log.
+ */
+function _formatEvent(permitEvent) {
+  const { blockNumber, event, returnValues } = permitEvent
+  const { permitHash, exportCountry, importCountry } = returnValues
+  return {
+    event,
+    blockNumber,
+    permitHash,
+    exportCountry: utils.hexToUtf8(exportCountry),
+    importCountry: utils.hexToUtf8(importCountry),
+    status: event === 'PermitCreated' ? 'created' : 'processed'
+  }
+}
+
+/**
+ * Formats the block number of events to the corresponding UNIX timestamps.
+ * @param {object} web3 A web3 instance.
+ * @param {Array} events Array of events with blocknumber attribute.
+ * @returns {Promise<number[]>} Array of UNIX timestamps in ms in the same order as given events.
+ */
+export async function blockNumberToUnix(web3, events) {
+  const blocks = await Promise.all(
+    events.map(e => web3.eth.getBlock(e.blockNumber, false))
+  )
+  return events.map((e, i) => ({
+    ...e,
+    // convert seconds into miliseconds
+    timestamp: blocks[i].timestamp * 1000
+  }))
+}
+
+/**
+ * Merges two event arrays. Overwrites an event if a second event with status `processed` is given.
+ * @param {Array} oldEvents Array of current event logs.
+ * @param {Array} newEvents Array of new event lgos.
+ * @returns Array of merged events where only one event exists per permit hash.
+ */
 export function mergePermitEvents(oldEvents, newEvents) {
   const mergedEvents = newEvents.concat(oldEvents)
   return mergedEvents.reduce((result, current) => {
