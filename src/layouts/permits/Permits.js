@@ -6,6 +6,7 @@ import {
   Columns,
   Button,
   Table,
+  TableHeader,
   TableRow,
   Timestamp,
   Heading
@@ -21,7 +22,9 @@ import {
   parseRawSpecimen,
   mergePermitEvents,
   getPermitEvents,
-  blockNumberToUnix
+  blockNumberToUnix,
+  sortPermitEvents,
+  PERMITS_TABLE_HEADER_LABELS
 } from '../../util/permitUtils'
 
 class Permits extends Component {
@@ -41,7 +44,12 @@ class Permits extends Component {
         show: false,
         text: ''
       },
-      txStatus: ''
+      txStatus: '',
+      // sort
+      sort: {
+        index: 3,
+        ascending: false
+      }
     }
     this.contracts = context.drizzle.contracts
     // NOTE: We have to iniate a new web3 instance for retrieving event via `getPastEvents`.
@@ -190,6 +198,22 @@ class Permits extends Component {
     }
   }
 
+  handleSort(index) {
+    const { events, sort } = this.state
+    const sortedEvents = sortPermitEvents(
+      events,
+      PERMITS_TABLE_HEADER_LABELS[index],
+      !sort.ascending
+    )
+    this.setState({
+      events: sortedEvents,
+      sort: {
+        index,
+        ascending: !sort.ascending
+      }
+    })
+  }
+
   render() {
     const { selectedPermit, authCountry } = this.state
     return (
@@ -227,15 +251,18 @@ class Permits extends Component {
           {local.permits.permits}
         </Heading>
         <Table>
-          <thead>
-            <tr>
-              <th>{local.permits.permitNumber}</th>
-              <th>{local.permits.countryOfExport}</th>
-              <th>{local.permits.countryOfImport}</th>
-              <th>{local.permits.lastUpdate}</th>
-              <th>{local.permits.status}</th>
-            </tr>
-          </thead>
+          <TableHeader
+            labels={[
+              local.permits.permitNumber,
+              local.permits.countryOfExport,
+              local.permits.countryOfImport,
+              local.permits.lastUpdate,
+              local.permits.status
+            ]}
+            sortIndex={this.state.sort.index}
+            sortAscending={this.state.sort.ascending}
+            onSort={index => this.handleSort(index)}
+          />
           <tbody>
             {this.state.events.map((event, i) => (
               <TableRow key={i} onClick={() => this.handleSelect(event)}>
