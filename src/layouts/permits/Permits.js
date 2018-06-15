@@ -8,15 +8,15 @@ import {
   Table,
   TableHeader,
   TableRow,
-  Timestamp,
-  Heading
+  Timestamp
 } from 'grommet'
 import Web3, { utils } from 'web3'
 
 import PermitDetailsModal from '../../components/PermitDetailsModal'
 import PendingTxModal from '../../components/PendingTxModal'
+import PermitsToolbar from '../../components/PermitsToolbar'
 
-import { trimHash } from '../../util/stringUtils'
+import { trimHash, toUnixTimestamp } from '../../util/stringUtils'
 import {
   parseRawPermit,
   parseRawSpecimen,
@@ -33,6 +33,7 @@ class Permits extends Component {
     this.state = {
       // permit events
       events: [],
+      filteredEvents: [],
       // selected permit for detailed information
       selectedPermit: '',
       // latest block for retrieved events
@@ -62,6 +63,7 @@ class Permits extends Component {
 
   async componentDidMount() {
     await Promise.all([this.getEvents(), this.setAuthCountry()])
+    this.setState({ filteredEvents: this.state.events })
     // NOTE: Initiate our own event listener because we can not use reactive event data with
     //       MetaMask and Drizzle.
     this.intervalId = setInterval(async () => {
@@ -214,6 +216,39 @@ class Permits extends Component {
     })
   }
 
+  handleFilter(attr, value) {
+    const { events } = this.state
+    const filteredEvents =
+      value !== 'all' ? events.filter(e => e[attr] === value) : events
+    this.setState({ filteredEvents })
+  }
+
+  handleDateFilter(startDate, endDate) {
+    const { events } = this.state
+    if (startDate) {
+      const [day, month, year] = startDate.split('/')
+      startDate = toUnixTimestamp(new Date(year, month - 1, day))
+    }
+    if (endDate) {
+      let [day, month, year] = endDate.split('/')
+      day++
+      endDate = toUnixTimestamp(new Date(year, month - 1, day))
+    }
+    const filteredEvents = events.filter(e => {
+      if (startDate && endDate) {
+        return startDate <= e.timestamp && e.timestamp <= endDate
+      }
+      if (startDate && !endDate) {
+        return startDate <= e.timestamp
+      }
+      if (!startDate && endDate) {
+        return e.timestamp <= endDate
+      }
+      return true
+    })
+    this.setState({ filteredEvents })
+  }
+
   render() {
     const { selectedPermit, authCountry } = this.state
     return (
@@ -247,9 +282,10 @@ class Permits extends Component {
             onClose={() => this.closeTxModal()}
           />
         )}
-        <Heading tag={'h2'} align={'center'} margin={'medium'}>
-          {local.permits.permits}
-        </Heading>
+        <PermitsToolbar
+          onSelectChange={(attr, value) => this.handleFilter(attr, value)}
+          onDateChange={(start, end) => this.handleDateFilter(start, end)}
+        />
         <Table>
           <TableHeader
             labels={[
@@ -264,7 +300,7 @@ class Permits extends Component {
             onSort={index => this.handleSort(index)}
           />
           <tbody>
-            {this.state.events.map((event, i) => (
+            {this.state.filteredEvents.map((event, i) => (
               <TableRow key={i} onClick={() => this.handleSelect(event)}>
                 <td>{trimHash(event.permitHash)}</td>
                 <td>{event.exportCountry}</td>
