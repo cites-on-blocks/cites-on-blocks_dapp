@@ -16,3 +16,25 @@ export const countries = [
     label: 'US' // TODO add country flag
   }
 ]
+
+export const COUNTRY_FILTER_OPTS = [
+  {
+    value: 'all',
+    label: 'All'
+  }
+].concat(countries)
+
+export const STATUS_FILTER_OPTS = [
+  {
+    value: 'all',
+    label: 'All'
+  },
+  {
+    value: 'created',
+    label: 'Created'
+  },
+  {
+    value: 'processed',
+    label: 'Processed'
+  }
+]
