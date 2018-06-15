@@ -117,7 +117,7 @@ function _formatEvent(permitEvent) {
  * Formats the block number of events to the corresponding UNIX timestamps.
  * @param {object} web3 A web3 instance.
  * @param {Array} events Array of events with blocknumber attribute.
- * @returns {Promise<number[]>} Array of UNIX timestamps in ms in the same order as given events.
+ * @returns {Promise<number[]>} Array of events with UNIX timestamps in ms.
  */
 export async function blockNumberToUnix(web3, events) {
   const blocks = await Promise.all(
