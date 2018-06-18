@@ -318,7 +318,11 @@ class Permits extends Component {
                 <td>
                   <Timestamp value={event.timestamp} />
                 </td>
-                <td>{event.status}</td>
+                <td>
+                  {event.status === 'created'
+                    ? local.permits.created
+                    : local.permits.processed}
+                </td>
               </TableRow>
             ))}
           </tbody>

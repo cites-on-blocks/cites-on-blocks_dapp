@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Box, Search, Select, FormField, DateTime } from 'grommet'
 
 import { COUNTRY_FILTER_OPTS, STATUS_FILTER_OPTS } from '../../util/options'
+import local from '../../localization/localizedStrings'
 
 /**
  * Component for form elements of species information
@@ -38,7 +39,7 @@ class PermitsToolbar extends Component {
     return (
       <Box margin={'medium'}>
         <Search
-          placeHolder={'Search for permit number'}
+          placeHolder={local.permits.searchPlaceholder}
           inline={true}
           responsive={false}
           suggestions={searchSuggestions}
@@ -54,7 +55,7 @@ class PermitsToolbar extends Component {
         />
         <Box direction={'row'} margin={{ vertical: 'medium' }}>
           <Box basis={'1/4'}>
-            <FormField label={'Ex. country'}>
+            <FormField label={local.permits.countryOfExport}>
               <Select
                 value={exCountryFilter}
                 options={COUNTRY_FILTER_OPTS}
@@ -66,7 +67,7 @@ class PermitsToolbar extends Component {
             </FormField>
           </Box>
           <Box basis={'1/4'}>
-            <FormField label={'Im. country'}>
+            <FormField label={local.permits.countryOfImport}>
               <Select
                 value={imCountryFilter}
                 options={COUNTRY_FILTER_OPTS}
@@ -78,7 +79,7 @@ class PermitsToolbar extends Component {
             </FormField>
           </Box>
           <Box basis={'1/4'}>
-            <FormField label={'Status'}>
+            <FormField label={local.permits.status}>
               <Select
                 value={statusFilter}
                 options={STATUS_FILTER_OPTS}
@@ -90,7 +91,7 @@ class PermitsToolbar extends Component {
             </FormField>
           </Box>
           <Box basis={'1/4'}>
-            <FormField label={'From'}>
+            <FormField label={local.permits.from}>
               <DateTime
                 id={'startTime'}
                 name={'startTime'}
@@ -104,7 +105,7 @@ class PermitsToolbar extends Component {
             </FormField>
           </Box>
           <Box basis={'1/4'}>
-            <FormField label={'To'}>
+            <FormField label={local.permits.to}>
               <DateTime
                 id={'endTime'}
                 name={'endTime'}
