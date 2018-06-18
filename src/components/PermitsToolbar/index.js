@@ -24,7 +24,6 @@ class PermitsToolbar extends Component {
     const {
       searchSuggestions,
       onSearchChange,
-      onSearchSelect,
       onSelectChange,
       onDateChange
     } = this.props
@@ -44,8 +43,14 @@ class PermitsToolbar extends Component {
           responsive={false}
           suggestions={searchSuggestions}
           value={searchInput}
-          onSelect={() => onSearchSelect()}
-          onDOMChange={() => onSearchChange()}
+          onSelect={({ suggestion }) => {
+            this.setState({ searchInput: suggestion })
+            onSearchChange(suggestion)
+          }}
+          onDOMChange={e => {
+            this.setState({ searchInput: e.target.value })
+            onSearchChange(e.target.value)
+          }}
         />
         <Box direction={'row'} margin={{ vertical: 'medium' }}>
           <Box basis={'1/4'}>

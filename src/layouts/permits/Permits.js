@@ -249,6 +249,14 @@ class Permits extends Component {
     this.setState({ filteredEvents })
   }
 
+  handleSearch(searchInput) {
+    const { events } = this.state
+    const filteredEvents = events.filter(e =>
+      e.permitHash.includes(searchInput)
+    )
+    this.setState({ filteredEvents })
+  }
+
   render() {
     const { selectedPermit, authCountry } = this.state
     return (
@@ -283,6 +291,8 @@ class Permits extends Component {
           />
         )}
         <PermitsToolbar
+          searchSuggestions={this.state.filteredEvents.map(e => e.permitHash)}
+          onSearchChange={searchInput => this.handleSearch(searchInput)}
           onSelectChange={(attr, value) => this.handleFilter(attr, value)}
           onDateChange={(start, end) => this.handleDateFilter(start, end)}
         />
