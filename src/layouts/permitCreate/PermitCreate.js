@@ -5,6 +5,7 @@ import {
   Box,
   Columns,
   Heading,
+  Paragraph,
   Select,
   FormField,
   AddIcon,
@@ -248,6 +249,9 @@ class PermitCreate extends Component {
   }
 
   handleUpload() {
+    if (!this.state.isXML) {
+      return
+    }
     const { permit } = this.state
     const { xmlToJSON } = this.state
     console.log(xmlToJSON)
@@ -315,6 +319,15 @@ class PermitCreate extends Component {
 
   render() {
     const { permitForm, permit, specimens, isValid } = this.state
+    var XMLerror = ''
+    if (!(this.state.isXML || this.state.isXML === 'initial')) {
+      XMLerror = (
+        <Paragraph style={{ color: 'red' }}>
+          The file you are trying to upload is not an XML document. Please make
+          sure your file has the correct type
+        </Paragraph>
+      )
+    }
     return (
       <Box>
         {this.state.modal.show && (
@@ -452,6 +465,13 @@ class PermitCreate extends Component {
             icon={<DocumentUploadIcon />}
             onClick={() => this.handleUpload()}
           />
+        </Box>
+        <Box
+          justify={'center'}
+          size={'full'}
+          direction={'row'}
+          margin={'medium'}>
+          {XMLerror}
         </Box>
       </Box>
     )
