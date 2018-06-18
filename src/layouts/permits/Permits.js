@@ -201,14 +201,14 @@ class Permits extends Component {
   }
 
   handleSort(index) {
-    const { events, sort } = this.state
+    const { filteredEvents, sort } = this.state
     const sortedEvents = sortPermitEvents(
-      events,
+      filteredEvents,
       PERMITS_TABLE_HEADER_LABELS[index],
       !sort.ascending
     )
     this.setState({
-      events: sortedEvents,
+      filteredEvents: sortedEvents,
       sort: {
         index,
         ascending: !sort.ascending
