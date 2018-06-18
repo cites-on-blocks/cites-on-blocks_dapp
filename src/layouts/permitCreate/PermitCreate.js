@@ -17,6 +17,8 @@ import SpeciesInputs from '../../components/SpeciesInputs'
 import PendingTxModal from '../../components/PendingTxModal'
 import * as permitUtils from '../../util/permitUtils'
 
+var parseString = require('xml2js').parseString
+
 // NOTE: to be replaced with proper country list from whitelist ui branch
 const COUNTRIES = [
   {
@@ -54,7 +56,9 @@ class PermitCreate extends Component {
       // tx status
       txStatus: '',
       // used for form validation
-      isValid: 'initial'
+      isValid: 'initial',
+      xmlToJSON: {},
+      isXML: 'initial'
     }
     // for convinience
     this.contracts = context.drizzle.contracts
@@ -238,6 +242,73 @@ class PermitCreate extends Component {
     return isValid === 'initial' ? '' : !value && !isValid && errText
   }
 
+  handleUpload() {
+    const { permit } = this.state
+    const { xmlToJSON } = this.state
+    console.log(xmlToJSON)
+    //set address data
+    var exportInfo =
+      xmlToJSON['ns2:CITESEPermit']['ns2:SpecifiedSupplyChainConsignment'][0]
+        .ConsignorTradeParty[0]
+    var exportAddress = exportInfo.PostalTradeAddress[0]
+    permit.exportCountry = exportAddress.CountryID
+    permit.exporter = [
+      exportInfo.Name[0],
+      exportAddress.StreetName[0],
+      exportAddress.CityName[0]
+    ]
+    var importInfo =
+      xmlToJSON['ns2:CITESEPermit']['ns2:SpecifiedSupplyChainConsignment'][0]
+        .ConsigneeTradeParty[0]
+    var importAddress = importInfo.PostalTradeAddress[0]
+    permit.importCountry = importAddress.CountryID
+    permit.importer = [
+      importInfo.Name[0],
+      importAddress.StreetName[0],
+      importAddress.CityName[0]
+    ]
+    //set species data
+    var speciesXML =
+      xmlToJSON['ns2:CITESEPermit']['ns2:SpecifiedSupplyChainConsignment'][0]
+        .IncludedSupplyChainConsignmentItem
+    var speciesArray = speciesXML.map(xml => {
+      var specimen = permitUtils.DEFAULT_SPECIMEN
+      var xmlData =
+        xml.IncludedSupplyChainTradeLineItem[0].SpecifiedTradeProduct[0]
+      specimen.scientificName = xmlData.ScientificName[0]
+      specimen.commonName = xmlData.CommonName[0]
+      specimen.description = xmlData.Description[0]
+      specimen.quantity = xml.TransportLogisticsPackage[0].ItemQuantity[0]._
+      return specimen
+    })
+    console.log(speciesArray)
+    const specimens = speciesArray
+    this.setState({ permit })
+    this.setState({ specimens })
+    console.log(this.state)
+  }
+
+  handleUploadChange(event) {
+    var { isXML } = this.state
+    if (event.target.files[0].name.split('.')[1] !== 'xml') {
+      isXML = false
+      this.setState({ isXML })
+      return
+    }
+    isXML = true
+    this.setState({ isXML })
+    var file = event.target.files[0]
+    var reader = new FileReader()
+    reader.onload = event => {
+      var xml = event.target.result
+      parseString(xml, (err, result) => {
+        const xmlToJSON = result
+        this.setState({ xmlToJSON })
+      })
+    }
+    reader.readAsText(file)
+  }
+
   render() {
     const { permitForm, permit, specimens, isValid } = this.state
     return (
@@ -361,6 +432,21 @@ class PermitCreate extends Component {
             label={'Create Permit'}
             icon={<DocumentUploadIcon />}
             onClick={() => this.createPermit()}
+          />
+        </Box>
+        <Box
+          justify={'center'}
+          size={'full'}
+          direction={'row'}
+          margin={'medium'}>
+          <input
+            type="file"
+            onChange={event => this.handleUploadChange(event)}
+          />
+          <Button
+            label={'Import as XML'}
+            icon={<DocumentUploadIcon />}
+            onClick={() => this.handleUpload()}
           />
         </Box>
       </Box>
