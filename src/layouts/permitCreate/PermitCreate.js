@@ -242,14 +242,22 @@ class PermitCreate extends Component {
     return isValid === 'initial' ? '' : !value && !isValid && errText
   }
 
+  getXMLNamespace() {
+    var xml = this.state.xmlToJSON
+    return Object.keys(xml)[0].split(':')[0] //maybe better to work with the text/xml. this works for now
+  }
+
   handleUpload() {
     const { permit } = this.state
     const { xmlToJSON } = this.state
     console.log(xmlToJSON)
+    const XMLNamespace = this.getXMLNamespace()
+    var generalInfo =
+      xmlToJSON[XMLNamespace + ':CITESEPermit'][
+        'ns2:SpecifiedSupplyChainConsignment'
+      ][0]
     //set address data
-    var exportInfo =
-      xmlToJSON['ns2:CITESEPermit']['ns2:SpecifiedSupplyChainConsignment'][0]
-        .ConsignorTradeParty[0]
+    var exportInfo = generalInfo.ConsignorTradeParty[0]
     var exportAddress = exportInfo.PostalTradeAddress[0]
     permit.exportCountry = exportAddress.CountryID
     permit.exporter = [
@@ -257,9 +265,7 @@ class PermitCreate extends Component {
       exportAddress.StreetName[0],
       exportAddress.CityName[0]
     ]
-    var importInfo =
-      xmlToJSON['ns2:CITESEPermit']['ns2:SpecifiedSupplyChainConsignment'][0]
-        .ConsigneeTradeParty[0]
+    var importInfo = generalInfo.ConsigneeTradeParty[0]
     var importAddress = importInfo.PostalTradeAddress[0]
     permit.importCountry = importAddress.CountryID
     permit.importer = [
@@ -268,9 +274,7 @@ class PermitCreate extends Component {
       importAddress.CityName[0]
     ]
     //set species data
-    var speciesXML =
-      xmlToJSON['ns2:CITESEPermit']['ns2:SpecifiedSupplyChainConsignment'][0]
-        .IncludedSupplyChainConsignmentItem
+    var speciesXML = generalInfo.IncludedSupplyChainConsignmentItem
     var speciesArray = speciesXML.map(xml => {
       var specimen = permitUtils.DEFAULT_SPECIMEN
       var xmlData =
@@ -444,7 +448,7 @@ class PermitCreate extends Component {
             onChange={event => this.handleUploadChange(event)}
           />
           <Button
-            label={'Import as XML'}
+            label={'Import from XML'}
             icon={<DocumentUploadIcon />}
             onClick={() => this.handleUpload()}
           />
