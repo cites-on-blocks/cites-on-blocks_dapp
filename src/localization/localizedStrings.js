@@ -62,6 +62,20 @@ let local = new LocalizedStrings({
       countryOfImport: 'Country of import',
       lastUpdate: 'Last update',
       status: 'Status'
+    },
+    analytics: {
+      headline: 'Analytics',
+      menu: 'Dashboard',
+      permitChart: {
+        headline: 'Permit',
+        export: 'Export',
+        reExport: 'Re-Export',
+        import: 'Import',
+        other: 'Others'
+      },
+      workChart: {
+        headline: 'Worker'
+      }
     }
   },
   de: {
@@ -121,6 +135,20 @@ let local = new LocalizedStrings({
       countryOfImport: 'Importland',
       lastUpdate: 'Letztes Update',
       status: 'Status'
+    },
+    analytics: {
+      headline: 'Analyse',
+      menu: 'Dashboard',
+      permitChart: {
+        headline: 'Genehmigung',
+        export: 'Export',
+        reExport: 'Re-Export',
+        import: 'Import',
+        other: 'Anderes'
+      },
+      workChart: {
+        headline: 'Arbeiter'
+      }
     }
   }
 })
