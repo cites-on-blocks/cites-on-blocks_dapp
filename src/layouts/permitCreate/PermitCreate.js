@@ -371,7 +371,7 @@ class PermitCreate extends Component {
           margin={'medium'}>
           <Heading tag={'h3'}>{local.permits.species}</Heading>
           <Button
-            label={'Add Species'}
+            label={local.permits.addSpecies}
             icon={<AddIcon />}
             onClick={() => this.addSpecies()}
           />
@@ -399,7 +399,7 @@ class PermitCreate extends Component {
           margin={'medium'}>
           <Button
             primary={true}
-            label={'Create Permit'}
+            label={local.permits.createPermit}
             icon={<DocumentUploadIcon />}
             onClick={() => this.createPermit()}
           />

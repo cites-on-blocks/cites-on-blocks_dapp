@@ -86,7 +86,8 @@ let local = new LocalizedStrings({
       quantity: 'Quantity',
       originPermitNumber: 'Number of origin permit',
       reExportPermitNumber: 'Number of last re-exprt permit',
-      createPermit: 'Permit erstellen'
+      createPermit: 'Create permit',
+      species: 'Species'
     }
   },
   de: {
@@ -171,7 +172,8 @@ let local = new LocalizedStrings({
       quantity: 'Anzahl',
       originPermitNumber: 'Nummer der Ursprungsgenehmigung',
       reExportPermitNumber: 'Nummer der letzten Re-Exportgenehmigung',
-      createPermit: 'Permit erstellen'
+      createPermit: 'Permit erstellen',
+      species: 'Spezies'
     }
   }
 })

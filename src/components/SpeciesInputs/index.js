@@ -39,7 +39,9 @@ class SpeciesInputs extends Component {
           size={'full'}
           direction={'row'}
           pad={{ horizontal: 'medium' }}>
-          <Heading tag={'h3'}>Species {index + 1}</Heading>
+          <Heading tag={'h3'}>
+            {local.permits.species} {index + 1}
+          </Heading>
           {index !== 0 && (
             <Button icon={<SubtractIcon />} onClick={() => onRemove(index)} />
           )}
