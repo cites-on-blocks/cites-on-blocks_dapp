@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Box, FormField, TextInput } from 'grommet'
+import local from '../../localization/localizedStrings'
 
 /**
  * Component for form elements of addresses of exporter / importer
@@ -11,12 +12,18 @@ class AddressInputs extends Component {
     return isValid === 'initial' ? '' : !value && !isValid && errText
   }
 
+  getLabel(recipient, label) {
+    return recipient === 'exporter'
+      ? local.permits[`ex${label}`]
+      : local.permits[`im${label}`]
+  }
+
   render() {
     const { recipient, address, onChange } = this.props
     return (
       <Box justify={'between'} size={'large'}>
         <FormField
-          label={`Name of ${recipient}`}
+          label={this.getLabel(recipient, 'Name')}
           error={this.getError(address[0], 'required')}>
           <TextInput
             id={`${recipient}Name`}
@@ -25,7 +32,7 @@ class AddressInputs extends Component {
           />
         </FormField>
         <FormField
-          label={`Street of ${recipient}`}
+          label={this.getLabel(recipient, 'Street')}
           error={this.getError(address[1], 'required')}>
           <TextInput
             id={`${recipient}Street`}
@@ -34,7 +41,7 @@ class AddressInputs extends Component {
           />
         </FormField>
         <FormField
-          label={`City of ${recipient}`}
+          label={this.getLabel(recipient, 'City')}
           error={this.getError(address[2], 'required')}>
           <TextInput
             id={`${recipient}City`}

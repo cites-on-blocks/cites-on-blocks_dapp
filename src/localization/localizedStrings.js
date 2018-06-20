@@ -56,7 +56,8 @@ let local = new LocalizedStrings({
       officeName: 'Cites Office:'
     },
     permits: {
-      permits: 'permits',
+      permit: 'Permit',
+      permits: 'Permits',
       permitNumber: 'Permit number',
       countryOfExport: 'Country of export',
       countryOfImport: 'Country of import',
@@ -66,7 +67,26 @@ let local = new LocalizedStrings({
       to: 'To',
       searchPlaceholder: 'Search for permit number',
       created: 'created',
-      processed: 'processed'
+      processed: 'processed',
+      originHashPlaceholder: 'Search for number of origin permit',
+      reExportPlaceholder: 'Search for number of last re-export permit',
+      type: 'Typ',
+      permitType: 'Permit type',
+      exName: 'Name of exporter',
+      exStreet: 'Street of exporter',
+      exCity: 'City of exporter',
+      imName: 'Name of importer',
+      imStreet: 'Street of importer',
+      imCity: 'City of importer',
+      specimens: 'Specimens',
+      addSpecies: 'Add species',
+      commonName: 'Common name',
+      scientificName: 'Scientific name',
+      description: 'Description',
+      quantity: 'Quantity',
+      originPermitNumber: 'Number of origin permit',
+      reExportPermitNumber: 'Number of last re-exprt permit',
+      createPermit: 'Permit erstellen'
     }
   },
   de: {
@@ -120,6 +140,7 @@ let local = new LocalizedStrings({
       officeName: 'Cites Büro:'
     },
     permits: {
+      permit: 'Genehmigung',
       permits: 'Genehmigungen',
       permitNumber: 'Genehmigungs-Nr.',
       countryOfExport: 'Exportland',
@@ -130,7 +151,27 @@ let local = new LocalizedStrings({
       to: 'Bis',
       searchPlaceholder: 'Nach Genehmigungs-Nr. suchen',
       created: 'erstellt',
-      processed: 'bearbeitet'
+      processed: 'bearbeitet',
+      originHashPlaceholder: 'Nach Nummer der Ursprungsgenehmigung suchen',
+      reExportPlaceholder:
+        'Nach Nummer der letzten Re-Exportgenehmigung suchen',
+      type: 'Typ',
+      permitType: 'Permittyp',
+      exName: 'Name des Exporters',
+      exStreet: 'Straße des Exporters',
+      exCity: 'Stadt des Exporters',
+      imName: 'Name des Importers',
+      imStreet: 'Straße des Importers',
+      imCity: 'Stadt des Importers',
+      specimens: 'Spezien',
+      addSpecies: 'Spezies hinzufügen',
+      commonName: 'Allgemeiner Name',
+      scientificName: 'Wissenschaftlicher Name',
+      description: 'Beschreibung',
+      quantity: 'Anzahl',
+      originPermitNumber: 'Nummer der Ursprungsgenehmigung',
+      reExportPermitNumber: 'Nummer der letzten Re-Exportgenehmigung',
+      createPermit: 'Permit erstellen'
     }
   }
 })
