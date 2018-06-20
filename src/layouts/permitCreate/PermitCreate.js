@@ -10,12 +10,13 @@ import {
   AddIcon,
   DocumentUploadIcon
 } from 'grommet'
-import { utils } from 'web3'
+import Web3, { utils } from 'web3'
 
 import AddressInputs from '../../components/AddressInputs'
 import SpeciesInputs from '../../components/SpeciesInputs'
 import PendingTxModal from '../../components/PendingTxModal'
 import * as permitUtils from '../../util/permitUtils'
+import local from '../../localization/localizedStrings'
 
 // NOTE: to be replaced with proper country list from whitelist ui branch
 const COUNTRIES = [
@@ -54,15 +55,27 @@ class PermitCreate extends Component {
       // tx status
       txStatus: '',
       // used for form validation
-      isValid: 'initial'
+      isValid: 'initial',
+      hashSuggestions: []
     }
     // for convinience
     this.contracts = context.drizzle.contracts
+    // NOTE: We have to iniate a new web3 instance for retrieving event via `getPastEvents`.
+    //       MetaMask does not support websockets and Drizzle retrieves events via subscriptions.
+    const web3 = new Web3(this.contracts.PermitFactory.givenProvider)
+    const { abi, address } = this.contracts.PermitFactory
+    this.PermitFactory = new web3.eth.Contract(abi, address)
     this.setAuthToCountryKey()
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.handleFormChange(this.state.permitForm)
+    const events = await permitUtils.getPermitEvents(
+      this.PermitFactory,
+      'PermitCreated'
+    )
+    const permitHashes = events.map(e => e.permitHash)
+    this.setState({ hashSuggestions: permitHashes })
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -121,8 +134,8 @@ class PermitCreate extends Component {
         specimensAsArrays.scientificNames.map(e => utils.asciiToHex(e)),
         specimensAsArrays.commonNames.map(e => utils.asciiToHex(e)),
         specimensAsArrays.descriptions.map(e => utils.asciiToHex(e)),
-        specimensAsArrays.originHashes.map(e => utils.asciiToHex(e)),
-        specimensAsArrays.reExportHashes.map(e => utils.asciiToHex(e)),
+        specimensAsArrays.originHashes,
+        specimensAsArrays.reExportHashes,
         { from: this.props.accounts[0] }
       )
     }
@@ -239,7 +252,13 @@ class PermitCreate extends Component {
   }
 
   render() {
-    const { permitForm, permit, specimens, isValid } = this.state
+    const {
+      permitForm,
+      permit,
+      specimens,
+      isValid,
+      hashSuggestions
+    } = this.state
     return (
       <Box>
         {this.state.modal.show && (
@@ -261,10 +280,10 @@ class PermitCreate extends Component {
           />
         )}
         <Heading align={'center'} margin={'medium'}>
-          CITES Permit
+          CITES {local.permits.permit}
         </Heading>
         <Columns justify={'between'} size={'large'}>
-          <FormField label={'Type'}>
+          <FormField label={local.permits.type}>
             <Select
               value={permitForm}
               options={permitUtils.PERMIT_FORMS}
@@ -273,7 +292,7 @@ class PermitCreate extends Component {
               }}
             />
           </FormField>
-          <FormField label={'Permit type'}>
+          <FormField label={local.permits.permitType}>
             <Select
               value={permit.permitType}
               options={permitUtils.PERMIT_TYPES}
@@ -285,7 +304,7 @@ class PermitCreate extends Component {
         </Columns>
         <Columns justify={'between'} size={'large'}>
           <FormField
-            label={'Country of export'}
+            label={local.permits.countryOfExport}
             error={this.getError(permit.exportCountry, 'required')}>
             <Select
               value={permit.exportCountry}
@@ -296,7 +315,7 @@ class PermitCreate extends Component {
             />
           </FormField>
           <FormField
-            label={'Country of import'}
+            label={local.permits.countryOfImport}
             error={this.getError(permit.importCountry, 'required')}>
             <Select
               value={permit.importCountry}
@@ -330,7 +349,7 @@ class PermitCreate extends Component {
           size={'full'}
           direction={'row'}
           margin={'medium'}>
-          <Heading tag={'h3'}>Specimens</Heading>
+          <Heading tag={'h3'}>{local.permits.species}</Heading>
           <Button
             label={'Add Species'}
             icon={<AddIcon />}
@@ -349,6 +368,7 @@ class PermitCreate extends Component {
               this.removeSpecies(index)
             }}
             isValid={isValid}
+            hashSuggestions={hashSuggestions}
           />
         ))}
         <Box

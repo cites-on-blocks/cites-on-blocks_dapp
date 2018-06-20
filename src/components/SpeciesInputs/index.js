@@ -8,8 +8,11 @@ import {
   TextInput,
   NumberInput,
   Heading,
-  SubtractIcon
+  SubtractIcon,
+  SearchInput
 } from 'grommet'
+
+import local from '../../localization/localizedStrings'
 
 /**
  * Component for form elements of species information
@@ -21,7 +24,7 @@ class SpeciesInputs extends Component {
   }
 
   render() {
-    const { index, species, onChange, onRemove } = this.props
+    const { index, species, onChange, onRemove, hashSuggestions } = this.props
     return (
       <Box margin={{ bottom: 'large' }}>
         <Box
@@ -36,7 +39,7 @@ class SpeciesInputs extends Component {
         </Box>
         <Columns justify={'between'} size={'large'}>
           <FormField
-            label={'Scientific name'}
+            label={local.permits.scientificName}
             error={this.getError(species.scientificName, 'required')}>
             <TextInput
               value={species.scientificName}
@@ -44,7 +47,7 @@ class SpeciesInputs extends Component {
             />
           </FormField>
           <FormField
-            label={'Common name'}
+            label={local.permits.commonName}
             error={this.getError(species.commonName, 'required')}>
             <TextInput
               value={species.commonName}
@@ -52,14 +55,14 @@ class SpeciesInputs extends Component {
             />
           </FormField>
         </Columns>
-        <FormField label={'Description'}>
+        <FormField label={local.permits.description}>
           <TextInput
             value={species.description}
             onDOMChange={e => onChange('description', e.target.value)}
           />
         </FormField>
         <FormField
-          label={'Quantity'}
+          label={local.permits.quantity}
           error={this.getError(species.quantity, 'required')}>
           <NumberInput
             value={species.quantity}
@@ -68,15 +71,25 @@ class SpeciesInputs extends Component {
             onChange={e => onChange('quantity', e.target.value)}
           />
         </FormField>
-        <FormField label={'Number of origin permit'}>
-          <TextInput
+        <FormField label={local.permits.originPermitNumber}>
+          <SearchInput
+            placeHolder={local.permits.originHashPlaceholder}
+            inline={true}
+            responsive={false}
+            suggestions={hashSuggestions}
             value={species.originHash}
+            onSelect={({ suggestion }) => onChange('originHash', suggestion)}
             onDOMChange={e => onChange('originHash', e.target.value)}
           />
         </FormField>
-        <FormField label={'Number of last re-export permit'}>
-          <TextInput
+        <FormField label={local.permits.reExportPermitNumber}>
+          <SearchInput
+            placeHolder={local.permits.reExportPlaceholder}
+            inline={true}
+            responsive={false}
+            suggestions={hashSuggestions}
             value={species.reExportHash}
+            onSelect={({ suggestion }) => onChange('reExportHash', suggestion)}
             onDOMChange={e => onChange('reExportHash', e.target.value)}
           />
         </FormField>
@@ -90,7 +103,8 @@ SpeciesInputs.propTypes = {
   species: PropTypes.object,
   onChange: PropTypes.func,
   onRemove: PropTypes.func,
-  isValid: PropTypes.any
+  isValid: PropTypes.any,
+  hashSuggestions: PropTypes.array
 }
 
 export default SpeciesInputs
