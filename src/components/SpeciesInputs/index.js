@@ -82,7 +82,9 @@ class SpeciesInputs extends Component {
         </FormField>
         {permitType === 'RE-EXPORT' && (
           <div>
-            <FormField label={local.permits.originPermitNumber}>
+            <FormField
+              label={local.permits.originPermitNumber}
+              error={this.getError(species.originHash, 'required')}>
               <SearchInput
                 placeHolder={local.permits.originHashPlaceholder}
                 inline={true}
@@ -95,7 +97,9 @@ class SpeciesInputs extends Component {
                 onDOMChange={e => onChange('originHash', e.target.value)}
               />
             </FormField>
-            <FormField label={local.permits.reExportPermitNumber}>
+            <FormField
+              label={local.permits.reExportPermitNumber}
+              error={this.getError(species.reExportHash, 'required')}>
               <SearchInput
                 placeHolder={local.permits.reExportPlaceholder}
                 inline={true}
