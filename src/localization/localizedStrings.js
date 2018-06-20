@@ -61,7 +61,12 @@ let local = new LocalizedStrings({
       countryOfExport: 'Country of export',
       countryOfImport: 'Country of import',
       lastUpdate: 'Last update',
-      status: 'Status'
+      status: 'Status',
+      from: 'From',
+      to: 'To',
+      searchPlaceholder: 'Search for permit number',
+      created: 'created',
+      processed: 'processed'
     }
   },
   de: {
@@ -120,7 +125,12 @@ let local = new LocalizedStrings({
       countryOfExport: 'Exportland',
       countryOfImport: 'Importland',
       lastUpdate: 'Letztes Update',
-      status: 'Status'
+      status: 'Status',
+      from: 'Von',
+      to: 'Bis',
+      searchPlaceholder: 'Nach Genehmigungs-Nr. suchen',
+      created: 'erstellt',
+      processed: 'bearbeitet'
     }
   }
 })
