@@ -134,8 +134,12 @@ class PermitCreate extends Component {
         specimensAsArrays.scientificNames.map(e => utils.asciiToHex(e)),
         specimensAsArrays.commonNames.map(e => utils.asciiToHex(e)),
         specimensAsArrays.descriptions.map(e => utils.asciiToHex(e)),
-        specimensAsArrays.originHashes,
-        specimensAsArrays.reExportHashes,
+        specimensAsArrays.originHashes.map(
+          hash => (hash ? hash : utils.asciiToHex(hash))
+        ),
+        specimensAsArrays.reExportHashes.map(
+          hash => (hash ? hash : utils.asciiToHex(hash))
+        ),
         { from: this.props.accounts[0] }
       )
     }
@@ -240,9 +244,25 @@ class PermitCreate extends Component {
       permit.importer &&
       permit.exporter
     const specimensValid = specimens.reduce((isValid, specimen) => {
-      const { quantity, scientificName, commonName } = specimen
-      return quantity > 0 && scientificName && commonName
-    }, false)
+      let validHashes
+      const {
+        quantity,
+        scientificName,
+        commonName,
+        originHash,
+        reExportHash
+      } = specimen
+      if (permit.permitType === 'RE-EXPORT') {
+        validHashes =
+          permitUtils.isValidPermitHash(originHash) &&
+          permitUtils.isValidPermitHash(reExportHash)
+      } else {
+        validHashes = true
+      }
+      return (
+        isValid && quantity > 0 && scientificName && commonName && validHashes
+      )
+    }, true)
     return permitValid && specimensValid
   }
 
@@ -369,6 +389,7 @@ class PermitCreate extends Component {
             }}
             isValid={isValid}
             hashSuggestions={hashSuggestions}
+            permitType={permit.permitType}
           />
         ))}
         <Box

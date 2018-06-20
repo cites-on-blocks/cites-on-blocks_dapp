@@ -24,7 +24,14 @@ class SpeciesInputs extends Component {
   }
 
   render() {
-    const { index, species, onChange, onRemove, hashSuggestions } = this.props
+    const {
+      index,
+      species,
+      onChange,
+      onRemove,
+      hashSuggestions,
+      permitType
+    } = this.props
     return (
       <Box margin={{ bottom: 'large' }}>
         <Box
@@ -71,28 +78,36 @@ class SpeciesInputs extends Component {
             onChange={e => onChange('quantity', e.target.value)}
           />
         </FormField>
-        <FormField label={local.permits.originPermitNumber}>
-          <SearchInput
-            placeHolder={local.permits.originHashPlaceholder}
-            inline={true}
-            responsive={false}
-            suggestions={hashSuggestions}
-            value={species.originHash}
-            onSelect={({ suggestion }) => onChange('originHash', suggestion)}
-            onDOMChange={e => onChange('originHash', e.target.value)}
-          />
-        </FormField>
-        <FormField label={local.permits.reExportPermitNumber}>
-          <SearchInput
-            placeHolder={local.permits.reExportPlaceholder}
-            inline={true}
-            responsive={false}
-            suggestions={hashSuggestions}
-            value={species.reExportHash}
-            onSelect={({ suggestion }) => onChange('reExportHash', suggestion)}
-            onDOMChange={e => onChange('reExportHash', e.target.value)}
-          />
-        </FormField>
+        {permitType === 'RE-EXPORT' && (
+          <div>
+            <FormField label={local.permits.originPermitNumber}>
+              <SearchInput
+                placeHolder={local.permits.originHashPlaceholder}
+                inline={true}
+                responsive={false}
+                suggestions={hashSuggestions}
+                value={species.originHash}
+                onSelect={({ suggestion }) =>
+                  onChange('originHash', suggestion)
+                }
+                onDOMChange={e => onChange('originHash', e.target.value)}
+              />
+            </FormField>
+            <FormField label={local.permits.reExportPermitNumber}>
+              <SearchInput
+                placeHolder={local.permits.reExportPlaceholder}
+                inline={true}
+                responsive={false}
+                suggestions={hashSuggestions}
+                value={species.reExportHash}
+                onSelect={({ suggestion }) =>
+                  onChange('reExportHash', suggestion)
+                }
+                onDOMChange={e => onChange('reExportHash', e.target.value)}
+              />
+            </FormField>
+          </div>
+        )}
       </Box>
     )
   }
@@ -104,7 +119,8 @@ SpeciesInputs.propTypes = {
   onChange: PropTypes.func,
   onRemove: PropTypes.func,
   isValid: PropTypes.any,
-  hashSuggestions: PropTypes.array
+  hashSuggestions: PropTypes.array,
+  permitType: PropTypes.string
 }
 
 export default SpeciesInputs
