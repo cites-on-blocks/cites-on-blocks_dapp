@@ -6,7 +6,7 @@ import { COUNTRY_FILTER_OPTS, STATUS_FILTER_OPTS } from '../../util/options'
 import local from '../../localization/localizedStrings'
 
 /**
- * Component for form elements of species information
+ * Component for toolbar in Permits List.
  */
 class PermitsToolbar extends Component {
   constructor(props) {

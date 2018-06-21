@@ -169,3 +169,11 @@ export function sortPermitEvents(events, attribute, ascending) {
     }
   })
 }
+
+export function isValidPermitHash(hash) {
+  console.log(hash.length, utils.isHex(hash))
+  if (hash.substr(0, 2) === '0x') {
+    return hash.length === 66 && utils.isHex(hash)
+  }
+  return hash.length === 64 && utils.isHex(hash)
+}

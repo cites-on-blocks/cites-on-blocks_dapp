@@ -8,8 +8,11 @@ import {
   TextInput,
   NumberInput,
   Heading,
-  SubtractIcon
+  SubtractIcon,
+  SearchInput
 } from 'grommet'
+
+import local from '../../localization/localizedStrings'
 
 /**
  * Component for form elements of species information
@@ -21,7 +24,14 @@ class SpeciesInputs extends Component {
   }
 
   render() {
-    const { index, species, onChange, onRemove } = this.props
+    const {
+      index,
+      species,
+      onChange,
+      onRemove,
+      hashSuggestions,
+      permitType
+    } = this.props
     return (
       <Box margin={{ bottom: 'large' }}>
         <Box
@@ -29,14 +39,16 @@ class SpeciesInputs extends Component {
           size={'full'}
           direction={'row'}
           pad={{ horizontal: 'medium' }}>
-          <Heading tag={'h3'}>Species {index + 1}</Heading>
+          <Heading tag={'h3'}>
+            {local.permits.species} {index + 1}
+          </Heading>
           {index !== 0 && (
             <Button icon={<SubtractIcon />} onClick={() => onRemove(index)} />
           )}
         </Box>
         <Columns justify={'between'} size={'large'}>
           <FormField
-            label={'Scientific name'}
+            label={local.permits.scientificName}
             error={this.getError(species.scientificName, 'required')}>
             <TextInput
               value={species.scientificName}
@@ -44,7 +56,7 @@ class SpeciesInputs extends Component {
             />
           </FormField>
           <FormField
-            label={'Common name'}
+            label={local.permits.commonName}
             error={this.getError(species.commonName, 'required')}>
             <TextInput
               value={species.commonName}
@@ -52,14 +64,14 @@ class SpeciesInputs extends Component {
             />
           </FormField>
         </Columns>
-        <FormField label={'Description'}>
+        <FormField label={local.permits.description}>
           <TextInput
             value={species.description}
             onDOMChange={e => onChange('description', e.target.value)}
           />
         </FormField>
         <FormField
-          label={'Quantity'}
+          label={local.permits.quantity}
           error={this.getError(species.quantity, 'required')}>
           <NumberInput
             value={species.quantity}
@@ -68,18 +80,40 @@ class SpeciesInputs extends Component {
             onChange={e => onChange('quantity', e.target.value)}
           />
         </FormField>
-        <FormField label={'Number of origin permit'}>
-          <TextInput
-            value={species.originHash}
-            onDOMChange={e => onChange('originHash', e.target.value)}
-          />
-        </FormField>
-        <FormField label={'Number of last re-export permit'}>
-          <TextInput
-            value={species.reExportHash}
-            onDOMChange={e => onChange('reExportHash', e.target.value)}
-          />
-        </FormField>
+        {permitType === 'RE-EXPORT' && (
+          <div>
+            <FormField
+              label={local.permits.originPermitNumber}
+              error={this.getError(species.originHash, 'required')}>
+              <SearchInput
+                placeHolder={local.permits.originHashPlaceholder}
+                inline={true}
+                responsive={false}
+                suggestions={hashSuggestions}
+                value={species.originHash}
+                onSelect={({ suggestion }) =>
+                  onChange('originHash', suggestion)
+                }
+                onDOMChange={e => onChange('originHash', e.target.value)}
+              />
+            </FormField>
+            <FormField
+              label={local.permits.reExportPermitNumber}
+              error={this.getError(species.reExportHash, 'required')}>
+              <SearchInput
+                placeHolder={local.permits.reExportPlaceholder}
+                inline={true}
+                responsive={false}
+                suggestions={hashSuggestions}
+                value={species.reExportHash}
+                onSelect={({ suggestion }) =>
+                  onChange('reExportHash', suggestion)
+                }
+                onDOMChange={e => onChange('reExportHash', e.target.value)}
+              />
+            </FormField>
+          </div>
+        )}
       </Box>
     )
   }
@@ -90,7 +124,9 @@ SpeciesInputs.propTypes = {
   species: PropTypes.object,
   onChange: PropTypes.func,
   onRemove: PropTypes.func,
-  isValid: PropTypes.any
+  isValid: PropTypes.any,
+  hashSuggestions: PropTypes.array,
+  permitType: PropTypes.string
 }
 
 export default SpeciesInputs
