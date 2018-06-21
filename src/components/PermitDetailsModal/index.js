@@ -2,8 +2,6 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Article, Layer, Box, Columns, Title, Timestamp } from 'grommet'
 
-import { trimHash } from '../../util/stringUtils'
-
 /**
  * Component for detailed permit information
  */
@@ -26,7 +24,7 @@ class PermitDetailsModal extends Component {
             </Box>
             <Box margin={{ vertical: 'small' }}>
               <b>Id</b>
-              {trimHash(permit.permitHash)}
+              {permit.permitHash}
             </Box>
           </Columns>
           <Columns justify={'between'} size={'small'}>
@@ -94,12 +92,10 @@ class PermitDetailsModal extends Component {
               </Columns>
               <Columns justify={'between'} size={'small'}>
                 <Box margin={{ vertical: 'small' }}>
-                  <b>Origin</b>
-                  {trimHash(specimen.originHash)}
+                  <b>Origin</b> {specimen.originHash}
                 </Box>
                 <Box margin={{ vertical: 'small' }}>
-                  <b>Last re-export</b>
-                  {trimHash(specimen.reExportHash)}
+                  <b>Last re-export</b> {specimen.reExportHash}
                 </Box>
               </Columns>
             </Box>
