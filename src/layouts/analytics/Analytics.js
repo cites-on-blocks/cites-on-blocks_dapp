@@ -1,19 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import DesktopIcon from 'grommet/components/icons/base/Desktop'
-import {
-  Box,
-  Sidebar,
-  Header,
-  Footer,
-  Title,
-  Anchor,
-  Menu,
-  Legend,
-  SunBurst
-} from 'grommet'
-import AnnotatedMeter from 'grommet-addons/components/AnnotatedMeter'
+import MonitorIcon from 'grommet/components/icons/base/Monitor'
+import { Box, Sidebar, Header, Footer, Title, Anchor, Menu } from 'grommet'
 import AnalyticsMeter from '../../components/AnalyticsMeter'
+import SunburstChart from '../../components/SunburstChart'
 import local from '../../localization/localizedStrings'
 import Web3 from 'web3'
 
@@ -82,6 +72,87 @@ class Analytics extends Component {
     return result
   }
 
+  createSunburstSeries() {
+    let colors = [
+      'warning',
+      'ok',
+      'critical',
+      'accent-2',
+      'neutral-2',
+      'accent-1'
+    ]
+
+    let arr = this.state.permits
+    var result = Object.values(
+      arr.reduce((c, { exportCountry, permitType }) => {
+        c[exportCountry] = c[exportCountry] || {
+          label: exportCountry,
+          value: 0,
+          colorIndex: colors[Math.floor(Math.random() * colors.length)],
+          children: []
+        }
+        c[exportCountry].children[permitType] = c[exportCountry].children[
+          permitType
+        ] || {
+          label: permitType,
+          value: 0,
+          colorIndex: colors[Math.floor(Math.random() * colors.length)]
+        }
+        c[exportCountry].children[permitType].value++
+        c[exportCountry].value++
+        return c
+      }, {})
+    ).map(o => {
+      o.children = Object.values(o.children)
+      return o
+    })
+    return result
+  }
+
+  createFilterExportSeries(filter) {
+    let colors = { 'RE-EXPORT': 'warning', EXPORT: 'ok', OTHER: 'critical' }
+    let arr = this.state.permits
+    let filtered = arr.filter(permit => permit.exportCountry === filter)
+    let result = Object.values(
+      filtered.reduce((c, { permitType }) => {
+        c[permitType] = c[permitType] || {
+          label: permitType,
+          value: 0,
+          colorIndex: colors[permitType]
+        }
+        c[permitType].value++
+        return c
+      }, {})
+    )
+    return result
+  }
+
+  createSpecimensSeries() {
+    let arr = this.state.permits
+    let colors = [
+      'warning',
+      'ok',
+      'critical',
+      'accent-2',
+      'neutral-2',
+      'accent-1'
+    ]
+    const result = Object.values(
+      [].concat
+        .apply([], arr.map(({ specimens }) => specimens))
+        .reduce((r, { commonName }) => {
+          r[commonName] = r[commonName] || {
+            label: commonName,
+            value: 0,
+            colorIndex: colors[Math.floor(Math.random() * colors.length)]
+          }
+          r[commonName].value++
+          return r
+        }, [])
+    )
+    return result
+  }
+
   async getPermits() {
     let permits = []
     for (const event of this.state.events) {
@@ -108,6 +179,7 @@ class Analytics extends Component {
   }
 
   render() {
+    console.log(this.createSunburstSeries())
     return (
       <Box
         direction="row"
@@ -124,7 +196,7 @@ class Analytics extends Component {
           <Box flex="grow" justify="start">
             <Menu primary={true}>
               <Anchor className="active">
-                <DesktopIcon />
+                <MonitorIcon />
                 {local.analytics.menu}
               </Anchor>
             </Menu>
@@ -140,82 +212,25 @@ class Analytics extends Component {
           <Box direction="row" pad="small" justify="center" align="center">
             <AnalyticsMeter
               analyticsTitle={local.analytics.permitChart.headline}
-              permitTotal={this.createPermitSeries().length}
+              permitTotal={this.state.permits.length}
               series={this.createPermitSeries()}
             />
             <AnalyticsMeter
               analyticsTitle={local.analytics.workChart.headline}
               permitTotal={this.state.permits.length}
-              series={this.createPermitSeries()}
+              series={this.createSpecimensSeries()}
             />
-            <Box colorIndex="light-1" wrap={true} pad="small" margin="none">
-              <Title>Species</Title>
-              <AnnotatedMeter
-                type="circle"
-                max={70}
-                size="small"
-                series={[
-                  { label: 'Croco', value: 20, colorIndex: 'brand' },
-                  { label: 'Snake', value: 50, colorIndex: 'critical' }
-                ]}
-                legend={false}
-              />
-            </Box>
+            <AnalyticsMeter
+              analyticsTitle={local.analytics.specimensChart.headline}
+              permitTotal={this.state.permits.length}
+              series={this.createSpecimensSeries()}
+            />
           </Box>
           <Box direction="row" align="center">
-            <Box pad="none" margin="none">
-              <Title>Permit</Title>
-              <SunBurst
-                data={[
-                  {
-                    label: 'Export',
-                    value: 150,
-                    colorIndex: 'brand',
-                    children: [
-                      { label: 'Croco', value: 50, colorIndex: 'brand' },
-                      { label: 'Snake', value: 50, colorIndex: 'brand' },
-                      { label: 'Cats', value: 50, colorIndex: 'brand' }
-                    ]
-                  },
-                  {
-                    label: 'Re-Export',
-                    value: 450,
-                    colorIndex: 'critical',
-                    children: [
-                      { label: 'Croco', value: 150, colorIndex: 'critical' },
-                      { label: 'Snake', value: 150, colorIndex: 'critical' },
-                      { label: 'Cats', value: 150, colorIndex: 'critical' }
-                    ]
-                  },
-                  {
-                    label: 'Import',
-                    value: 150,
-                    colorIndex: 'ok',
-                    children: [
-                      { label: 'Croco', value: 50, colorIndex: 'ok' },
-                      { label: 'Snake', value: 50, colorIndex: 'ok' },
-                      { label: 'Cats', value: 50, colorIndex: 'ok' }
-                    ]
-                  },
-                  {
-                    label: 'Other',
-                    value: 50,
-                    colorIndex: 'warning',
-                    children: [
-                      { label: 'Croco', value: 10, colorIndex: 'warning' },
-                      { label: 'Snake', value: 20, colorIndex: 'warning' },
-                      { label: 'Cats', value: 20, colorIndex: 'warning' }
-                    ]
-                  }
-                ]}
-              />
-            </Box>
-            <Legend
-              series={[
-                { label: 'on target', colorIndex: 'neutral-1' },
-                { label: 'over', colorIndex: 'neutral-2' },
-                { label: 'under', colorIndex: 'neutral-3' }
-              ]}
+            <SunburstChart
+              analyticsTitle={local.analytics.sunburstChart.headline}
+              permitTotal={this.state.permits.length}
+              series={this.createSunburstSeries()}
             />
           </Box>
         </Box>

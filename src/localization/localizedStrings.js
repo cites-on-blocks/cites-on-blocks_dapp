@@ -66,6 +66,7 @@ let local = new LocalizedStrings({
     analytics: {
       headline: 'Analytics',
       menu: 'Dashboard',
+      country: 'Country',
       permitChart: {
         headline: 'Permit',
         export: 'Export',
@@ -75,6 +76,12 @@ let local = new LocalizedStrings({
       },
       workChart: {
         headline: 'Worker'
+      },
+      specimensChart: {
+        headline: 'Species'
+      },
+      sunburstChart: {
+        headline: 'Permit per Country'
       }
     }
   },
@@ -139,6 +146,7 @@ let local = new LocalizedStrings({
     analytics: {
       headline: 'Analyse',
       menu: 'Dashboard',
+      country: 'Land',
       permitChart: {
         headline: 'Genehmigung',
         export: 'Export',
@@ -148,6 +156,12 @@ let local = new LocalizedStrings({
       },
       workChart: {
         headline: 'Arbeiter'
+      },
+      specimensChart: {
+        headline: 'Spezien'
+      },
+      sunburstChart: {
+        headline: 'Genehmigungen pro Land'
       }
     }
   }
