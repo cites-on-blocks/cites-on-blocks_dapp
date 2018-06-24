@@ -13,12 +13,7 @@ class Home extends Component {
           size="large"
           pad={{ horizontal: 'large', vertical: 'large' }}
           background={
-            <Image
-              src={worldmap}
-              fit="none"
-              full={true}
-              align={{ top: true }}
-            />
+            <Image src={worldmap} full={true} align={{ top: true }} />
           }>
           <Headline className="cites-header" align="center">
             Cites on Blockchain
