@@ -205,7 +205,7 @@ contract('PermitFactory', accounts => {
       assert.equal(hexToUtf8(permit[4][1]), IMPORTER[1])
       assert.equal(hexToUtf8(permit[4][2]), IMPORTER[2])
       assert.lengthOf(permit[5], QUANTITIES.length)
-      assert.isAbove(permit[6], 0)
+      assert.isAbove(permit[6].toNumber(), 0)
       specimenHashes = permit[5]
     })
 
