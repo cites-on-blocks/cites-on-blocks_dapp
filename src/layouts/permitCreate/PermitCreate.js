@@ -458,6 +458,7 @@ class PermitCreate extends Component {
           margin={'medium'}>
           <input
             type="file"
+            accept="text/xml"
             onChange={event => this.handleUploadChange(event)}
           />
           <Button
