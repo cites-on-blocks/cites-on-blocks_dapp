@@ -21,6 +21,14 @@ export const DEFAULT_PERMIT = {
   exporter: ['', '', '']
 }
 
+export const PERMITS_TABLE_HEADER_LABELS = [
+  'permitHash',
+  'exportCountry',
+  'importCountry',
+  'timestamp',
+  'status'
+]
+
 export function convertSpecimensToArrays(specimens) {
   return specimens.reduce(
     (result, specimen) => {
@@ -109,7 +117,7 @@ function _formatEvent(permitEvent) {
  * Formats the block number of events to the corresponding UNIX timestamps.
  * @param {object} web3 A web3 instance.
  * @param {Array} events Array of events with blocknumber attribute.
- * @returns {Promise<number[]>} Array of UNIX timestamps in ms in the same order as given events.
+ * @returns {Promise<number[]>} Array of events with UNIX timestamps in ms.
  */
 export async function blockNumberToUnix(web3, events) {
   const blocks = await Promise.all(
@@ -142,4 +150,30 @@ export function mergePermitEvents(oldEvents, newEvents) {
     }
     return result
   }, [])
+}
+
+export function sortPermitEvents(events, attribute, ascending) {
+  return events.sort((a, b) => {
+    if (attribute === 'permitHash' || attribute === 'timestamp') {
+      return ascending
+        ? a[attribute] - b[attribute]
+        : b[attribute] - a[attribute]
+    } else {
+      if (a[attribute] < b[attribute]) {
+        return ascending ? -1 : 1
+      }
+      if (a[attribute] > b[attribute]) {
+        return ascending ? 1 : -1
+      }
+      return 0
+    }
+  })
+}
+
+export function isValidPermitHash(hash) {
+  console.log(hash.length, utils.isHex(hash))
+  if (hash.substr(0, 2) === '0x') {
+    return hash.length === 66 && utils.isHex(hash)
+  }
+  return hash.length === 64 && utils.isHex(hash)
 }

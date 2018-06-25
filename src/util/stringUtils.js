@@ -3,3 +3,7 @@ export function trimHash(hash) {
   const substr2 = hash.substring(hash.length - 5, hash.length)
   return `${substr1}...${substr2}`
 }
+
+export function toUnixTimestamp(date) {
+  return date.getTime()
+}
