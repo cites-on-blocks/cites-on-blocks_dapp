@@ -7,8 +7,7 @@ module.exports = {
       network_id: '*' // Match any network id
     },
     production: {
-      // TODO: replace with ip and port of azure instance
-      host: 'localhost',
+      host: '40.115.39.123',
       port: 8545,
       network_id: '*',
       // NOTE: unlocked account with a lot of ETH -> controller
