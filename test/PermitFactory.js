@@ -205,19 +205,8 @@ contract('PermitFactory', accounts => {
       assert.equal(hexToUtf8(permit[4][1]), IMPORTER[1])
       assert.equal(hexToUtf8(permit[4][2]), IMPORTER[2])
       assert.lengthOf(permit[5], QUANTITIES.length)
-      assert.isAbove(permit[6], 0)
+      assert.isAbove(permit[6].toNumber(), 0)
       specimenHashes = permit[5]
-    })
-
-    it('should return specimen', async () => {
-      const specimen_1 = await permitFactoryInstance.specimens(
-        specimenHashes[0]
-      )
-      assert.equal(specimen_1[0], permitHash)
-      assert.equal(specimen_1[1].toString(), QUANTITIES[0].toString())
-      assert.equal(hexToUtf8(specimen_1[2]), SCIENTIFIC_NAMES[0])
-      assert.equal(hexToUtf8(specimen_1[3]), COMMON_NAMES[0])
-      assert.equal(hexToUtf8(specimen_1[4]), DESCRIPTIONS[0])
     })
 
     it('Requires that the provided hash value exists.', async () => {
@@ -232,6 +221,74 @@ contract('PermitFactory', accounts => {
         await permitFactoryInstance.getPermit.call(nonExistingHash)
         assert.fail(
           'Expected an exception to be thrown when try to retrieve a permit for an non-existing hash value.'
+        )
+      } catch (err) {
+        // Expected
+      }
+    })
+  })
+
+  describe('#getSpecimen', () => {
+    let permitHash
+    let specimenHashes
+
+    before(async () => {
+      const result = await permitFactoryInstance.createPermit(
+        EXPORT_COUNTRY,
+        IMPORT_COUNTRY,
+        PERMIT_TYPE,
+        EXPORTER,
+        IMPORTER,
+        QUANTITIES,
+        SCIENTIFIC_NAMES,
+        COMMON_NAMES,
+        DESCRIPTIONS,
+        ORIGIN_HASHES,
+        RE_EXPORT_HASHES,
+        { from: ACC_EXPORT }
+      )
+
+      // Get the hash of the new created permit.
+      const [log] = result.logs.filter(log => log.event === 'PermitCreated')
+      permitHash = log.args.permitHash
+
+      // Request the permit object to extract its specimen hashes.
+      // specimen hash.
+      const permit = await permitFactoryInstance.getPermit(permitHash)
+      specimenHashes = permit[5]
+    })
+
+    it('Should return specimen.', async () => {
+      // Do this for each specimen in the list.
+      for (let i = 0; i < specimenHashes.length; i++) {
+        // Get the specimen by its hash value.
+        const specimen = await permitFactoryInstance.getSpecimen.call(
+          specimenHashes[i]
+        )
+
+        // Check if this specimen is correct.
+        assert.equal(specimen[0], permitHash)
+        assert.equal(specimen[1], QUANTITIES[i])
+        assert.equal(hexToUtf8(specimen[2]), SCIENTIFIC_NAMES[i])
+        assert.equal(hexToUtf8(specimen[3]), COMMON_NAMES[i])
+        assert.equal(hexToUtf8(specimen[4]), DESCRIPTIONS[i])
+        assert.equal(hexToUtf8(specimen[5]), ORIGIN_HASHES[i])
+        assert.equal(hexToUtf8(specimen[6]), RE_EXPORT_HASHES[i])
+      }
+    })
+
+    it('Requires that the provided hash value exists.', async () => {
+      try {
+        // Generate a non-existing hash value based on a given one.
+        const nonExistingHash = specimenHashes[0]
+          .split('')
+          .reverse()
+          .join('')
+
+        // Try to get a specimen for this non-existing hash value.
+        await permitFactoryInstance.getSpecimen(nonExistingHash)
+        assert.fail(
+          'Expected an exception to be thrown when try to retrieve a specimen for an non-existing hash value.'
         )
       } catch (err) {
         // Expected

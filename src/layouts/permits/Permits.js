@@ -6,22 +6,25 @@ import {
   Columns,
   Button,
   Table,
+  TableHeader,
   TableRow,
-  Timestamp,
-  Heading
+  Timestamp
 } from 'grommet'
 import Web3, { utils } from 'web3'
 
 import PermitDetailsModal from '../../components/PermitDetailsModal'
 import PendingTxModal from '../../components/PendingTxModal'
+import PermitsToolbar from '../../components/PermitsToolbar'
 
-import { trimHash } from '../../util/stringUtils'
+import { trimHash, toUnixTimestamp } from '../../util/stringUtils'
 import {
   parseRawPermit,
   parseRawSpecimen,
   mergePermitEvents,
   getPermitEvents,
-  blockNumberToUnix
+  blockNumberToUnix,
+  sortPermitEvents,
+  PERMITS_TABLE_HEADER_LABELS
 } from '../../util/permitUtils'
 
 class Permits extends Component {
@@ -30,6 +33,7 @@ class Permits extends Component {
     this.state = {
       // permit events
       events: [],
+      filteredEvents: [],
       // selected permit for detailed information
       selectedPermit: '',
       // latest block for retrieved events
@@ -41,7 +45,12 @@ class Permits extends Component {
         show: false,
         text: ''
       },
-      txStatus: ''
+      txStatus: '',
+      // sort
+      sort: {
+        index: 3,
+        ascending: false
+      }
     }
     this.contracts = context.drizzle.contracts
     // NOTE: We have to iniate a new web3 instance for retrieving event via `getPastEvents`.
@@ -52,21 +61,16 @@ class Permits extends Component {
     this.web3 = web3
   }
 
-  componentDidMount() {
-    this.getEvents()
-    this.setAuthCountry()
+  async componentDidMount() {
+    await Promise.all([this.getEvents(), this.setAuthCountry()])
+    this.setState({ filteredEvents: this.state.events })
     // NOTE: Initiate our own event listener because we can not use reactive event data with
     //       MetaMask and Drizzle.
-    this.intervalId = setInterval(() => {
-      this.web3.eth
-        .getBlockNumber()
-        .then(blockNumber => {
-          if (blockNumber > this.state.latestBlock) {
-            this.getEvents(blockNumber)
-          }
-          return
-        })
-        .catch(e => console.log(e))
+    this.intervalId = setInterval(async () => {
+      const blockNumber = await this.web3.eth.getBlockNumber()
+      if (blockNumber > this.state.latestBlock) {
+        this.getEvents(blockNumber)
+      }
     }, 3000)
   }
 
@@ -109,33 +113,44 @@ class Permits extends Component {
     }
   }
 
-  handleSelect(event) {
-    let selectedPermit
-    this.contracts.PermitFactory.methods
+  async handleSelect(event) {
+    const rawPermit = await this.contracts.PermitFactory.methods
       .getPermit(event.permitHash)
       .call()
-      .then(rawPermit => parseRawPermit(rawPermit))
-      .then(parsedPermit => {
-        selectedPermit = parsedPermit
-        const specimenPromises = parsedPermit.specimenHashes.map(s =>
-          this.contracts.PermitFactory.methods.specimens(s).call()
-        )
-        return Promise.all(specimenPromises)
-      })
-      .then(rawSpecimens => {
-        const parsedSpecimens = rawSpecimens.map(s => parseRawSpecimen(s))
-        this.setState({
-          selectedPermit: {
-            ...selectedPermit,
-            specimens: parsedSpecimens,
-            status: event.status,
-            timestamp: event.timestamp,
-            permitHash: event.permitHash
-          }
-        })
-        return
-      })
-      .catch(error => console.log(error))
+    const parsedPermit = parseRawPermit(rawPermit)
+    const specimenPromises = parsedPermit.specimenHashes.map(s =>
+      this.contracts.PermitFactory.methods.specimens(s).call()
+    )
+    const rawSpecimens = await Promise.all(specimenPromises)
+    const parsedSpecimens = rawSpecimens.map(s => parseRawSpecimen(s))
+    this.setState({
+      selectedPermit: {
+        ...parsedPermit,
+        specimens: parsedSpecimens,
+        status: event.status,
+        timestamp: event.timestamp,
+        permitHash: event.permitHash
+      }
+    })
+  }
+
+  async setAuthCountry() {
+    const country = await this.PermitFactory.methods
+      .authorityToCountry(this.props.accounts[0])
+      .call()
+    this.setState({
+      authCountry: utils.hexToUtf8(country)
+    })
+  }
+
+  processPermit(isAccepted) {
+    // stack id used for monitoring transaction
+    this.stackId = this.contracts.PermitFactory.methods.confirmPermit.cacheSend(
+      this.state.selectedPermit.permitHash,
+      this.state.selectedPermit.specimenHashes,
+      isAccepted,
+      { from: this.props.accounts[0] }
+    )
   }
 
   onDeselect() {
@@ -154,28 +169,6 @@ class Permits extends Component {
     })
   }
 
-  setAuthCountry() {
-    this.PermitFactory.methods
-      .authorityToCountry(this.props.accounts[0])
-      .call()
-      .then(country =>
-        this.setState({
-          authCountry: utils.hexToUtf8(country)
-        })
-      )
-      .catch(e => console.log(e))
-  }
-
-  processPermit(isAccepted) {
-    // stack id used for monitoring transaction
-    this.stackId = this.contracts.PermitFactory.methods.confirmPermit.cacheSend(
-      this.state.selectedPermit.permitHash,
-      this.state.selectedPermit.specimenHashes,
-      isAccepted,
-      { from: this.props.accounts[0] }
-    )
-  }
-
   changeTxState(newTxState) {
     this.onDeselect()
     if (newTxState === 'pending') {
@@ -183,7 +176,7 @@ class Permits extends Component {
         txStatus: 'pending',
         modal: {
           show: true,
-          text: 'Permit accept pending...'
+          text: 'Permit process pending...'
         }
       })
     } else if (newTxState === 'success') {
@@ -192,7 +185,7 @@ class Permits extends Component {
         txStatus: 'success',
         modal: {
           show: true,
-          text: 'Permit creation successful!'
+          text: 'Permit process successful!'
         }
       })
     } else {
@@ -201,10 +194,67 @@ class Permits extends Component {
         txStatus: 'failed',
         modal: {
           show: true,
-          text: 'Permit creation has failed.'
+          text: 'Permit process failed.'
         }
       })
     }
+  }
+
+  handleSort(index) {
+    const { filteredEvents, sort } = this.state
+    const sortedEvents = sortPermitEvents(
+      filteredEvents,
+      PERMITS_TABLE_HEADER_LABELS[index],
+      !sort.ascending
+    )
+    this.setState({
+      filteredEvents: sortedEvents,
+      sort: {
+        index,
+        ascending: !sort.ascending
+      }
+    })
+  }
+
+  handleFilter(attr, value) {
+    const { events } = this.state
+    const filteredEvents =
+      value !== 'all' ? events.filter(e => e[attr] === value) : events
+    this.setState({ filteredEvents })
+  }
+
+  handleDateFilter(startDate, endDate) {
+    const { events } = this.state
+    if (startDate) {
+      const [day, month, year] = startDate.split('/')
+      startDate = toUnixTimestamp(new Date(year, month - 1, day))
+    }
+    if (endDate) {
+      let [day, month, year] = endDate.split('/')
+      day++
+      endDate = toUnixTimestamp(new Date(year, month - 1, day))
+    }
+    const filteredEvents = events.filter(e => {
+      if (startDate && endDate) {
+        return startDate <= e.timestamp && e.timestamp <= endDate
+      }
+      if (startDate && !endDate) {
+        return startDate <= e.timestamp
+      }
+      if (!startDate && endDate) {
+        return e.timestamp <= endDate
+      }
+      return true
+    })
+    this.setState({ filteredEvents })
+  }
+
+  handleSearch(searchInput) {
+    const { events } = this.state
+    const filteredEvents = events.filter(e =>
+      e.permitHash.includes(searchInput)
+    )
+    this.setState({ filteredEvents })
   }
 
   render() {
@@ -240,21 +290,27 @@ class Permits extends Component {
             onClose={() => this.closeTxModal()}
           />
         )}
-        <Heading tag={'h2'} align={'center'} margin={'medium'}>
-          {local.permits.permits}
-        </Heading>
+        <PermitsToolbar
+          searchSuggestions={this.state.filteredEvents.map(e => e.permitHash)}
+          onSearchChange={searchInput => this.handleSearch(searchInput)}
+          onSelectChange={(attr, value) => this.handleFilter(attr, value)}
+          onDateChange={(start, end) => this.handleDateFilter(start, end)}
+        />
         <Table>
-          <thead>
-            <tr>
-              <th>{local.permits.permitNumber}</th>
-              <th>{local.permits.countryOfExport}</th>
-              <th>{local.permits.countryOfImport}</th>
-              <th>{local.permits.lastUpdate}</th>
-              <th>{local.permits.status}</th>
-            </tr>
-          </thead>
+          <TableHeader
+            labels={[
+              local.permits.permitNumber,
+              local.permits.countryOfExport,
+              local.permits.countryOfImport,
+              local.permits.lastUpdate,
+              local.permits.status
+            ]}
+            sortIndex={this.state.sort.index}
+            sortAscending={this.state.sort.ascending}
+            onSort={index => this.handleSort(index)}
+          />
           <tbody>
-            {this.state.events.map((event, i) => (
+            {this.state.filteredEvents.map((event, i) => (
               <TableRow key={i} onClick={() => this.handleSelect(event)}>
                 <td>{trimHash(event.permitHash)}</td>
                 <td>{event.exportCountry}</td>
@@ -262,7 +318,11 @@ class Permits extends Component {
                 <td>
                   <Timestamp value={event.timestamp} />
                 </td>
-                <td>{event.status}</td>
+                <td>
+                  {event.status === 'created'
+                    ? local.permits.created
+                    : local.permits.processed}
+                </td>
               </TableRow>
             ))}
           </tbody>

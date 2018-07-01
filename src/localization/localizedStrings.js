@@ -56,12 +56,38 @@ let local = new LocalizedStrings({
       officeName: 'Cites Office:'
     },
     permits: {
-      permits: 'permits',
+      permit: 'Permit',
+      permits: 'Permits',
       permitNumber: 'Permit number',
       countryOfExport: 'Country of export',
       countryOfImport: 'Country of import',
       lastUpdate: 'Last update',
-      status: 'Status'
+      status: 'Status',
+      from: 'From',
+      to: 'To',
+      searchPlaceholder: 'Search for permit number',
+      created: 'created',
+      processed: 'processed',
+      originHashPlaceholder: 'Search for number of origin permit',
+      reExportPlaceholder: 'Search for number of last re-export permit',
+      type: 'Typ',
+      permitType: 'Permit type',
+      exName: 'Name of exporter',
+      exStreet: 'Street of exporter',
+      exCity: 'City of exporter',
+      imName: 'Name of importer',
+      imStreet: 'Street of importer',
+      imCity: 'City of importer',
+      specimens: 'Specimens',
+      addSpecies: 'Add species',
+      commonName: 'Common name',
+      scientificName: 'Scientific name',
+      description: 'Description',
+      quantity: 'Quantity',
+      originPermitNumber: 'Number of origin permit',
+      reExportPermitNumber: 'Number of last re-exprt permit',
+      createPermit: 'Create permit',
+      species: 'Species'
     },
     analytics: {
       headline: 'Analytics',
@@ -72,18 +98,30 @@ let local = new LocalizedStrings({
         export: 'Export',
         reExport: 'Re-Export',
         import: 'Import',
-        other: 'Others'
+        other: 'Others',
+        analyticsTitle: 'Permit Chart',
+        analyticText:
+          'This chart displays all the different permit types in relation to the total count of permits'
       },
       workChart: {
-        headline: 'Worker'
+        headline: 'Worker',
+        analyticsTitle: 'Worker Chart',
+        analyticText: 'This chart displays all the worker count per country'
       },
       specimensChart: {
-        headline: 'Species'
+        headline: 'Species',
+        analyticsTitle: 'Species Chart',
+        analyticText:
+          'This chart displays all the different species in relation to the total count of permits'
       },
       sunburstChart: {
-        headline: 'Permit per Country'
+        headline: 'Permit per Country',
+        analyticsTitle: 'Country Chart',
+        analyticText:
+          'This chart displays all the countries and there specific permits in relation to the total count of permits'
       }
-    }
+    },
+    error: 'Error. Please load the page again.'
   },
   de: {
     header: {
@@ -136,12 +174,39 @@ let local = new LocalizedStrings({
       officeName: 'Cites Büro:'
     },
     permits: {
+      permit: 'Genehmigung',
       permits: 'Genehmigungen',
       permitNumber: 'Genehmigungs-Nr.',
       countryOfExport: 'Exportland',
       countryOfImport: 'Importland',
       lastUpdate: 'Letztes Update',
-      status: 'Status'
+      status: 'Status',
+      from: 'Von',
+      to: 'Bis',
+      searchPlaceholder: 'Nach Genehmigungs-Nr. suchen',
+      created: 'erstellt',
+      processed: 'bearbeitet',
+      originHashPlaceholder: 'Nach Nummer der Ursprungsgenehmigung suchen',
+      reExportPlaceholder:
+        'Nach Nummer der letzten Re-Exportgenehmigung suchen',
+      type: 'Typ',
+      permitType: 'Permittyp',
+      exName: 'Name des Exporters',
+      exStreet: 'Straße des Exporters',
+      exCity: 'Stadt des Exporters',
+      imName: 'Name des Importers',
+      imStreet: 'Straße des Importers',
+      imCity: 'Stadt des Importers',
+      specimens: 'Spezien',
+      addSpecies: 'Spezies hinzufügen',
+      commonName: 'Allgemeiner Name',
+      scientificName: 'Wissenschaftlicher Name',
+      description: 'Beschreibung',
+      quantity: 'Anzahl',
+      originPermitNumber: 'Nummer der Ursprungsgenehmigung',
+      reExportPermitNumber: 'Nummer der letzten Re-Exportgenehmigung',
+      createPermit: 'Permit erstellen',
+      species: 'Spezies'
     },
     analytics: {
       headline: 'Analyse',
@@ -163,7 +228,8 @@ let local = new LocalizedStrings({
       sunburstChart: {
         headline: 'Genehmigungen pro Land'
       }
-    }
+    },
+    error: 'Error. Please load the page again.'
   }
 })
 
