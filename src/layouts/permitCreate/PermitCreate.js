@@ -19,7 +19,7 @@ import PendingTxModal from '../../components/PendingTxModal'
 import * as permitUtils from '../../util/permitUtils'
 import local from '../../localization/localizedStrings'
 
-var parseString = require('xml2js').parseString
+import { parseString } from 'xml2js'
 
 // NOTE: to be replaced with proper country list from whitelist ui branch
 const COUNTRIES = [
@@ -277,7 +277,7 @@ class PermitCreate extends Component {
   }
 
   getXMLNamespace() {
-    var xml = this.state.xmlToJSON
+    const xml = this.state.xmlToJSON
     return Object.keys(xml)[0].split(':')[0] //maybe better to work with the text/xml. this works for now
   }
 
@@ -289,21 +289,21 @@ class PermitCreate extends Component {
     const { xmlToJSON } = this.state
     console.log(xmlToJSON)
     const XMLNamespace = this.getXMLNamespace()
-    var generalInfo =
+    const generalInfo =
       xmlToJSON[XMLNamespace + ':CITESEPermit'][
         'ns2:SpecifiedSupplyChainConsignment'
       ][0]
     //set address data
-    var exportInfo = generalInfo.ConsignorTradeParty[0]
-    var exportAddress = exportInfo.PostalTradeAddress[0]
+    const exportInfo = generalInfo.ConsignorTradeParty[0]
+    const exportAddress = exportInfo.PostalTradeAddress[0]
     permit.exportCountry = exportAddress.CountryID
     permit.exporter = [
       exportInfo.Name[0],
       exportAddress.StreetName[0],
       exportAddress.CityName[0]
     ]
-    var importInfo = generalInfo.ConsigneeTradeParty[0]
-    var importAddress = importInfo.PostalTradeAddress[0]
+    const importInfo = generalInfo.ConsigneeTradeParty[0]
+    const importAddress = importInfo.PostalTradeAddress[0]
     permit.importCountry = importAddress.CountryID
     permit.importer = [
       importInfo.Name[0],
@@ -311,10 +311,10 @@ class PermitCreate extends Component {
       importAddress.CityName[0]
     ]
     //set species data
-    var speciesXML = generalInfo.IncludedSupplyChainConsignmentItem
-    var speciesArray = speciesXML.map(xml => {
-      var specimen = permitUtils.DEFAULT_SPECIMEN
-      var xmlData =
+    const speciesXML = generalInfo.IncludedSupplyChainConsignmentItem
+    const speciesArray = speciesXML.map(xml => {
+      const specimen = permitUtils.DEFAULT_SPECIMEN
+      const xmlData =
         xml.IncludedSupplyChainTradeLineItem[0].SpecifiedTradeProduct[0]
       specimen.scientificName = xmlData.ScientificName[0]
       specimen.commonName = xmlData.CommonName[0]
@@ -322,15 +322,14 @@ class PermitCreate extends Component {
       specimen.quantity = xml.TransportLogisticsPackage[0].ItemQuantity[0]._
       return specimen
     })
-    console.log(speciesArray)
-    const specimens = speciesArray
-    this.setState({ permit })
-    this.setState({ specimens })
-    console.log(this.state)
+    this.setState({
+      permit,
+      specimens: speciesArray
+    })
   }
 
   handleUploadChange(event) {
-    var { isXML } = this.state
+    let { isXML } = this.state
     if (event.target.files[0].name.split('.')[1] !== 'xml') {
       isXML = false
       this.setState({ isXML })
@@ -338,10 +337,10 @@ class PermitCreate extends Component {
     }
     isXML = true
     this.setState({ isXML })
-    var file = event.target.files[0]
-    var reader = new FileReader()
+    const file = event.target.files[0]
+    const reader = new FileReader()
     reader.onload = event => {
-      var xml = event.target.result
+      const xml = event.target.result
       parseString(xml, (err, result) => {
         const xmlToJSON = result
         this.setState({ xmlToJSON })
