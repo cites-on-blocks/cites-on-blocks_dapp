@@ -116,6 +116,7 @@ let local = new LocalizedStrings({
       },
       sunburstChart: {
         headline: 'Permit per Country',
+        headlineCountry: 'Specimens per Permit-Type',
         analyticsTitle: 'Country Chart',
         analyticText:
           'This chart displays all the countries and there specific permits in relation to the total count of permits'
@@ -161,7 +162,7 @@ let local = new LocalizedStrings({
     help: {
       headline: 'Hilfe',
       accordionHeadline: 'Häufigste Fragen',
-      first: 'Was ist die Blockchain>',
+      first: 'Was ist die Blockchain?',
       second: 'Was ist Cites?',
       third: 'Wie kann ich cites kontaktieren?',
       fourth: 'Frage Nr. 4',
@@ -217,16 +218,25 @@ let local = new LocalizedStrings({
         export: 'Export',
         reExport: 'Re-Export',
         import: 'Import',
-        other: 'Anderes'
+        other: 'Anderes',
+        analyticText:
+        'Dieses Diagramm zeigt alle Genehmigungsarten im Verhältnis zur Gesamtanzahl an Genehmigungen'
       },
       workChart: {
-        headline: 'Arbeiter'
+        headline: 'Arbeiter',
+        analyticText:
+        'Dieses Diagramm zeigt alle Mitarbeiter pro Land im Verhältnis zur Gesamtanzahl an'
       },
       specimensChart: {
-        headline: 'Spezien'
+        headline: 'Spezien',
+        analyticText:
+        'Dieses Diagramm zeigt die gesamte Anzahl an Spezien im Verhältnis zur Gesamtanzahl an'
       },
       sunburstChart: {
-        headline: 'Genehmigungen pro Land'
+        headline: 'Genehmigungen pro Land',
+        headlineCountry: 'Spezies pro Genehmigungsart',
+        analyticText:
+        'Dieses Diagramm zeigt die Genehmigungen pro Land und Art im Verhältnis zur Gesamtanzahl an'
       }
     },
     error: 'Error. Please load the page again.'

@@ -214,7 +214,7 @@ class AnalyticsCountryboard extends Component {
         </Box>
         <Box direction="row" align="center">
           <SunburstChart
-            analyticsTitle={local.analytics.sunburstChart.headline}
+            analyticsTitle={local.analytics.sunburstChart.headlineCountry}
             permitTotal={this.state.permits.length}
             series={this.createSunburstSpecimens()}
           />
