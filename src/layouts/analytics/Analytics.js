@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import MonitorIcon from 'grommet/components/icons/base/Monitor'
+import MapIcon from 'grommet/components/icons/base/Map'
+import FlagIcon from 'grommet/components/icons/base/Flag'
 import { Box, Sidebar, Header, Footer, Title, Anchor, Menu } from 'grommet'
-import AnalyticsMeter from '../../components/AnalyticsMeter'
-import SunburstChart from '../../components/SunburstChart'
+import AnalyticsDashboard from '../../components/AnalyticsDashboard'
+import AnalyticsCountryboard from '../../components/AnalyticsCountryboard'
+import AnalyticsMapboard from '../../components/AnalyticsMapboard'
 import local from '../../localization/localizedStrings'
 import Web3 from 'web3'
 
@@ -12,7 +15,9 @@ import {
   parseRawSpecimen,
   mergePermitEvents,
   getPermitEvents,
-  blockNumberToUnix
+  blockNumberToUnix,
+  getWhitelistEvents,
+  mergeWhitelistEvents
 } from '../../util/permitUtils'
 
 class Analytics extends Component {
@@ -21,9 +26,13 @@ class Analytics extends Component {
     this.state = {
       // permit events
       events: [],
+      // permit events
+      whitelistEvents: [],
       //permits
-      permits: []
-      //permit Chart Variables
+      permits: [],
+      dashboard: true,
+      country: false,
+      map: false
     }
     this.contracts = context.drizzle.contracts
     // NOTE: We have to iniate a new web3 instance for retrieving event via `getPastEvents`.
@@ -37,6 +46,7 @@ class Analytics extends Component {
   async componentDidMount() {
     await this.getEvents()
     await this.getPermits()
+    await this.getWhitelistedEvents()
   }
 
   async getEvents(from = 0) {
@@ -55,58 +65,24 @@ class Analytics extends Component {
     })
   }
 
-  createPermitSeries() {
-    let arr = this.state.permits
-    let colors = { 'RE-EXPORT': 'warning', EXPORT: 'ok', OTHER: 'critical' }
-    let result = Object.values(
-      arr.reduce((c, { permitType }) => {
-        c[permitType] = c[permitType] || {
-          label: permitType,
-          value: 0,
-          colorIndex: colors[permitType]
-        }
-        c[permitType].value++
-        return c
-      }, {})
+  async getWhitelistedEvents(from = 0) {
+    const [addWhitelist, removedWhitelist] = await Promise.all([
+      getWhitelistEvents(this.PermitFactory, 'AddressWhitelisted', from),
+      getWhitelistEvents(this.PermitFactory, 'AddressRemoved', from)
+    ])
+    const whitelistEvents = addWhitelist.concat(removedWhitelist)
+    const newWhitelistEvents = await blockNumberToUnix(
+      this.web3,
+      whitelistEvents
     )
-    return result
-  }
-
-  createSunburstSeries() {
-    let colors = [
-      'warning',
-      'ok',
-      'critical',
-      'accent-2',
-      'neutral-2',
-      'accent-1'
-    ]
-
-    let arr = this.state.permits
-    var result = Object.values(
-      arr.reduce((c, { exportCountry, permitType }) => {
-        c[exportCountry] = c[exportCountry] || {
-          label: exportCountry,
-          value: 0,
-          colorIndex: colors[Math.floor(Math.random() * colors.length)],
-          children: []
-        }
-        c[exportCountry].children[permitType] = c[exportCountry].children[
-          permitType
-        ] || {
-          label: permitType,
-          value: 0,
-          colorIndex: colors[Math.floor(Math.random() * colors.length)]
-        }
-        c[exportCountry].children[permitType].value++
-        c[exportCountry].value++
-        return c
-      }, {})
-    ).map(o => {
-      o.children = Object.values(o.children)
-      return o
+    const mergedWhitelistEvents = mergeWhitelistEvents(
+      whitelistEvents,
+      newWhitelistEvents
+    )
+    this.setState({
+      ...this.state,
+      whitelistEvents: mergedWhitelistEvents
     })
-    return result
   }
 
   createFilterExportSeries(filter) {
@@ -123,32 +99,6 @@ class Analytics extends Component {
         c[permitType].value++
         return c
       }, {})
-    )
-    return result
-  }
-
-  createSpecimensSeries() {
-    let arr = this.state.permits
-    let colors = [
-      'warning',
-      'ok',
-      'critical',
-      'accent-2',
-      'neutral-2',
-      'accent-1'
-    ]
-    const result = Object.values(
-      [].concat
-        .apply([], arr.map(({ specimens }) => specimens))
-        .reduce((r, { commonName }) => {
-          r[commonName] = r[commonName] || {
-            label: commonName,
-            value: 0,
-            colorIndex: colors[Math.floor(Math.random() * colors.length)]
-          }
-          r[commonName].value++
-          return r
-        }, [])
     )
     return result
   }
@@ -178,14 +128,37 @@ class Analytics extends Component {
     })
   }
 
+  getDashboardClass() {
+    if (this.state.dashboard === true) {
+      return 'active'
+    } else {
+      return ''
+    }
+  }
+
+  getCountryboardClass() {
+    if (this.state.country === true) {
+      return 'active'
+    } else {
+      return ''
+    }
+  }
+
+  getMapboardClass() {
+    if (this.state.map === true) {
+      return 'active'
+    } else {
+      return ''
+    }
+  }
+
   render() {
-    console.log(this.createSunburstSeries())
+    console.log(this.state.whitelistEvents)
     return (
       <Box
         direction="row"
         justify="start"
         align="start"
-        wrap={true}
         pad="none"
         margin="none"
         colorIndex="light-1">
@@ -195,45 +168,61 @@ class Analytics extends Component {
           </Header>
           <Box flex="grow" justify="start">
             <Menu primary={true}>
-              <Anchor className="active">
+              <Anchor
+                className={this.getDashboardClass()}
+                onClick={() =>
+                  this.setState({
+                    dashboard: true,
+                    country: false,
+                    map: false
+                  })
+                }>
                 <MonitorIcon />
                 {local.analytics.menu}
+              </Anchor>
+              <Anchor
+                className={this.getCountryboardClass()}
+                onClick={() =>
+                  this.setState({
+                    dashboard: false,
+                    country: true,
+                    map: false
+                  })
+                }>
+                <FlagIcon />
+                {local.analytics.country}
+              </Anchor>
+              <Anchor
+                className={this.getMapboardClass()}
+                onClick={() =>
+                  this.setState({
+                    dashboard: false,
+                    country: false,
+                    map: true
+                  })
+                }>
+                <MapIcon />
+                Map
               </Anchor>
             </Menu>
           </Box>
           <Footer />
         </Sidebar>
-        <Box
-          pad="none"
-          justify="center"
-          align="center"
-          wrap={true}
-          margin="small">
-          <Box direction="row" pad="small" justify="center" align="center">
-            <AnalyticsMeter
-              analyticsTitle={local.analytics.permitChart.headline}
-              permitTotal={this.state.permits.length}
-              series={this.createPermitSeries()}
-            />
-            <AnalyticsMeter
-              analyticsTitle={local.analytics.workChart.headline}
-              permitTotal={this.state.permits.length}
-              series={this.createSpecimensSeries()}
-            />
-            <AnalyticsMeter
-              analyticsTitle={local.analytics.specimensChart.headline}
-              permitTotal={this.state.permits.length}
-              series={this.createSpecimensSeries()}
-            />
-          </Box>
-          <Box direction="row" align="center">
-            <SunburstChart
-              analyticsTitle={local.analytics.sunburstChart.headline}
-              permitTotal={this.state.permits.length}
-              series={this.createSunburstSeries()}
-            />
-          </Box>
-        </Box>
+        {this.state.dashboard ? (
+          <AnalyticsDashboard
+            permits={this.state.permits}
+            whitelist={this.state.whitelistEvents}
+          />
+        ) : null}
+        {this.state.country ? (
+          <AnalyticsCountryboard
+            permits={this.state.permits}
+            whitelist={this.state.whitelistEvents}
+          />
+        ) : null}
+        {this.state.map ? (
+          <AnalyticsMapboard permits={this.state.permits} />
+        ) : null}
       </Box>
     )
   }
@@ -243,7 +232,9 @@ Analytics.propTypes = {
   accounts: PropTypes.object,
   analyticsTitle: PropTypes.string,
   permitTotal: PropTypes.number,
-  series: PropTypes.array
+  series: PropTypes.array,
+  permits: PropTypes.array,
+  whitelist: PropTypes.array
 }
 
 Analytics.contextTypes = {
