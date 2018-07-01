@@ -1,7 +1,17 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Article, Layer, Box, Columns, Title, Timestamp } from 'grommet'
-
+import {
+  Article,
+  Button,
+  DownloadIcon,
+  Layer,
+  Box,
+  Columns,
+  Title,
+  Timestamp
+} from 'grommet'
+import axios from 'axios'
+import fileDownload from 'js-file-download'
 import { trimHash } from '../../util/stringUtils'
 
 /**
@@ -110,9 +120,35 @@ class PermitDetailsModal extends Component {
             pad={{ vertical: 'medium' }}>
             {this.props.detailsActions}
           </Box>
+          <Box
+            direction={'row'}
+            justify={'center'}
+            pad={{ vertical: 'medium' }}>
+            <Button
+              icon={<DownloadIcon />}
+              label={'Download as XML'}
+              onClick={() => {
+                this.exportRequest(permit)
+              }}
+            />
+          </Box>
         </Article>
       </Layer>
     )
+  }
+
+  exportRequest(permit) {
+    console.warn('SEND REQUEST TO EXPORTER SERVER')
+    axios
+      .get('https://api.github.com/users/maecapozzi')
+      .then(response => {
+        console.log(response.data)
+        fileDownload(response.data, permit.permitHash + '.xml')
+        return
+      })
+      .catch(error => {
+        console.warn(error)
+      })
   }
 }
 
