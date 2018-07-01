@@ -351,7 +351,7 @@ countries.CA = {
   color: 'accent-2',
   join: '10/04/1975',
   entry: '09/07/1975',
-  type: 'Ratification'
+  type: 'Succession'
 }
 countries.CC = {
   value: 'CC',
