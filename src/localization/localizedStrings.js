@@ -220,23 +220,23 @@ let local = new LocalizedStrings({
         import: 'Import',
         other: 'Anderes',
         analyticText:
-        'Dieses Diagramm zeigt alle Genehmigungsarten im Verhältnis zur Gesamtanzahl an Genehmigungen'
+          'Dieses Diagramm zeigt alle Genehmigungsarten im Verhältnis zur Gesamtanzahl an Genehmigungen'
       },
       workChart: {
         headline: 'Arbeiter',
         analyticText:
-        'Dieses Diagramm zeigt alle Mitarbeiter pro Land im Verhältnis zur Gesamtanzahl an'
+          'Dieses Diagramm zeigt alle Mitarbeiter pro Land im Verhältnis zur Gesamtanzahl an'
       },
       specimensChart: {
         headline: 'Spezien',
         analyticText:
-        'Dieses Diagramm zeigt die gesamte Anzahl an Spezien im Verhältnis zur Gesamtanzahl an'
+          'Dieses Diagramm zeigt die gesamte Anzahl an Spezien im Verhältnis zur Gesamtanzahl an'
       },
       sunburstChart: {
         headline: 'Genehmigungen pro Land',
         headlineCountry: 'Spezies pro Genehmigungsart',
         analyticText:
-        'Dieses Diagramm zeigt die Genehmigungen pro Land und Art im Verhältnis zur Gesamtanzahl an'
+          'Dieses Diagramm zeigt die Genehmigungen pro Land und Art im Verhältnis zur Gesamtanzahl an'
       }
     },
     error: 'Error. Please load the page again.'

@@ -30,9 +30,9 @@ class Analytics extends Component {
       whitelistEvents: [],
       //permits
       permits: [],
-      dashboard: true,
+      dashboard: false,
       country: false,
-      map: false
+      map: true
     }
     this.contracts = context.drizzle.contracts
     // NOTE: We have to iniate a new web3 instance for retrieving event via `getPastEvents`.
@@ -169,6 +169,18 @@ class Analytics extends Component {
           <Box flex="grow" justify="start">
             <Menu primary={true}>
               <Anchor
+                className={this.getMapboardClass()}
+                onClick={() =>
+                  this.setState({
+                    dashboard: false,
+                    country: false,
+                    map: true
+                  })
+                }>
+                <MapIcon />
+                Map
+              </Anchor>
+              <Anchor
                 className={this.getDashboardClass()}
                 onClick={() =>
                   this.setState({
@@ -191,18 +203,6 @@ class Analytics extends Component {
                 }>
                 <FlagIcon />
                 {local.analytics.country}
-              </Anchor>
-              <Anchor
-                className={this.getMapboardClass()}
-                onClick={() =>
-                  this.setState({
-                    dashboard: false,
-                    country: false,
-                    map: true
-                  })
-                }>
-                <MapIcon />
-                Map
               </Anchor>
             </Menu>
           </Box>

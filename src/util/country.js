@@ -11,7 +11,10 @@ countries.AE = {
   latitude: 23.424076,
   longitude: 53.847818,
   name: 'United Arab Emirates',
-  color: 'neutral-1'
+  color: 'neutral-1',
+  join: '08/02/1990',
+  entry: '09/05/1990',
+  type: 'Accession'
 }
 countries.AF = {
   value: 'AF',
@@ -351,7 +354,7 @@ countries.CA = {
   color: 'accent-2',
   join: '10/04/1975',
   entry: '09/07/1975',
-  type: 'Succession'
+  type: 'Ratification'
 }
 countries.CC = {
   value: 'CC',
@@ -364,8 +367,11 @@ countries.CD = {
   value: 'CD',
   latitude: -4.038333,
   longitude: 21.758664,
-  name: 'Congo [DRC]',
-  color: 'brand'
+  name: 'Democratic Republic of the Congo',
+  color: 'brand',
+  join: '20/07/1976',
+  entry: '18/10/1976',
+  type: 'Accession'
 }
 countries.CF = {
   value: 'CF',
@@ -392,7 +398,10 @@ countries.CH = {
   latitude: 46.818188,
   longitude: 8.227512,
   name: 'Switzerland',
-  color: 'ok'
+  color: 'ok',
+  join: '09/07/1974',
+  entry: '01/07/1975',
+  type: 'Ratification'
 }
 countries.CI = {
   value: 'CI',
@@ -520,35 +529,50 @@ countries.DE = {
   latitude: 51.165691,
   longitude: 10.451526,
   name: 'Germany',
-  color: 'neutral-3'
+  color: 'neutral-3',
+  join: '22/03/1976',
+  entry: '20/06/1976',
+  type: 'Ratification'
 }
 countries.DJ = {
   value: 'DJ',
   latitude: 11.825138,
   longitude: 42.590275,
   name: 'Djibouti',
-  color: 'brand'
+  color: 'brand',
+  join: '07/02/1992',
+  entry: '07/05/1992',
+  type: 'Accession'
 }
 countries.DK = {
   value: 'DK',
   latitude: 56.26392,
   longitude: 9.501785,
   name: 'Denmark',
-  color: 'warning'
+  color: 'warning',
+  join: '26/07/1977',
+  entry: '24/10/1977',
+  type: 'Ratification'
 }
 countries.DM = {
   value: 'DM',
   latitude: 15.414999,
   longitude: -61.370976,
   name: 'Dominica',
-  color: 'ok'
+  color: 'ok',
+  join: '04/08/1995',
+  entry: '02/11/1995',
+  type: 'Accession'
 }
 countries.DO = {
   value: 'DO',
   latitude: 18.735693,
   longitude: -70.162651,
   name: 'Dominican Republic',
-  color: 'ok'
+  color: 'ok',
+  join: '17/12/1986',
+  entry: '17/03/1987',
+  type: 'Accession'
 }
 countries.DZ = {
   value: 'DZ',
@@ -565,21 +589,30 @@ countries.EC = {
   latitude: -1.831239,
   longitude: -78.183406,
   name: 'Ecuador',
-  color: 'neutral-1'
+  color: 'neutral-1',
+  join: '11/02/1975',
+  entry: '01/07/1975',
+  type: 'Ratification'
 }
 countries.EE = {
   value: 'EE',
   latitude: 58.595272,
   longitude: 25.013607,
   name: 'Estonia',
-  color: 'neutral-2'
+  color: 'neutral-2',
+  join: '22/07/1992',
+  entry: '20/10/1992',
+  type: 'Accession'
 }
 countries.EG = {
   value: 'EG',
   latitude: 26.820553,
   longitude: 30.802498,
   name: 'Egypt',
-  color: 'accent-2'
+  color: 'accent-2',
+  join: '04/01/1978',
+  entry: '04/04/1978',
+  type: 'Accession'
 }
 countries.EH = {
   value: 'EH',
@@ -593,35 +626,50 @@ countries.ER = {
   latitude: 15.179384,
   longitude: 39.782334,
   name: 'Eritrea',
-  color: 'brand'
+  color: 'brand',
+  join: '24/10/1994',
+  entry: '22/01/1995',
+  type: 'Accession'
 }
 countries.ES = {
   value: 'ES',
   latitude: 40.463667,
   longitude: -3.74922,
   name: 'Spain',
-  color: 'warning'
+  color: 'warning',
+  join: '30/05/1986',
+  entry: '28/08/1986',
+  type: 'Accession'
 }
 countries.ET = {
   value: 'ET',
   latitude: 9.145,
   longitude: 40.489673,
   name: 'Ethiopia',
-  color: 'ok'
+  color: 'ok',
+  join: '05/04/1989',
+  entry: '04/07/1989',
+  type: 'Accession'
 }
 countries.FI = {
   value: 'FI',
   latitude: 61.92411,
   longitude: 25.748151,
   name: 'Finland',
-  color: 'ok'
+  color: 'accent-1-t',
+  join: '10/05/1976',
+  entry: '08/08/1976',
+  type: 'Accession'
 }
 countries.FJ = {
   value: 'FJ',
   latitude: -16.578193,
   longitude: 179.414413,
   name: 'Fiji',
-  color: 'accent-1-t'
+  color: 'accent-1-t',
+  join: '30/09/1997',
+  entry: '29/12/1997',
+  type: 'Accession'
 }
 countries.FK = {
   value: 'FK',
@@ -649,35 +697,50 @@ countries.FR = {
   latitude: 46.227638,
   longitude: 2.213749,
   name: 'France',
-  color: 'neutral-2'
+  color: 'neutral-2',
+  join: '11/05/1978',
+  entry: '09/08/1978',
+  type: 'Approval'
 }
 countries.GA = {
   value: 'GA',
   latitude: -0.803689,
   longitude: 11.609444,
   name: 'Gabon',
-  color: 'brand'
+  color: 'brand',
+  join: '13/02/1989',
+  entry: '14/05/1989',
+  type: 'Accession'
 }
 countries.GB = {
   value: 'GB',
   latitude: 55.378051,
   longitude: -3.435973,
   name: 'United Kingdom',
-  color: 'warning'
+  color: 'warning',
+  join: '02/08/1976',
+  entry: '31/10/1976',
+  type: 'Ratification'
 }
 countries.GD = {
   value: 'GD',
   latitude: 12.262776,
   longitude: -61.604171,
   name: 'Grenada',
-  color: 'ok'
+  color: 'ok',
+  join: '30/08/1999',
+  entry: '28/11/1999',
+  type: 'Accession'
 }
 countries.GE = {
   value: 'GE',
   latitude: 42.315407,
   longitude: 43.356892,
   name: 'Georgia',
-  color: 'ok'
+  color: 'ok',
+  join: '13/09/1996',
+  entry: '12/12/1996',
+  type: 'Accession'
 }
 countries.GF = {
   value: 'GF',
@@ -698,7 +761,10 @@ countries.GH = {
   latitude: 7.946527,
   longitude: -1.023194,
   name: 'Ghana',
-  color: 'neutral-2'
+  color: 'neutral-2',
+  join: '14/11/1975',
+  entry: '12/02/1976',
+  type: 'Ratification'
 }
 countries.GI = {
   value: 'GI',
@@ -719,14 +785,20 @@ countries.GM = {
   latitude: 13.443182,
   longitude: -15.310139,
   name: 'Gambia',
-  color: 'brand'
+  color: 'brand',
+  join: '26/08/1977',
+  entry: '24/11/1977',
+  type: 'Accession'
 }
 countries.GN = {
   value: 'GN',
   latitude: 9.945587,
   longitude: -9.696645,
   name: 'Guinea',
-  color: 'warning'
+  color: 'warning',
+  join: '21/09/1981',
+  entry: '20/12/1981',
+  type: 'Accession'
 }
 countries.GP = {
   value: 'GP',
@@ -740,14 +812,20 @@ countries.GQ = {
   latitude: 1.650801,
   longitude: 10.267895,
   name: 'Equatorial Guinea',
-  color: 'ok'
+  color: 'ok',
+  join: '10/03/1992',
+  entry: '08/06/1992',
+  type: 'Accession'
 }
 countries.GR = {
   value: 'GR',
   latitude: 39.074208,
   longitude: 21.824312,
   name: 'Greece',
-  color: 'accent-1-t'
+  color: 'accent-1-t',
+  join: '08/10/1992',
+  entry: '06/01/1993',
+  type: 'Accession'
 }
 countries.GS = {
   value: 'GS',
@@ -761,7 +839,10 @@ countries.GT = {
   latitude: 15.783471,
   longitude: -90.230759,
   name: 'Guatemala',
-  color: 'neutral-2'
+  color: 'neutral-2',
+  join: '07/11/1979',
+  entry: '05/02/1980',
+  type: 'Ratification'
 }
 countries.GU = {
   value: 'GU',
@@ -775,14 +856,20 @@ countries.GW = {
   latitude: 11.803749,
   longitude: -15.180413,
   name: 'Guinea-Bissau',
-  color: 'neutral-3'
+  color: 'neutral-3',
+  join: '16/05/1990',
+  entry: '14/08/1990',
+  type: 'Accession'
 }
 countries.GY = {
   value: 'GY',
   latitude: 4.860416,
   longitude: -58.93018,
   name: 'Guyana',
-  color: 'brand'
+  color: 'brand',
+  join: '27/05/1977',
+  entry: '25/08/1977',
+  type: 'Accession'
 }
 countries.GZ = {
   value: 'GZ',
@@ -810,7 +897,10 @@ countries.HN = {
   latitude: 15.199999,
   longitude: -86.241905,
   name: 'Honduras',
-  color: 'accent-1-t'
+  color: 'accent-1-t',
+  join: '15/03/1985',
+  entry: '13/06/1985',
+  type: 'Accession'
 }
 countries.HR = {
   value: 'HR',
@@ -834,28 +924,40 @@ countries.HU = {
   latitude: 47.162494,
   longitude: 19.503304,
   name: 'Hungary',
-  color: 'accent-2'
+  color: 'accent-2',
+  join: '29/05/1985',
+  entry: '27/08/1985',
+  type: 'Accession'
 }
 countries.ID = {
   value: 'ID',
   latitude: -0.789275,
   longitude: 113.921327,
   name: 'Indonesia',
-  color: 'neutral-3'
+  color: 'neutral-3',
+  join: '28/12/1978',
+  entry: '28/03/1979',
+  type: 'Accession'
 }
 countries.IE = {
   value: 'IE',
   latitude: 53.41291,
   longitude: -8.24389,
   name: 'Ireland',
-  color: 'brand'
+  color: 'brand',
+  join: '08/01/2002',
+  entry: '08/04/2002',
+  type: 'Ratification'
 }
 countries.IL = {
   value: 'IL',
   latitude: 31.046051,
   longitude: 34.851612,
   name: 'Israel',
-  color: 'warning'
+  color: 'warning',
+  join: '18/12/1979',
+  entry: '17/03/1980',
+  type: 'Ratification'
 }
 countries.IM = {
   value: 'IM',
@@ -869,7 +971,10 @@ countries.IN = {
   latitude: 20.593684,
   longitude: 78.96288,
   name: 'India',
-  color: 'ok'
+  color: 'ok',
+  join: '20/07/1976',
+  entry: '18/10/1976',
+  type: 'Ratification'
 }
 countries.IO = {
   value: 'IO',
@@ -883,28 +988,40 @@ countries.IQ = {
   latitude: 33.223191,
   longitude: 43.679291,
   name: 'Iraq',
-  color: 'neutral-1'
+  color: 'neutral-1',
+  join: '05/02/2014',
+  entry: '06/05/2014',
+  type: 'Accession'
 }
 countries.IR = {
   value: 'IR',
   latitude: 32.427908,
   longitude: 53.688046,
   name: 'Iran',
-  color: 'neutral-2'
+  color: 'neutral-2',
+  join: '03/08/1976',
+  entry: '01/11/1976',
+  type: 'Ratification'
 }
 countries.IS = {
   value: 'IS',
   latitude: 64.963051,
   longitude: -19.020835,
   name: 'Iceland',
-  color: 'accent-2'
+  color: 'accent-2',
+  join: '03/01/2000',
+  entry: '02/04/2000',
+  type: 'Accession'
 }
 countries.IT = {
   value: 'IT',
   latitude: 41.87194,
   longitude: 12.56738,
   name: 'Italy',
-  color: 'neutral-3'
+  color: 'neutral-3',
+  join: '02/10/1979',
+  entry: '31/12/1979',
+  type: 'Ratification'
 }
 countries.JE = {
   value: 'JE',
@@ -918,35 +1035,50 @@ countries.JM = {
   latitude: 18.109581,
   longitude: -77.297508,
   name: 'Jamaica',
-  color: 'warning'
+  color: 'warning',
+  join: '23/04/1997',
+  entry: '22/07/1997',
+  type: 'Accession'
 }
 countries.JO = {
   value: 'JO',
   latitude: 30.585164,
   longitude: 36.238414,
   name: 'Jordan',
-  color: 'ok'
+  color: 'ok',
+  join: '14/12/1978',
+  entry: '14/03/1979',
+  type: 'Accession'
 }
 countries.JP = {
   value: 'JP',
   latitude: 36.204824,
   longitude: 138.252924,
   name: 'Japan',
-  color: 'ok'
+  color: 'ok',
+  join: '06/08/1980',
+  entry: '04/11/1980',
+  type: 'Acceptance'
 }
 countries.KE = {
   value: 'KE',
   latitude: -0.023559,
   longitude: 37.906193,
   name: 'Kenya',
-  color: 'accent-1-t'
+  color: 'accent-1-t',
+  join: '13/12/1978',
+  entry: '13/03/1979',
+  type: 'Ratification'
 }
 countries.KG = {
   value: 'KG',
   latitude: 41.20438,
   longitude: 74.766098,
   name: 'Kyrgyzstan',
-  color: 'neutral-1'
+  color: 'neutral-1',
+  join: '04/06/2007',
+  entry: '02/09/2007',
+  type: 'Accession'
 }
 countries.KH = {
   value: 'KH',
@@ -980,7 +1112,10 @@ countries.KN = {
   latitude: 17.357822,
   longitude: -62.782998,
   name: 'Saint Kitts and Nevis',
-  color: 'brand'
+  color: 'brand',
+  join: '14/02/1994',
+  entry: '15/05/1994',
+  type: 'Accession'
 }
 countries.KP = {
   value: 'KP',
@@ -994,14 +1129,20 @@ countries.KR = {
   latitude: 35.907757,
   longitude: 127.766922,
   name: 'South Korea',
-  color: 'ok'
+  color: 'ok',
+  join: '09/07/1993',
+  entry: '07/10/1993',
+  type: 'Accession'
 }
 countries.KW = {
   value: 'KW',
   latitude: 29.31166,
   longitude: 47.481766,
   name: 'Kuwait',
-  color: 'ok'
+  color: 'ok',
+  join: '12/08/2002',
+  entry: '10/11/2002',
+  type: 'Ratification'
 }
 countries.KY = {
   value: 'KY',
@@ -1015,112 +1156,160 @@ countries.KZ = {
   latitude: 48.019573,
   longitude: 66.923684,
   name: 'Kazakhstan',
-  color: 'neutral-3'
+  color: 'neutral-3',
+  join: '20/01/2000',
+  entry: '19/04/2000',
+  type: 'Accession'
 }
 countries.LA = {
   value: 'LA',
   latitude: 19.85627,
   longitude: 102.495496,
   name: 'Laos',
-  color: 'neutral-1'
+  color: 'neutral-1',
+  join: '01/03/2004',
+  entry: '30/05/2004',
+  type: 'Accession'
 }
 countries.LB = {
   value: 'LB',
   latitude: 33.854721,
   longitude: 35.862285,
   name: 'Lebanon',
-  color: 'neutral-2'
+  color: 'neutral-2',
+  join: '25/02/2013',
+  entry: '26/05/2013',
+  type: 'Accession'
 }
 countries.LC = {
   value: 'LC',
   latitude: 13.909444,
   longitude: -60.978893,
   name: 'Saint Lucia',
-  color: 'accent-2'
+  color: 'accent-2',
+  join: '15/12/1982',
+  entry: '15/03/1983',
+  type: 'Accession'
 }
 countries.LI = {
   value: 'LI',
   latitude: 47.166,
   longitude: 9.555373,
   name: 'Liechtenstein',
-  color: 'neutral-3'
+  color: 'neutral-3',
+  join: '30/11/1979',
+  entry: '28/02/1980',
+  type: 'Accession'
 }
 countries.LK = {
   value: 'LK',
   latitude: 7.873054,
   longitude: 80.771797,
   name: 'Sri Lanka',
-  color: 'brand'
+  color: 'brand',
+  join: '04/05/1979',
+  entry: '02/08/1979',
+  type: 'Accession'
 }
 countries.LR = {
   value: 'LR',
   latitude: 6.428055,
   longitude: -9.429499,
   name: 'Liberia',
-  color: 'warning'
+  color: 'warning',
+  join: '11/03/1981',
+  entry: '09/06/1981',
+  type: 'Accession'
 }
 countries.LS = {
   value: 'LS',
   latitude: -29.609988,
   longitude: 28.233608,
   name: 'Lesotho',
-  color: 'ok'
+  color: 'ok',
+  join: '01/10/2003',
+  entry: '30/12/2003',
+  type: 'Ratification'
 }
 countries.LT = {
   value: 'LT',
   latitude: 55.169438,
   longitude: 23.881275,
   name: 'Lithuania',
-  color: 'ok'
+  color: 'ok',
+  join: '10/12/2001',
+  entry: '09/03/2002',
+  type: 'Accession'
 }
 countries.LU = {
   value: 'LU',
   latitude: 49.815273,
   longitude: 6.129583,
   name: 'Luxembourg',
-  color: 'accent-1-t'
+  color: 'accent-1-t',
+  join: '13/12/1983',
+  entry: '12/03/1984',
+  type: 'Ratification'
 }
 countries.LV = {
   value: 'LV',
   latitude: 56.879635,
   longitude: 24.603189,
   name: 'Latvia',
-  color: 'neutral-1'
+  color: 'neutral-1',
+  join: '11/02/1997',
+  entry: '12/05/1997',
+  type: 'Accession'
 }
 countries.LY = {
   value: 'LY',
   latitude: 26.3351,
   longitude: 17.228331,
   name: 'Libya',
-  color: 'neutral-2'
+  color: 'neutral-2',
+  join: '28/01/2003',
+  entry: '28/04/2003',
+  type: 'Accession'
 }
 countries.MA = {
   value: 'MA',
   latitude: 31.791702,
   longitude: -7.09262,
   name: 'Morocco',
-  color: 'accent-2'
+  color: 'accent-2',
+  join: '16/10/1975',
+  entry: '14/01/1976',
+  type: 'Ratification'
 }
 countries.MC = {
   value: 'MC',
   latitude: 43.750298,
   longitude: 7.412841,
   name: 'Monaco',
-  color: 'neutral-3'
+  color: 'neutral-3',
+  join: '19/04/1978',
+  entry: '18/07/1978',
+  type: 'Accession'
 }
 countries.MD = {
   value: 'MD',
   latitude: 47.411631,
   longitude: 28.369885,
   name: 'Moldova',
-  color: 'brand'
+  color: 'brand',
+  join: '29/03/2001',
+  entry: '27/06/2001',
+  type: 'Accession'
 }
 countries.ME = {
   value: 'ME',
   latitude: 42.708678,
   longitude: 19.37439,
   name: 'Montenegro',
-  color: 'warning'
+  color: 'warning',
+  join: '26/03/2007',
+  entry: '03/06/2006',
+  type: 'Succession'
 }
 countries.MF = {
   value: 'MF',
@@ -1134,7 +1323,10 @@ countries.MG = {
   latitude: -18.766947,
   longitude: 46.869107,
   name: 'Madagascar',
-  color: 'ok'
+  color: 'ok',
+  join: '20/08/1975',
+  entry: '18/11/1975',
+  type: 'Ratification'
 }
 countries.MH = {
   value: 'MH',
@@ -1148,28 +1340,40 @@ countries.MK = {
   latitude: 41.608635,
   longitude: 21.745275,
   name: 'Macedonia [FYROM]',
-  color: 'neutral-1'
+  color: 'neutral-1',
+  join: '04/07/2000',
+  entry: '02/10/2000',
+  type: 'Accession'
 }
 countries.ML = {
   value: 'ML',
   latitude: 17.570692,
   longitude: -3.996166,
   name: 'Mali',
-  color: 'neutral-2'
+  color: 'neutral-2',
+  join: '18/07/1994',
+  entry: '16/10/1994',
+  type: 'Accession'
 }
 countries.MM = {
   value: 'MM',
   latitude: 21.913965,
   longitude: 95.956223,
   name: 'Myanmar [Burma]',
-  color: 'accent-2'
+  color: 'accent-2',
+  join: '13/06/1997',
+  entry: '11/09/1997',
+  type: 'Accession'
 }
 countries.MN = {
   value: 'MN',
   latitude: 46.862496,
   longitude: 103.846656,
   name: 'Mongolia',
-  color: 'neutral-3'
+  color: 'neutral-3',
+  join: '05/01/1996',
+  entry: '04/04/1996',
+  type: 'Accession'
 }
 countries.MO = {
   value: 'MO',
@@ -1197,7 +1401,10 @@ countries.MR = {
   latitude: 21.00789,
   longitude: -10.940835,
   name: 'Mauritania',
-  color: 'ok'
+  color: 'ok',
+  join: '13/03/1998',
+  entry: '11/06/1998',
+  type: 'Accession'
 }
 countries.MS = {
   value: 'MS',
@@ -1211,56 +1418,80 @@ countries.MT = {
   latitude: 35.937496,
   longitude: 14.375416,
   name: 'Malta',
-  color: 'accent-1-t'
+  color: 'accent-1-t',
+  join: '17/04/1989',
+  entry: '16/07/1989',
+  type: 'Accession'
 }
 countries.MU = {
   value: 'MU',
   latitude: -20.348404,
   longitude: 57.552152,
   name: 'Mauritius',
-  color: 'neutral-1'
+  color: 'neutral-1',
+  join: '28/04/1975',
+  entry: '27/07/1975',
+  type: 'Ratification'
 }
 countries.MV = {
   value: 'MV',
   latitude: 3.202778,
   longitude: 73.22068,
   name: 'Maldives',
-  color: 'neutral-2'
+  color: 'neutral-2',
+  join: '12/12/2012',
+  entry: '12/03/2013',
+  type: 'Accession'
 }
 countries.MW = {
   value: 'MW',
   latitude: -13.254308,
   longitude: 34.301525,
   name: 'Malawi',
-  color: 'accent-2'
+  color: 'accent-2',
+  join: '05/02/1982',
+  entry: '06/05/1982',
+  type: 'Accession'
 }
 countries.MX = {
   value: 'MX',
   latitude: 23.634501,
   longitude: -102.552784,
   name: 'Mexico',
-  color: 'neutral-3'
+  color: 'neutral-3',
+  join: '02/07/1991',
+  entry: '30/09/1991',
+  type: 'Accession'
 }
 countries.MY = {
   value: 'MY',
   latitude: 4.210484,
   longitude: 101.975766,
   name: 'Malaysia',
-  color: 'brand'
+  color: 'brand',
+  join: '20/10/1977',
+  entry: '18/01/1978',
+  type: 'Accession'
 }
 countries.MZ = {
   value: 'MZ',
   latitude: -18.665695,
   longitude: 35.529562,
   name: 'Mozambique',
-  color: 'warning'
+  color: 'warning',
+  join: '25/03/1981',
+  entry: '23/06/1981',
+  type: 'Accession'
 }
 countries.NA = {
   value: 'NA',
   latitude: -22.95764,
   longitude: 18.49041,
   name: 'Namibia',
-  color: 'critical'
+  color: 'critical',
+  join: '18/12/1990',
+  entry: '18/03/1991',
+  type: 'Accession'
 }
 countries.NC = {
   value: 'NC',
@@ -1274,7 +1505,10 @@ countries.NE = {
   latitude: 17.607789,
   longitude: 8.081666,
   name: 'Niger',
-  color: 'neutral-1'
+  color: 'neutral-1',
+  join: '08/09/1975',
+  entry: '07/12/1975',
+  type: 'Ratification'
 }
 countries.NF = {
   value: 'NF',
@@ -1288,35 +1522,50 @@ countries.NG = {
   latitude: 9.081999,
   longitude: 8.675277,
   name: 'Nigeria',
-  color: 'accent-2'
+  color: 'accent-2',
+  join: '09/05/1974',
+  entry: '01/07/1975',
+  type: 'Ratification'
 }
 countries.NI = {
   value: 'NI',
   latitude: 12.865416,
   longitude: -85.207229,
   name: 'Nicaragua',
-  color: 'neutral-3'
+  color: 'neutral-3',
+  join: '06/08/1977',
+  entry: '04/11/1977',
+  type: 'Accession'
 }
 countries.NL = {
   value: 'NL',
   latitude: 52.132633,
   longitude: 5.291266,
   name: 'Netherlands',
-  color: 'brand'
+  color: 'brand',
+  join: '19/04/1984',
+  entry: '18/07/1984',
+  type: 'Ratification'
 }
 countries.NO = {
   value: 'NO',
   latitude: 60.472024,
   longitude: 8.468946,
   name: 'Norway',
-  color: 'warning'
+  color: 'warning',
+  join: '27/07/1976',
+  entry: '25/10/1976',
+  type: 'Ratification'
 }
 countries.NP = {
   value: 'NP',
   latitude: 28.394857,
   longitude: 84.124008,
   name: 'Nepal',
-  color: 'ok'
+  color: 'ok',
+  join: '18/06/1975',
+  entry: '16/09/1975',
+  type: 'Accession'
 }
 countries.NR = {
   value: 'NR',
@@ -1337,28 +1586,40 @@ countries.NZ = {
   latitude: -40.900557,
   longitude: 174.885971,
   name: 'New Zealand',
-  color: 'neutral-1'
+  color: 'neutral-1',
+  join: '10/05/1989',
+  entry: '08/08/1989',
+  type: 'Accession'
 }
 countries.OM = {
   value: 'OM',
   latitude: 21.512583,
   longitude: 55.923255,
   name: 'Oman',
-  color: 'neutral-2'
+  color: 'neutral-2',
+  join: '19/03/2008',
+  entry: '17/06/2008',
+  type: 'Accession'
 }
 countries.PA = {
   value: 'PA',
   latitude: 8.537981,
   longitude: -80.782127,
   name: 'Panama',
-  color: 'accent-2'
+  color: 'accent-2',
+  join: '17/08/1978',
+  entry: '15/11/1978',
+  type: 'Ratification'
 }
 countries.PE = {
   value: 'PE',
   latitude: -9.189967,
   longitude: -75.015152,
   name: 'Peru',
-  color: 'neutral-3'
+  color: 'neutral-3',
+  join: '27/06/1975',
+  entry: '25/09/1975',
+  type: 'Ratification'
 }
 countries.PF = {
   value: 'PF',
@@ -1372,28 +1633,40 @@ countries.PG = {
   latitude: -6.314993,
   longitude: 143.95555,
   name: 'Papua New Guinea',
-  color: 'warning'
+  color: 'warning',
+  join: '12/12/1975',
+  entry: '11/03/1976',
+  type: 'Accession'
 }
 countries.PH = {
   value: 'PH',
   latitude: 12.879721,
   longitude: 121.774017,
   name: 'Philippines',
-  color: 'ok'
+  color: 'ok',
+  join: '18/08/1981',
+  entry: '16/11/1981',
+  type: 'Ratification'
 }
 countries.PK = {
   value: 'PK',
   latitude: 30.375321,
   longitude: 69.345116,
   name: 'Pakistan',
-  color: 'critical'
+  color: 'critical',
+  join: '20/04/1976',
+  entry: '19/07/1976',
+  type: 'Accession'
 }
 countries.PL = {
   value: 'PL',
   latitude: 51.919438,
   longitude: 19.145136,
   name: 'Poland',
-  color: 'accent-1-t'
+  color: 'accent-1-t',
+  join: '12/12/1989',
+  entry: '12/03/1990',
+  type: 'Ratification'
 }
 countries.PM = {
   value: 'PM',
@@ -1428,28 +1701,40 @@ countries.PT = {
   latitude: 39.399872,
   longitude: -8.224454,
   name: 'Portugal',
-  color: 'brand'
+  color: 'brand',
+  join: '11/12/1980',
+  entry: '11/03/1981',
+  type: 'Ratification'
 }
 countries.PW = {
   value: 'PW',
   latitude: 7.51498,
   longitude: 134.58252,
   name: 'Palau',
-  color: 'warning'
+  color: 'warning',
+  join: '16/04/2004',
+  entry: '15/07/2004',
+  type: 'Accession'
 }
 countries.PY = {
   value: 'PY',
   latitude: -23.442503,
   longitude: -58.443832,
   name: 'Paraguay',
-  color: 'ok'
+  color: 'ok',
+  join: '5/11/1976',
+  entry: '13/02/1977',
+  type: 'Ratification'
 }
 countries.QA = {
   value: 'QA',
   latitude: 25.354826,
   longitude: 51.183884,
   name: 'Qatar',
-  color: 'critical'
+  color: 'critical',
+  join: '08/05/2001',
+  entry: '06/08/2001',
+  type: 'Accession'
 }
 countries.RE = {
   value: 'RE',
@@ -1463,70 +1748,100 @@ countries.RO = {
   latitude: 45.943161,
   longitude: 24.96676,
   name: 'Romania',
-  color: 'neutral-1'
+  color: 'neutral-1',
+  join: '18/08/1994',
+  entry: '16/11/1994',
+  type: 'Accession'
 }
 countries.RS = {
   value: 'RS',
   latitude: 44.016521,
   longitude: 21.005859,
   name: 'Serbia',
-  color: 'neutral-2'
+  color: 'neutral-2',
+  join: '06/06/2006',
+  entry: '03/06/2006',
+  type: 'Continuation'
 }
 countries.RU = {
   value: 'RU',
   latitude: 61.52401,
   longitude: 105.318756,
   name: 'Russia',
-  color: 'neutral-3'
+  color: 'neutral-3',
+  join: '13/01/1992',
+  entry: '01/01/1992',
+  type: 'Continuation'
 }
 countries.RW = {
   value: 'RW',
   latitude: -1.940278,
   longitude: 29.873888,
   name: 'Rwanda',
-  color: 'accent-2'
+  color: 'accent-2',
+  join: '20/10/1980',
+  entry: '18/01/1981',
+  type: 'Accession'
 }
 countries.SA = {
   value: 'SA',
   latitude: 23.885942,
   longitude: 45.079162,
   name: 'Saudi Arabia',
-  color: 'neutral-3'
+  color: 'neutral-3',
+  join: '12/03/1996',
+  entry: '10/06/1996',
+  type: 'Accession'
 }
 countries.SB = {
   value: 'SB',
   latitude: -9.64571,
   longitude: 160.156194,
   name: 'Solomon Islands',
-  color: 'brand'
+  color: 'brand',
+  join: '26/03/2007',
+  entry: '24/06/2007',
+  type: 'Accession'
 }
 countries.SC = {
   value: 'SC',
   latitude: -4.679574,
   longitude: 55.491977,
   name: 'Seychelles',
-  color: 'warning'
+  color: 'warning',
+  join: '08/02/1977',
+  entry: '09/05/1977',
+  type: 'Accession'
 }
 countries.SD = {
   value: 'SD',
   latitude: 12.862807,
   longitude: 30.217636,
   name: 'Sudan',
-  color: 'ok'
+  color: 'ok',
+  join: '26/10/1982',
+  entry: '24/01/1983',
+  type: 'Ratification'
 }
 countries.SE = {
   value: 'SE',
   latitude: 60.128161,
   longitude: 18.643501,
   name: 'Sweden',
-  color: 'critical'
+  color: 'critical',
+  join: '20/08/1974',
+  entry: '01/07/1975',
+  type: 'Ratification'
 }
 countries.SG = {
   value: 'SG',
   latitude: 1.352083,
   longitude: 103.819836,
   name: 'Singapore',
-  color: 'accent-1-t'
+  color: 'accent-1-t',
+  join: '30/11/1986',
+  entry: '28/02/1987',
+  type: 'Accession'
 }
 countries.SH = {
   value: 'SH',
@@ -1540,7 +1855,10 @@ countries.SI = {
   latitude: 46.151241,
   longitude: 14.995463,
   name: 'Slovenia',
-  color: 'neutral-2'
+  color: 'neutral-2',
+  join: '24/01/2000',
+  entry: '23/04/2000',
+  type: 'Accession'
 }
 countries.SJ = {
   value: 'SJ',
@@ -1554,56 +1872,80 @@ countries.SK = {
   latitude: 48.669026,
   longitude: 19.699024,
   name: 'Slovakia',
-  color: 'neutral-3'
+  color: 'neutral-3',
+  join: '02/03/1993',
+  entry: '01/01/1993',
+  type: 'Succession'
 }
 countries.SL = {
   value: 'SL',
   latitude: 8.460555,
   longitude: -11.779889,
   name: 'Sierra Leone',
-  color: 'brand'
+  color: 'brand',
+  join: '28/10/1994',
+  entry: '26/01/1995',
+  type: 'Accession'
 }
 countries.SM = {
   value: 'SM',
   latitude: 43.94236,
   longitude: 12.457777,
   name: 'San Marino',
-  color: 'warning'
+  color: 'warning',
+  join: '22/07/2005',
+  entry: '20/10/2005',
+  type: 'Acceptance'
 }
 countries.SN = {
   value: 'SN',
   latitude: 14.497401,
   longitude: -14.452362,
   name: 'Senegal',
-  color: 'ok'
+  color: 'ok',
+  join: '05/08/1977',
+  entry: '03/11/1977',
+  type: 'Accession'
 }
 countries.SO = {
   value: 'SO',
   latitude: 5.152149,
   longitude: 46.199616,
   name: 'Somalia',
-  color: 'critical'
+  color: 'critical',
+  join: '02/12/1985',
+  entry: '02/03/1986',
+  type: 'Accession'
 }
 countries.SR = {
   value: 'SR',
   latitude: 3.919305,
   longitude: -56.027783,
   name: 'Suriname',
-  color: 'accent-1-t'
+  color: 'accent-1-t',
+  join: '17/11/1980',
+  entry: '15/02/1981',
+  type: 'Accession'
 }
 countries.ST = {
   value: 'ST',
   latitude: 0.18636,
   longitude: 6.613081,
   name: 'São Tomé and Príncipe',
-  color: 'neutral-1'
+  color: 'neutral-1',
+  join: '09/08/2001',
+  entry: '07/11/2001',
+  type: 'Accession'
 }
 countries.SV = {
   value: 'SV',
   latitude: 13.794185,
   longitude: -88.89653,
   name: 'El Salvador',
-  color: 'neutral-2'
+  color: 'neutral-2',
+  join: '30/04/1987',
+  entry: '29/07/1987',
+  type: 'Accession'
 }
 countries.SX = {
   value: 'SX',
@@ -1617,14 +1959,20 @@ countries.SY = {
   latitude: 34.802075,
   longitude: 38.996815,
   name: 'Syria',
-  color: 'neutral-3'
+  color: 'neutral-3',
+  join: '30/04/2003',
+  entry: '29/07/2003',
+  type: 'Accession'
 }
 countries.SZ = {
   value: 'SZ',
   latitude: -26.522503,
   longitude: 31.465866,
   name: 'Swaziland',
-  color: 'brand'
+  color: 'brand',
+  join: '26/02/1997',
+  entry: '27/05/1997',
+  type: 'Accession'
 }
 countries.TC = {
   value: 'TC',
@@ -1655,21 +2003,30 @@ countries.TG = {
   latitude: 8.619543,
   longitude: 0.824782,
   name: 'Togo',
-  color: 'accent-1-t'
+  color: 'accent-1-t',
+  join: '23/10/1978',
+  entry: '21/01/1979',
+  type: 'Ratification'
 }
 countries.TH = {
   value: 'TH',
   latitude: 15.870032,
   longitude: 100.992541,
   name: 'Thailand',
-  color: 'neutral-1'
+  color: 'neutral-1',
+  join: '21/01/1983',
+  entry: '21/04/1983',
+  type: 'Ratification'
 }
 countries.TJ = {
   value: 'TJ',
   latitude: 38.861034,
   longitude: 71.276093,
   name: 'Tajikistan',
-  color: 'neutral-2'
+  color: 'neutral-2',
+  join: '30/03/2016',
+  entry: '30/03/2016',
+  type: 'Accession'
 }
 countries.TK = {
   value: 'TK',
@@ -1697,28 +2054,40 @@ countries.TN = {
   latitude: 33.886917,
   longitude: 9.537499,
   name: 'Tunisia',
-  color: 'warning'
+  color: 'warning',
+  join: '10/07/1974',
+  entry: '01/07/1975',
+  type: 'Ratification'
 }
 countries.TO = {
   value: 'TO',
   latitude: -21.178986,
   longitude: -175.198242,
   name: 'Tonga',
-  color: 'ok'
+  color: 'ok',
+  join: '20/10/2016',
+  entry: '20/10/2016',
+  type: 'Accession'
 }
 countries.TR = {
   value: 'TR',
   latitude: 38.963745,
   longitude: 35.243322,
   name: 'Turkey',
-  color: 'critical'
+  color: 'critical',
+  join: '23/09/1996',
+  entry: '22/12/1996',
+  type: 'Accession'
 }
 countries.TT = {
   value: 'TT',
   latitude: 10.691803,
   longitude: -61.222503,
   name: 'Trinidad and Tobago',
-  color: 'accent-1-t'
+  color: 'accent-1-t',
+  join: '19/01/1984',
+  entry: '18/04/1984',
+  type: 'Accession'
 }
 countries.TV = {
   value: 'TV',
@@ -1739,21 +2108,30 @@ countries.TZ = {
   latitude: -6.369028,
   longitude: 34.888822,
   name: 'Tanzania',
-  color: 'accent-2'
+  color: 'accent-2',
+  join: '29/11/1979',
+  entry: '27/02/1980',
+  type: 'Ratification'
 }
 countries.UA = {
   value: 'UA',
   latitude: 48.379433,
   longitude: 31.16558,
   name: 'Ukraine',
-  color: 'neutral-3'
+  color: 'neutral-3',
+  join: '30/12/1999',
+  entry: '29/03/2000',
+  type: 'Accession'
 }
 countries.UG = {
   value: 'UG',
   latitude: 1.373333,
   longitude: 32.290275,
   name: 'Uganda',
-  color: 'brand'
+  color: 'brand',
+  join: '18/07/1991',
+  entry: '16/10/1991',
+  type: 'Accession'
 }
 countries.UM = {
   value: 'UM',
@@ -1767,21 +2145,30 @@ countries.US = {
   latitude: 37.09024,
   longitude: -95.712891,
   name: 'United States',
-  color: 'ok'
+  color: 'ok',
+  join: '14/01/1974',
+  entry: '01/07/1975',
+  type: 'Ratification'
 }
 countries.UY = {
   value: 'UY',
   latitude: -32.522779,
   longitude: -55.765835,
   name: 'Uruguay',
-  color: 'critical'
+  color: 'critical',
+  join: '02/04/1975',
+  entry: '01/07/1975',
+  type: 'Ratification'
 }
 countries.UZ = {
   value: 'UZ',
   latitude: 41.377491,
   longitude: 64.585262,
   name: 'Uzbekistan',
-  color: 'accent-1-t'
+  color: 'accent-1-t',
+  join: '10/07/1997',
+  entry: '08/10/1997',
+  type: 'Accession'
 }
 countries.VA = {
   value: 'VA',
@@ -1795,14 +2182,20 @@ countries.VC = {
   latitude: 12.984305,
   longitude: -61.287228,
   name: 'Saint Vincent and the Grenadines',
-  color: 'neutral-2'
+  color: 'neutral-2',
+  join: '30/11/1988',
+  entry: '28/02/1989',
+  type: 'Accession'
 }
 countries.VE = {
   value: 'VE',
   latitude: 6.42375,
   longitude: -66.58973,
   name: 'Venezuela',
-  color: 'accent-2'
+  color: 'accent-2',
+  join: '24/10/1977',
+  entry: '22/01/1978',
+  type: 'Ratification'
 }
 countries.VG = {
   value: 'VG',
@@ -1823,14 +2216,20 @@ countries.VN = {
   latitude: 14.058324,
   longitude: 108.277199,
   name: 'Vietnam',
-  color: 'warning'
+  color: 'warning',
+  join: '20/01/1994',
+  entry: '20/04/1994',
+  type: 'Accession'
 }
 countries.VU = {
   value: 'VU',
   latitude: -15.376706,
   longitude: 166.959158,
   name: 'Vanuatu',
-  color: 'ok'
+  color: 'ok',
+  join: '17/07/1989',
+  entry: '15/10/1989',
+  type: 'Accession'
 }
 countries.WF = {
   value: 'WF',
@@ -1844,7 +2243,10 @@ countries.WS = {
   latitude: -13.759029,
   longitude: -172.104629,
   name: 'Samoa',
-  color: 'accent-1-t'
+  color: 'accent-1-t',
+  join: '09/11/2004',
+  entry: '07/02/2005',
+  type: 'Accession'
 }
 countries.XK = {
   value: 'XK',
@@ -1858,7 +2260,10 @@ countries.YE = {
   latitude: 15.552727,
   longitude: 48.516388,
   name: 'Yemen',
-  color: 'neutral-2'
+  color: 'neutral-2',
+  join: '05/05/1997',
+  entry: '03/08/1997',
+  type: 'Accession'
 }
 countries.YT = {
   value: 'YT',
@@ -1872,21 +2277,30 @@ countries.ZA = {
   latitude: -30.559482,
   longitude: 22.937506,
   name: 'South Africa',
-  color: 'neutral-3'
+  color: 'neutral-3',
+  join: '15/07/1975',
+  entry: '13/10/1975',
+  type: 'Ratification'
 }
 countries.ZM = {
   value: 'ZM',
   latitude: -13.133897,
   longitude: 27.849332,
   name: 'Zambia',
-  color: 'brand'
+  color: 'brand',
+  join: '24/11/1980',
+  entry: '22/02/1981',
+  type: 'Accession'
 }
 countries.ZW = {
   value: 'ZW',
   latitude: -19.015438,
   longitude: 29.154857,
   name: 'Zimbabwe',
-  color: 'warning'
+  color: 'warning',
+  join: '19/05/1981',
+  entry: '17/08/1981',
+  type: 'Accession'
 }
 
 export default countries

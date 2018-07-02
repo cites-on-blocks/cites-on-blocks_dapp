@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Box, Title, Legend, SunBurst, Value } from 'grommet'
+import { Box, Title, Legend, SunBurst, Value, Label } from 'grommet'
 
 class SunburstChart extends Component {
   constructor() {

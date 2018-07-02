@@ -57,7 +57,7 @@ class AnalyticsMapboard extends Component {
       theme: 'light',
       titles: [
         {
-          text: 'Population of the World in 2011',
+          text: 'Permits on the World Map',
           size: 14
         }
       ],
