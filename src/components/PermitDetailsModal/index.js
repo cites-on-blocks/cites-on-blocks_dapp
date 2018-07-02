@@ -138,11 +138,11 @@ class PermitDetailsModal extends Component {
   }
 
   printPermit(permit) {
-    let fieldPlaceholder = '*******'
-    let defaultHash =
+    const fieldPlaceholder = '*******'
+    const defaultHash =
       '0x0000000000000000000000000000000000000000000000000000000000000000'
-    var html = PrintTemplate
-    var wnd = window.open()
+    let html = PrintTemplate
+    const wnd = window.open()
     // Set cross on paper depending on permit type
     if (permit.permitType === 'EXPORT') {
       html = html.replace('###EXPORT###', 'x')
@@ -170,10 +170,10 @@ class PermitDetailsModal extends Component {
     html = html.replace('###EXPORTERCITY###', permit.exporter.city)
 
     // Set the species data
-    let formSections = [0, 1, 2]
+    const formSections = [0, 1, 2]
     formSections.forEach(index => {
       //Check if there are values to fill into the form
-      let emptyFields = permit.specimens[index] === undefined
+      const emptyFields = permit.specimens[index] === undefined
       html = html.replace(
         '###SPECIMEN-SCIENTIFICNAME-' + index + '###',
         emptyFields ? fieldPlaceholder : permit.specimens[index].scientificName
