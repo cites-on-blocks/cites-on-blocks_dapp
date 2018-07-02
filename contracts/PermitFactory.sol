@@ -49,7 +49,7 @@ contract PermitFactory is Whitelist {
     bytes32 permitHash; // hash of parent permit
     uint quantity; // quantity of specimen
     bytes32 scientificName; // scientific name of species
-    bytes32 commmonName; // common name of specimen
+    bytes32 commonName; // common name of specimen
     bytes32 description; // description of specimen
     bytes32 originHash; // permit hash of origin permit
     bytes32 reExportHash; // permit hash of last re-export
@@ -341,6 +341,37 @@ contract PermitFactory is Whitelist {
   }
 
   /**
+   * Retrieve the specimen object for a given hash value as key.
+   * Require that the hash value exists.
+   *
+   * Do not check if a specimen exists for this hash value.
+   * @dev Custom getter function to retrieve specimen from contract storage.
+   * @dev Needed because client can not directly get array from mapping.
+   * @param _specimenHash hash of permit
+   * @return specimen as tuple
+   */
+  function getSpecimen(bytes32 _specimenHash)
+    public
+    view
+    returns (bytes32, uint, bytes32, bytes32, bytes32, bytes32, bytes32)
+  {
+    // Check if a specimen for this hash exist.
+    // It is required to have a quantity higher 1, so we can take this as validation.
+    require(specimens[_specimenHash].quantity > 0);
+
+    // Build a tuple with the attributes of the specimen object.
+    return (
+      specimens[_specimenHash].permitHash,
+      specimens[_specimenHash].quantity,
+      specimens[_specimenHash].scientificName,
+      specimens[_specimenHash].commonName,
+      specimens[_specimenHash].description,
+      specimens[_specimenHash].originHash,
+      specimens[_specimenHash].reExportHash
+    );
+  }
+
+  /**
    * @dev Creates a CITES permit and stores it in the contract.
    * @dev A hash of the permit is used as an unique key.
    * @param _exportCountry ISO country code of exporting country
@@ -452,7 +483,7 @@ contract PermitFactory is Whitelist {
         specimen.permitHash,
         specimen.quantity,
         specimen.scientificName,
-        specimen.commmonName,
+        specimen.commonName,
         specimen.description,
         specimen.originHash,
         specimen.reExportHash
