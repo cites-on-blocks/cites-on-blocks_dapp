@@ -13,6 +13,7 @@ import {
 import axios from 'axios'
 import fileDownload from 'js-file-download'
 import { trimHash } from '../../util/stringUtils'
+import { getPermitAsXMLFromExporterURL } from '../../util/exporterUtils'
 
 /**
  * Component for detailed permit information
@@ -138,11 +139,9 @@ class PermitDetailsModal extends Component {
   }
 
   exportRequest(permit) {
-    console.warn('SEND REQUEST TO EXPORTER SERVER')
     axios
-      .get('https://api.github.com/users/maecapozzi')
+      .get(getPermitAsXMLFromExporterURL(permit.permitHash))
       .then(response => {
-        console.log(response.data)
         fileDownload(response.data, permit.permitHash + '.xml')
         return
       })
