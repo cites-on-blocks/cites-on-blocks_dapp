@@ -15,6 +15,7 @@ import Web3, { utils } from 'web3'
 import AddressInputs from '../../components/AddressInputs'
 import SpeciesInputs from '../../components/SpeciesInputs'
 import PendingTxModal from '../../components/PendingTxModal'
+import { isASCII } from '../../util/stringUtils'
 import * as permitUtils from '../../util/permitUtils'
 import local from '../../localization/localizedStrings'
 
@@ -242,7 +243,13 @@ class PermitCreate extends Component {
       permit.importCountry &&
       permit.permitType &&
       permit.importer &&
-      permit.exporter
+      isASCII(permit.importer[0]) &&
+      isASCII(permit.importer[1]) &&
+      isASCII(permit.importer[2]) &&
+      permit.exporter &&
+      isASCII(permit.exporter[0]) &&
+      isASCII(permit.exporter[1]) &&
+      isASCII(permit.exporter[2])
     const specimensValid = specimens.reduce((isValid, specimen) => {
       let validHashes
       const {
@@ -250,7 +257,8 @@ class PermitCreate extends Component {
         scientificName,
         commonName,
         originHash,
-        reExportHash
+        reExportHash,
+        description
       } = specimen
       if (permit.permitType === 'RE-EXPORT') {
         validHashes =
@@ -260,7 +268,14 @@ class PermitCreate extends Component {
         validHashes = true
       }
       return (
-        isValid && quantity > 0 && scientificName && commonName && validHashes
+        isValid &&
+        quantity > 0 &&
+        scientificName &&
+        isASCII(scientificName) &&
+        commonName &&
+        isASCII(commonName) &&
+        isASCII(description) &&
+        validHashes
       )
     }, true)
     return permitValid && specimensValid
@@ -277,7 +292,8 @@ class PermitCreate extends Component {
       permit,
       specimens,
       isValid,
-      hashSuggestions
+      hashSuggestions,
+      authorityCountry
     } = this.state
     return (
       <Box>
@@ -328,7 +344,11 @@ class PermitCreate extends Component {
             error={this.getError(permit.exportCountry, 'required')}>
             <Select
               value={permit.exportCountry}
-              options={COUNTRIES}
+              options={
+                permitForm === 'DIGITAL'
+                  ? [{ value: authorityCountry, label: authorityCountry }]
+                  : COUNTRIES.filter(c => c.value !== permit.importCountry)
+              }
               onChange={({ option }) => {
                 this.handlePermitChange('exportCountry', option.value)
               }}
@@ -339,7 +359,11 @@ class PermitCreate extends Component {
             error={this.getError(permit.importCountry, 'required')}>
             <Select
               value={permit.importCountry}
-              options={COUNTRIES}
+              options={
+                permitForm === 'PAPER'
+                  ? [{ value: authorityCountry, label: authorityCountry }]
+                  : COUNTRIES.filter(c => c.value !== permit.exportCountry)
+              }
               onChange={({ option }) => {
                 this.handlePermitChange('importCountry', option.value)
               }}

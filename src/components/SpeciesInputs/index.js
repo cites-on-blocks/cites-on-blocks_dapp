@@ -11,13 +11,41 @@ import {
   SubtractIcon,
   SearchInput
 } from 'grommet'
-
+import { isASCII } from '../../util/stringUtils'
 import local from '../../localization/localizedStrings'
 
 /**
  * Component for form elements of species information
  */
 class SpeciesInputs extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      errText: ['', '', '']
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.isValid !== this.props.isValid) {
+      this.setError(this.props.species.scientificName, 0)
+      this.setError(this.props.species.commonName, 1)
+      this.setError(this.props.species.description, 2, true)
+    }
+  }
+
+  setError(value, index, onlyASCII = false) {
+    const { isValid } = this.props
+    const { errText } = this.state
+    let newErrText = ''
+    if (!value && !isValid && !onlyASCII) {
+      newErrText = 'required'
+    } else if (!isASCII(value)) {
+      newErrText = 'only ASCII allowed'
+    }
+    errText[index] = newErrText
+    this.setState({ errText })
+  }
+
   getError(value, errText) {
     const { isValid } = this.props
     return isValid === 'initial' ? '' : !value && !isValid && errText
@@ -32,6 +60,7 @@ class SpeciesInputs extends Component {
       hashSuggestions,
       permitType
     } = this.props
+    const { errText } = this.state
     return (
       <Box margin={{ bottom: 'large' }}>
         <Box
@@ -47,27 +76,32 @@ class SpeciesInputs extends Component {
           )}
         </Box>
         <Columns justify={'between'} size={'large'}>
-          <FormField
-            label={local.permits.scientificName}
-            error={this.getError(species.scientificName, 'required')}>
+          <FormField label={local.permits.scientificName} error={errText[0]}>
             <TextInput
               value={species.scientificName}
-              onDOMChange={e => onChange('scientificName', e.target.value)}
+              onDOMChange={e => {
+                onChange('scientificName', e.target.value)
+                this.setError(e.target.value, 0)
+              }}
             />
           </FormField>
-          <FormField
-            label={local.permits.commonName}
-            error={this.getError(species.commonName, 'required')}>
+          <FormField label={local.permits.commonName} error={errText[1]}>
             <TextInput
               value={species.commonName}
-              onDOMChange={e => onChange('commonName', e.target.value)}
+              onDOMChange={e => {
+                onChange('commonName', e.target.value)
+                this.setError(e.target.value, 1)
+              }}
             />
           </FormField>
         </Columns>
-        <FormField label={local.permits.description}>
+        <FormField label={local.permits.description} error={errText[2]}>
           <TextInput
             value={species.description}
-            onDOMChange={e => onChange('description', e.target.value)}
+            onDOMChange={e => {
+              onChange('description', e.target.value)
+              this.setError(e.target.value, 2, true)
+            }}
           />
         </FormField>
         <FormField
