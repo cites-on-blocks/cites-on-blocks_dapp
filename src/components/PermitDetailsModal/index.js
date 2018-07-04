@@ -15,6 +15,7 @@ import PrintTemplate from '../../templates/print_template.html'
 import { trimHash } from '../../util/stringUtils'
 import dateformat from 'dateformat'
 import fileDownload from 'js-file-download'
+import local from '../../localization/localizedStrings'
 import { getPermitAsXMLFromExporterURL } from '../../util/exporterUtils'
 
 /**
@@ -30,37 +31,37 @@ class PermitDetailsModal extends Component {
             direction={'row'}
             justify={'center'}
             pad={{ vertical: 'medium' }}>
-            <Title>Permit details</Title>
+            <Title>{local.permits.permitDetails}</Title>
           </Box>
           <Columns justify={'between'} size={'small'}>
             <Box margin={{ vertical: 'small' }}>
-              <b>Type</b>
+              <b>{local.permits.type}</b>
               {permit.permitType}
             </Box>
             <Box margin={{ vertical: 'small' }}>
-              <b>Id</b>
+              <b>{local.permits.id}</b>
               {trimHash(permit.permitHash)}
             </Box>
           </Columns>
           <Columns justify={'between'} size={'small'}>
             <Box margin={{ vertical: 'small' }}>
-              <b>Country of export</b>
+              <b>{local.permits.countryOfExport}</b>
               {permit.exportCountry}
             </Box>
             <Box margin={{ vertical: 'small' }}>
-              <b>Country of import</b>
+              <b>{local.permits.countryOfImport}</b>
               {permit.importCountry}
             </Box>
           </Columns>
           <Columns justify={'between'} size={'small'}>
             <Box margin={{ vertical: 'small' }}>
-              <b>Exporter</b>
+              <b>{local.permits.exporter}</b>
               {permit.exporter.name} <br />
               {permit.exporter.street} <br />
               {permit.exporter.city}
             </Box>
             <Box margin={{ vertical: 'small' }}>
-              <b>Importer</b>
+              <b>{local.permits.importer}</b>
               {permit.importer.name} <br />
               {permit.importer.street} <br />
               {permit.importer.city}
@@ -68,11 +69,11 @@ class PermitDetailsModal extends Component {
           </Columns>
           <Columns justify={'between'} size={'small'}>
             <Box margin={{ vertical: 'small' }}>
-              <b>Timestamp</b>
+              <b>{local.permits.timestamp}</b>
               <Timestamp value={permit.timestamp} />
             </Box>
             <Box margin={{ vertical: 'small' }}>
-              <b>Status</b>
+              <b>{local.permits.status}</b>
               {permit.status}
             </Box>
           </Columns>
@@ -87,31 +88,31 @@ class PermitDetailsModal extends Component {
               </Box>
               <Columns justify={'between'} size={'small'}>
                 <Box margin={{ vertical: 'small' }}>
-                  <b>Common name</b>
+                  <b>{local.permits.commonName}</b>
                   {specimen.commonName}
                 </Box>
                 <Box margin={{ vertical: 'small' }}>
-                  <b>Sc. name</b>
+                  <b>{local.permits.scientificName}</b>
                   {specimen.scientificName}
                 </Box>
               </Columns>
               <Columns justify={'between'} size={'small'}>
                 <Box margin={{ vertical: 'small' }}>
-                  <b>Description</b>
+                  <b>{local.permits.description}</b>
                   {specimen.description}
                 </Box>
                 <Box margin={{ vertical: 'small' }}>
-                  <b>Quantity</b>
+                  <b>{local.permits.quantity}</b>
                   {specimen.quantity}
                 </Box>
               </Columns>
               <Columns justify={'between'} size={'small'}>
                 <Box margin={{ vertical: 'small' }}>
-                  <b>Origin</b>
+                  <b>{local.permits.origin}</b>
                   {trimHash(specimen.originHash)}
                 </Box>
                 <Box margin={{ vertical: 'small' }}>
-                  <b>Last re-export</b>
+                  <b>{local.permits.lastReExport}</b>
                   {trimHash(specimen.reExportHash)}
                 </Box>
               </Columns>
@@ -129,14 +130,14 @@ class PermitDetailsModal extends Component {
             pad={{ vertical: 'medium' }}>
             <Button
               icon={<DownloadIcon />}
-              label={'Download as XML'}
+              label={local.permits.downloadAsXML}
               onClick={() => {
                 this.exportRequest(permit)
               }}
             />
             <Button
               icon={<PrintIcon />}
-              label={'Print Permit'}
+              label={local.permits.printPermit}
               onClick={() => {
                 this.printPermit(permit)
               }}

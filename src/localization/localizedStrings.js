@@ -58,7 +58,9 @@ let local = new LocalizedStrings({
     permits: {
       permit: 'Permit',
       permits: 'Permits',
+      permitDetails: 'Permit details',
       permitNumber: 'Permit number',
+      id: 'Id',
       countryOfExport: 'Country of export',
       countryOfImport: 'Country of import',
       lastUpdate: 'Last update',
@@ -70,14 +72,18 @@ let local = new LocalizedStrings({
       processed: 'processed',
       originHashPlaceholder: 'Search for number of origin permit',
       reExportPlaceholder: 'Search for number of last re-export permit',
-      type: 'Typ',
+      lastReExport: 'Last re-export',
+      type: 'Type',
       permitType: 'Permit type',
       exName: 'Name of exporter',
       exStreet: 'Street of exporter',
       exCity: 'City of exporter',
+      exporter: 'Exporter',
       imName: 'Name of importer',
       imStreet: 'Street of importer',
       imCity: 'City of importer',
+      importer: 'Importer',
+      timestamp: 'Timestamp',
       specimens: 'Specimens',
       addSpecies: 'Add species',
       commonName: 'Common name',
@@ -85,9 +91,12 @@ let local = new LocalizedStrings({
       description: 'Description',
       quantity: 'Quantity',
       originPermitNumber: 'Number of origin permit',
+      origin: 'Origin',
       reExportPermitNumber: 'Number of last re-exprt permit',
       createPermit: 'Create permit',
-      species: 'Species'
+      species: 'Species',
+      downloadAsXML: 'Download as XML',
+      printPermit: 'Print permit'
     }
   },
   de: {
@@ -142,8 +151,10 @@ let local = new LocalizedStrings({
     },
     permits: {
       permit: 'Genehmigung',
+      permitDetails: 'Genehmigungsdetails',
       permits: 'Genehmigungen',
       permitNumber: 'Genehmigungs-Nr.',
+      id: 'Id',
       countryOfExport: 'Exportland',
       countryOfImport: 'Importland',
       lastUpdate: 'Letztes Update',
@@ -156,14 +167,18 @@ let local = new LocalizedStrings({
       originHashPlaceholder: 'Nach Nummer der Ursprungsgenehmigung suchen',
       reExportPlaceholder:
         'Nach Nummer der letzten Re-Exportgenehmigung suchen',
+      lastReExport: 'Letzter Re-Export',
       type: 'Typ',
       permitType: 'Permittyp',
-      exName: 'Name des Exporters',
-      exStreet: 'Straße des Exporters',
-      exCity: 'Stadt des Exporters',
-      imName: 'Name des Importers',
-      imStreet: 'Straße des Importers',
-      imCity: 'Stadt des Importers',
+      exName: 'Name des Exporteurs',
+      exStreet: 'Straße des Exporteurs',
+      exCity: 'Stadt des Exporteurs',
+      exporter: 'Exporteur',
+      imName: 'Name des Importeurs',
+      imStreet: 'Straße des Importeurs',
+      imCity: 'Stadt des Importeurs',
+      importer: 'Importeur',
+      timestamp: 'Zeitstempel',
       specimens: 'Spezien',
       addSpecies: 'Spezies hinzufügen',
       commonName: 'Allgemeiner Name',
@@ -171,9 +186,12 @@ let local = new LocalizedStrings({
       description: 'Beschreibung',
       quantity: 'Anzahl',
       originPermitNumber: 'Nummer der Ursprungsgenehmigung',
+      origin: 'Ursprung',
       reExportPermitNumber: 'Nummer der letzten Re-Exportgenehmigung',
       createPermit: 'Permit erstellen',
-      species: 'Spezies'
+      species: 'Spezies',
+      downloadAsXML: 'XML herunterladen',
+      printPermit: 'Genehmigung drucken'
     }
   }
 })
