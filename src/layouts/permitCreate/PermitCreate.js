@@ -125,24 +125,44 @@ class PermitCreate extends Component {
       const { permit, specimens } = this.state
       const specimensAsArrays = permitUtils.convertSpecimensToArrays(specimens)
       // stack id used for monitoring transaction
-      this.stackId = this.contracts.PermitFactory.methods.createPermit.cacheSend(
-        utils.asciiToHex(permit.exportCountry),
-        utils.asciiToHex(permit.importCountry),
-        permitUtils.PERMIT_TYPES.indexOf(permit.permitType),
-        permit.exporter.map(address => utils.asciiToHex(address)),
-        permit.importer.map(address => utils.asciiToHex(address)),
-        specimensAsArrays.quantities,
-        specimensAsArrays.scientificNames.map(e => utils.asciiToHex(e)),
-        specimensAsArrays.commonNames.map(e => utils.asciiToHex(e)),
-        specimensAsArrays.descriptions.map(e => utils.asciiToHex(e)),
-        specimensAsArrays.originHashes.map(
-          hash => (hash ? hash : utils.asciiToHex(hash))
-        ),
-        specimensAsArrays.reExportHashes.map(
-          hash => (hash ? hash : utils.asciiToHex(hash))
-        ),
-        { from: this.props.accounts[0] }
-      )
+      this.stackId =
+        this.state.permitForm === 'DIGITAL'
+          ? this.contracts.PermitFactory.methods.createPermit.cacheSend(
+              utils.asciiToHex(permit.exportCountry),
+              utils.asciiToHex(permit.importCountry),
+              permitUtils.PERMIT_TYPES.indexOf(permit.permitType),
+              permit.exporter.map(address => utils.asciiToHex(address)),
+              permit.importer.map(address => utils.asciiToHex(address)),
+              specimensAsArrays.quantities,
+              specimensAsArrays.scientificNames.map(e => utils.asciiToHex(e)),
+              specimensAsArrays.commonNames.map(e => utils.asciiToHex(e)),
+              specimensAsArrays.descriptions.map(e => utils.asciiToHex(e)),
+              specimensAsArrays.originHashes.map(
+                hash => (hash ? hash : utils.asciiToHex(hash))
+              ),
+              specimensAsArrays.reExportHashes.map(
+                hash => (hash ? hash : utils.asciiToHex(hash))
+              ),
+              { from: this.props.accounts[0] }
+            )
+          : this.contracts.PermitFactory.methods.createPaperPermit.cacheSend(
+              utils.asciiToHex(permit.exportCountry),
+              utils.asciiToHex(permit.importCountry),
+              permitUtils.PERMIT_TYPES.indexOf(permit.permitType),
+              permit.exporter.map(address => utils.asciiToHex(address)),
+              permit.importer.map(address => utils.asciiToHex(address)),
+              specimensAsArrays.quantities,
+              specimensAsArrays.scientificNames.map(e => utils.asciiToHex(e)),
+              specimensAsArrays.commonNames.map(e => utils.asciiToHex(e)),
+              specimensAsArrays.descriptions.map(e => utils.asciiToHex(e)),
+              specimensAsArrays.originHashes.map(
+                hash => (hash ? hash : utils.asciiToHex(hash))
+              ),
+              specimensAsArrays.reExportHashes.map(
+                hash => (hash ? hash : utils.asciiToHex(hash))
+              ),
+              { from: this.props.accounts[0] }
+            )
     }
   }
 
