@@ -31,6 +31,7 @@ class PermitsToolbar extends Component {
       endDateFilter
     } = this.state
     if (
+      this.props.eventsUpdated ||
       prevState.exCountryFilter !== exCountryFilter ||
       prevState.imCountryFilter !== imCountryFilter ||
       prevState.statusFilter !== statusFilter ||
@@ -40,23 +41,6 @@ class PermitsToolbar extends Component {
       this.props.onFilter(this.state)
     }
   }
-
-  // applyFilters() {
-  //   const { onSearchChange, onSelectChange, onDateChange } = this.props
-  //   const {
-  //     searchInput,
-  //     exCountryFilter,
-  //     imCountryFilter,
-  //     statusFilter,
-  //     startDateFilter,
-  //     endDateFilter,
-  //     eventsUpdated
-  //   } = this.state
-  //   if (eventsUpdated) {
-  //     onSelectChange()
-  //     onSearchChange()
-  //   }
-  // }
 
   render() {
     const { searchSuggestions } = this.props
