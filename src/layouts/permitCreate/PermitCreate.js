@@ -332,7 +332,7 @@ class PermitCreate extends Component {
               options={
                 permitForm === 'DIGITAL'
                   ? [{ value: authorityCountry, label: authorityCountry }]
-                  : COUNTRIES
+                  : COUNTRIES.filter(c => c.value !== permit.importCountry)
               }
               onChange={({ option }) => {
                 this.handlePermitChange('exportCountry', option.value)
@@ -347,7 +347,7 @@ class PermitCreate extends Component {
               options={
                 permitForm === 'PAPER'
                   ? [{ value: authorityCountry, label: authorityCountry }]
-                  : COUNTRIES
+                  : COUNTRIES.filter(c => c.value !== permit.exportCountry)
               }
               onChange={({ option }) => {
                 this.handlePermitChange('importCountry', option.value)
