@@ -53,6 +53,7 @@
     "style-loader": "0.13.1",
     "truffle-contract": "^1.1.8",
     "truffle-hdwallet-provider": "0.0.3",
+    "url-loader": "^1.0.1",
     "webpack": "1.14.0",
     "webpack-dev-server": "1.16.2",
     "webpack-manifest-plugin": "1.1.0",
@@ -80,7 +81,7 @@
   },
   "scripts": {
     "start": "NODE_ENV='development' node scripts/start.js",
-    "build": "NODE_ENV='production' node scripts/build.js",
+    "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom && ./scripts/run_truffle_tests.sh",
     "chain": "geth --datadir=\"/tmp/eth/60/01\" --nodiscover --maxpeers 0 --port 30301 --rpc --rpcapi \"db,eth,net,web3\" --rpcport 8101 --verbosity 6 console",
     "precommit": "lint-staged",
