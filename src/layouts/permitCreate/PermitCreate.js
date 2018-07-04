@@ -286,6 +286,16 @@ class PermitCreate extends Component {
     return isValid === 'initial' ? '' : !value && !isValid && errText
   }
 
+  closeTxModal() {
+    this.setState({
+      txStatus: '',
+      modal: {
+        show: false,
+        text: ''
+      }
+    })
+  }
+
   render() {
     const {
       permitForm,
@@ -301,6 +311,7 @@ class PermitCreate extends Component {
           <PendingTxModal
             txStatus={this.state.txStatus}
             text={this.state.modal.text}
+            onClose={() => this.closeTxModal()}
             onSuccessActions={
               <Columns justify={'between'} size={'small'}>
                 <Button label={'New permit'} onClick={() => this.clearForm()} />
