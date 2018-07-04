@@ -277,7 +277,8 @@ class PermitCreate extends Component {
       permit,
       specimens,
       isValid,
-      hashSuggestions
+      hashSuggestions,
+      authorityCountry
     } = this.state
     return (
       <Box>
@@ -328,7 +329,11 @@ class PermitCreate extends Component {
             error={this.getError(permit.exportCountry, 'required')}>
             <Select
               value={permit.exportCountry}
-              options={COUNTRIES}
+              options={
+                permitForm === 'DIGITAL'
+                  ? [{ value: authorityCountry, label: authorityCountry }]
+                  : COUNTRIES
+              }
               onChange={({ option }) => {
                 this.handlePermitChange('exportCountry', option.value)
               }}
@@ -339,7 +344,11 @@ class PermitCreate extends Component {
             error={this.getError(permit.importCountry, 'required')}>
             <Select
               value={permit.importCountry}
-              options={COUNTRIES}
+              options={
+                permitForm === 'PAPER'
+                  ? [{ value: authorityCountry, label: authorityCountry }]
+                  : COUNTRIES
+              }
               onChange={({ option }) => {
                 this.handlePermitChange('importCountry', option.value)
               }}
