@@ -17,17 +17,49 @@ class PermitsToolbar extends Component {
       imCountryFilter: COUNTRY_FILTER_OPTS[0],
       statusFilter: STATUS_FILTER_OPTS[0],
       startDateFilter: '',
-      endDateFilter: ''
+      endDateFilter: '',
+      eventsUpdated: props.eventsUpdated
     }
   }
 
-  render() {
+  componentDidUpdate(prevProps, prevState) {
     const {
-      searchSuggestions,
-      onSearchChange,
-      onSelectChange,
-      onDateChange
-    } = this.props
+      exCountryFilter,
+      imCountryFilter,
+      statusFilter,
+      startDateFilter,
+      endDateFilter
+    } = this.state
+    if (
+      prevState.exCountryFilter !== exCountryFilter ||
+      prevState.imCountryFilter !== imCountryFilter ||
+      prevState.statusFilter !== statusFilter ||
+      prevState.startDateFilter !== startDateFilter ||
+      prevState.endDateFilter !== endDateFilter
+    ) {
+      this.props.onFilter(this.state)
+    }
+  }
+
+  // applyFilters() {
+  //   const { onSearchChange, onSelectChange, onDateChange } = this.props
+  //   const {
+  //     searchInput,
+  //     exCountryFilter,
+  //     imCountryFilter,
+  //     statusFilter,
+  //     startDateFilter,
+  //     endDateFilter,
+  //     eventsUpdated
+  //   } = this.state
+  //   if (eventsUpdated) {
+  //     onSelectChange()
+  //     onSearchChange()
+  //   }
+  // }
+
+  render() {
+    const { searchSuggestions } = this.props
     const {
       searchInput,
       exCountryFilter,
@@ -46,11 +78,9 @@ class PermitsToolbar extends Component {
           value={searchInput}
           onSelect={({ suggestion }) => {
             this.setState({ searchInput: suggestion })
-            onSearchChange(suggestion)
           }}
           onDOMChange={e => {
             this.setState({ searchInput: e.target.value })
-            onSearchChange(e.target.value)
           }}
         />
         <Box direction={'row'} margin={{ vertical: 'medium' }}>
@@ -59,10 +89,9 @@ class PermitsToolbar extends Component {
               <Select
                 value={exCountryFilter}
                 options={COUNTRY_FILTER_OPTS}
-                onChange={({ option }) => {
+                onChange={({ option }) =>
                   this.setState({ exCountryFilter: option })
-                  onSelectChange('exportCountry', option.value)
-                }}
+                }
               />
             </FormField>
           </Box>
@@ -73,7 +102,6 @@ class PermitsToolbar extends Component {
                 options={COUNTRY_FILTER_OPTS}
                 onChange={({ option }) => {
                   this.setState({ imCountryFilter: option })
-                  onSelectChange('importCountry', option.value)
                 }}
               />
             </FormField>
@@ -85,7 +113,6 @@ class PermitsToolbar extends Component {
                 options={STATUS_FILTER_OPTS}
                 onChange={({ option }) => {
                   this.setState({ statusFilter: option })
-                  onSelectChange('status', option.value)
                 }}
               />
             </FormField>
@@ -99,7 +126,6 @@ class PermitsToolbar extends Component {
                 value={startDateFilter}
                 onChange={startDate => {
                   this.setState({ startDateFilter: startDate })
-                  onDateChange(startDate, endDateFilter)
                 }}
               />
             </FormField>
@@ -113,7 +139,6 @@ class PermitsToolbar extends Component {
                 value={endDateFilter}
                 onChange={endDate => {
                   this.setState({ endDateFilter: endDate })
-                  onDateChange(startDateFilter, endDate)
                 }}
               />
             </FormField>
@@ -127,10 +152,8 @@ class PermitsToolbar extends Component {
 PermitsToolbar.propTypes = {
   searchInput: PropTypes.any,
   searchSuggestions: PropTypes.array,
-  onSearchChange: PropTypes.func,
-  onSearchSelect: PropTypes.func,
-  onSelectChange: PropTypes.func,
-  onDateChange: PropTypes.func
+  onFilter: PropTypes.func,
+  eventsUpdated: PropTypes.bool
 }
 
 export default PermitsToolbar
