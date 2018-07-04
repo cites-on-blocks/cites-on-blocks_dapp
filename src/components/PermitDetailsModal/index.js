@@ -14,7 +14,6 @@ import {
 import PrintTemplate from '../../templates/print_template.html'
 import { trimHash } from '../../util/stringUtils'
 import dateformat from 'dateformat'
-import axios from 'axios'
 import fileDownload from 'js-file-download'
 import { getPermitAsXMLFromExporterURL } from '../../util/exporterUtils'
 
@@ -148,16 +147,20 @@ class PermitDetailsModal extends Component {
     )
   }
 
-  exportRequest(permit) {
-    axios
-      .get(getPermitAsXMLFromExporterURL(permit.permitHash))
-      .then(response => {
+  async exportRequest(permit) {
+    try {
+      let response = await fetch(
+        getPermitAsXMLFromExporterURL(permit.permitHash)
+      )
+      if (response.status === 200 || response.status === 201) {
         fileDownload(response.data, permit.permitHash + '.xml')
-        return
-      })
-      .catch(error => {
-        console.warn(error)
-      })
+      } else {
+        console.warn('#No valid XML returned#')
+        console.warn(response)
+      }
+    } catch (error) {
+      console.warn(error)
+    }
   }
 
   printPermit(permit) {

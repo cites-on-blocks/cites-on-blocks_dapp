@@ -59,7 +59,6 @@
     "whatwg-fetch": "1.0.0"
   },
   "dependencies": {
-    "axios": "^0.18.0",
     "dateformat": "^3.0.3",
     "eth-block-tracker-es5": "^2.3.2",
     "grommet": "^1.10.1",
@@ -82,8 +81,6 @@
   "scripts": {
     "start": "NODE_ENV='development' node scripts/start.js",
     "build": "NODE_ENV='production' node scripts/build.js",
-    "dev": "NODE_ENV='development' node src/server.js",
-    "prd": "NODE_ENV='production' node src/server.js",
     "test": "node scripts/test.js --env=jsdom && ./scripts/run_truffle_tests.sh",
     "chain": "geth --datadir=\"/tmp/eth/60/01\" --nodiscover --maxpeers 0 --port 30301 --rpc --rpcapi \"db,eth,net,web3\" --rpcport 8101 --verbosity 6 console",
     "precommit": "lint-staged",
