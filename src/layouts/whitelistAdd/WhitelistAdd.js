@@ -220,6 +220,16 @@ class WhitelistAdd extends Component {
     )
   }
 
+  closeTxModal() {
+    this.setState({
+      txStatus: '',
+      modal: {
+        show: false,
+        text: ''
+      }
+    })
+  }
+
   render() {
     var keys = Object.keys(this.state.formObject)
     var addressFields = []
@@ -242,6 +252,7 @@ class WhitelistAdd extends Component {
             <PendingTxModal
               txStatus={this.state.txStatus}
               text={this.state.modal.text}
+              onClose={() => this.closeTxModal()}
               onSuccessActions={
                 <Columns justify={'between'} size={'small'}>
                   <Button

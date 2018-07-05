@@ -130,24 +130,44 @@ class PermitCreate extends Component {
       const { permit, specimens } = this.state
       const specimensAsArrays = permitUtils.convertSpecimensToArrays(specimens)
       // stack id used for monitoring transaction
-      this.stackId = this.contracts.PermitFactory.methods.createPermit.cacheSend(
-        utils.asciiToHex(permit.exportCountry),
-        utils.asciiToHex(permit.importCountry),
-        permitUtils.PERMIT_TYPES.indexOf(permit.permitType),
-        permit.exporter.map(address => utils.asciiToHex(address)),
-        permit.importer.map(address => utils.asciiToHex(address)),
-        specimensAsArrays.quantities,
-        specimensAsArrays.scientificNames.map(e => utils.asciiToHex(e)),
-        specimensAsArrays.commonNames.map(e => utils.asciiToHex(e)),
-        specimensAsArrays.descriptions.map(e => utils.asciiToHex(e)),
-        specimensAsArrays.originHashes.map(
-          hash => (hash ? hash : utils.asciiToHex(hash))
-        ),
-        specimensAsArrays.reExportHashes.map(
-          hash => (hash ? hash : utils.asciiToHex(hash))
-        ),
-        { from: this.props.accounts[0] }
-      )
+      this.stackId =
+        this.state.permitForm === 'DIGITAL'
+          ? this.contracts.PermitFactory.methods.createPermit.cacheSend(
+              utils.asciiToHex(permit.exportCountry),
+              utils.asciiToHex(permit.importCountry),
+              permitUtils.PERMIT_TYPES.indexOf(permit.permitType),
+              permit.exporter.map(address => utils.asciiToHex(address)),
+              permit.importer.map(address => utils.asciiToHex(address)),
+              specimensAsArrays.quantities,
+              specimensAsArrays.scientificNames.map(e => utils.asciiToHex(e)),
+              specimensAsArrays.commonNames.map(e => utils.asciiToHex(e)),
+              specimensAsArrays.descriptions.map(e => utils.asciiToHex(e)),
+              specimensAsArrays.originHashes.map(
+                hash => (hash ? hash : utils.asciiToHex(hash))
+              ),
+              specimensAsArrays.reExportHashes.map(
+                hash => (hash ? hash : utils.asciiToHex(hash))
+              ),
+              { from: this.props.accounts[0] }
+            )
+          : this.contracts.PermitFactory.methods.createPaperPermit.cacheSend(
+              utils.asciiToHex(permit.exportCountry),
+              utils.asciiToHex(permit.importCountry),
+              permitUtils.PERMIT_TYPES.indexOf(permit.permitType),
+              permit.exporter.map(address => utils.asciiToHex(address)),
+              permit.importer.map(address => utils.asciiToHex(address)),
+              specimensAsArrays.quantities,
+              specimensAsArrays.scientificNames.map(e => utils.asciiToHex(e)),
+              specimensAsArrays.commonNames.map(e => utils.asciiToHex(e)),
+              specimensAsArrays.descriptions.map(e => utils.asciiToHex(e)),
+              specimensAsArrays.originHashes.map(
+                hash => (hash ? hash : utils.asciiToHex(hash))
+              ),
+              specimensAsArrays.reExportHashes.map(
+                hash => (hash ? hash : utils.asciiToHex(hash))
+              ),
+              { from: this.props.accounts[0] }
+            )
     }
   }
 
@@ -291,6 +311,16 @@ class PermitCreate extends Component {
     return isValid === 'initial' ? '' : !value && !isValid && errText
   }
 
+  closeTxModal() {
+    this.setState({
+      txStatus: '',
+      modal: {
+        show: false,
+        text: ''
+      }
+    })
+  }
+
   getXMLNamespace() {
     const xml = this.state.xmlToJSON
     return Object.keys(xml)[0].split(':')[0] //maybe better to work with the text/xml. this works for now
@@ -388,6 +418,7 @@ class PermitCreate extends Component {
           <PendingTxModal
             txStatus={this.state.txStatus}
             text={this.state.modal.text}
+            onClose={() => this.closeTxModal()}
             onSuccessActions={
               <Columns justify={'between'} size={'small'}>
                 <Button label={'New permit'} onClick={() => this.clearForm()} />
