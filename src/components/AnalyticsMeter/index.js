@@ -6,6 +6,8 @@ import CircleInformationIcon from 'grommet/components/icons/base/CircleInformati
 import AnalyticsModal from '../../components/AnalyticsModal'
 import local from '../../localization/localizedStrings'
 
+import '../../css/analytics.css'
+
 class AnalyticsMeter extends Component {
   constructor(props) {
     super(props)
@@ -57,6 +59,15 @@ class AnalyticsMeter extends Component {
         },
         type: 'specimens'
       })
+    } else if (type === 'workCountry') {
+      this.setState({
+        modal: {
+          show: true,
+          text: local.analytics.workChart.analyticCountryText,
+          title: local.analytics.workChart.analyticsTitle
+        },
+        type: 'specimens'
+      })
     } else {
       this.setState({
         modal: {
@@ -90,6 +101,7 @@ class AnalyticsMeter extends Component {
         <Box direction="row" align="center" justify="start">
           <Title>{this.props.analyticsTitle}</Title>
           <CircleInformationIcon
+            className="info-button"
             onClick={() => this.changeModalType(this.props.type)}
           />
         </Box>

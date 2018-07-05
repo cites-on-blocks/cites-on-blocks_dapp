@@ -5,6 +5,7 @@ import local from '../../localization/localizedStrings'
 import AnalyticsMeter from '../../components/AnalyticsMeter'
 import SunburstChart from '../../components/SunburstChart'
 import { countries } from '../../util/country'
+import { species } from '../../util/species'
 
 class AnalyticsDashboard extends Component {
   constructor(props) {
@@ -14,10 +15,16 @@ class AnalyticsDashboard extends Component {
     }
   }
 
+  /**
+   * Function to create a series Array of permit types. The array splits the permit
+   * in the different types and count them.
+   * @returns Array of counted permit types.
+   **/
+
   createPermitSeries() {
-    let arr = this.props.permits
-    let colors = { 'RE-EXPORT': 'warning', EXPORT: 'ok', OTHER: 'critical' }
-    let result = Object.values(
+    const arr = this.props.permits
+    const colors = { 'RE-EXPORT': 'warning', EXPORT: 'ok', OTHER: 'critical' }
+    const result = Object.values(
       arr.reduce((c, { permitType }) => {
         c[permitType] = c[permitType] || {
           label: permitType,
@@ -31,14 +38,20 @@ class AnalyticsDashboard extends Component {
     return result
   }
 
+  /**
+   * Function to create a sunburst series Array. The array splits the data in
+   * countries and count the permit types of each country.
+   * @returns Array of split countries and their permit types.
+   **/
+
   createSunburstSeries() {
-    let colorsPermit = {
+    const colorsPermit = {
       'RE-EXPORT': 'warning',
       EXPORT: 'ok',
       OTHER: 'critical'
     }
-    let arr = this.props.permits
-    var result = Object.values(
+    const arr = this.props.permits
+    const result = Object.values(
       arr.reduce((c, { exportCountry, permitType }) => {
         c[exportCountry] = c[exportCountry] || {
           label: exportCountry,
@@ -64,16 +77,28 @@ class AnalyticsDashboard extends Component {
     return result
   }
 
+  /**
+   * Function to get the color code of an species.
+   * @returns specific color code.
+   **/
+
+  filterByValue(string) {
+    const index = species.findIndex(elem => elem.commonName === string)
+    if (index === -1) {
+      return 'unknown'
+    } else {
+      return species[index].color
+    }
+  }
+
+  /**
+   * Creates an array of all species from the permits. The array is split into
+   * countries and counts the number of species based on the quantity.
+   * @returns Array of species per country in relation to the whole data set.
+   **/
+
   createSpecimensSeries() {
-    let arr = this.props.permits
-    let colors = [
-      'warning',
-      'ok',
-      'critical',
-      'accent-2',
-      'neutral-2',
-      'accent-1'
-    ]
+    const arr = this.props.permits
     const result = Object.values(
       [].concat
         .apply([], arr.map(({ specimens }) => specimens))
@@ -81,7 +106,7 @@ class AnalyticsDashboard extends Component {
           r[commonName] = r[commonName] || {
             label: commonName,
             value: 0,
-            colorIndex: colors[Math.floor(Math.random() * colors.length)]
+            colorIndex: this.filterByValue(commonName)
           }
           r[commonName].value += Number(quantity)
           return r
@@ -90,9 +115,15 @@ class AnalyticsDashboard extends Component {
     return result
   }
 
+  /**
+   * Creates an array of all worker of a country in relation the the whole data set.
+   * The array don't check the worker type.
+   * @returns Array of all worker per country.
+   **/
+
   createWorkerSeries() {
-    let arr = this.props.whitelist
-    let result = Object.values(
+    const arr = this.props.whitelist
+    const result = Object.values(
       arr.reduce((c, { country }) => {
         c[country] = c[country] || {
           label: country,
@@ -135,6 +166,7 @@ class AnalyticsDashboard extends Component {
         </Box>
         <Box direction="row" align="center">
           <SunburstChart
+            type="permit"
             analyticsTitle={local.analytics.sunburstChart.headline}
             permitTotal={this.props.permits.length}
             series={this.createSunburstSeries()}

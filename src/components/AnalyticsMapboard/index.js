@@ -13,7 +13,7 @@ class AnalyticsMapboard extends Component {
   }
 
   createPoints() {
-    let colors = {
+    const colors = {
       'accent-2': '#ff7d28',
       brand: '#865cd6',
       warning: '#ffd602',
@@ -24,8 +24,8 @@ class AnalyticsMapboard extends Component {
       'neutral-2': '#dc2878 ',
       'neutral-3': '#501eb4'
     }
-    let arr = this.props.permits
-    let result = Object.values(
+    const arr = this.props.permits
+    const result = Object.values(
       arr.reduce((c, { exportCountry }) => {
         c[exportCountry] = c[exportCountry] || {
           type: 'circle',
@@ -43,6 +43,8 @@ class AnalyticsMapboard extends Component {
           c[exportCountry].height++
         }
         c[exportCountry].value++
+        c[exportCountry].title =
+          countries[exportCountry].name + ': ' + c[exportCountry].value
         return c
       }, {})
     )

@@ -1,11 +1,21 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Box, Title, Legend, SunBurst, Value, Label } from 'grommet'
+import CircleInformationIcon from 'grommet/components/icons/base/CircleInformation'
+import AnalyticsModal from '../../components/AnalyticsModal'
+import local from '../../localization/localizedStrings'
 
 class SunburstChart extends Component {
   constructor() {
     super()
-    this.state = {}
+    this.state = {
+      modal: {
+        show: false,
+        text: '',
+        title: ''
+      },
+      type: 'error'
+    }
   }
 
   seriesForPath(path) {
@@ -23,6 +33,47 @@ class SunburstChart extends Component {
     return series
   }
 
+  closeModal() {
+    this.setState({
+      modal: {
+        show: false,
+        text: '',
+        title: ''
+      }
+    })
+  }
+
+  changeModalType(type) {
+    if (type === 'permit') {
+      this.setState({
+        modal: {
+          show: true,
+          text: local.analytics.sunburstChart.analyticText,
+          title: local.analytics.sunburstChart.headline
+        },
+        type: 'permit'
+      })
+    } else if (type === 'country') {
+      this.setState({
+        modal: {
+          show: true,
+          text: local.analytics.sunburstChart.analyticCountryText,
+          title: local.analytics.sunburstChart.analyticsTitle
+        },
+        type: 'country'
+      })
+    } else {
+      this.setState({
+        modal: {
+          show: false,
+          text: local.error,
+          title: 'Error'
+        },
+        type: 'error'
+      })
+    }
+  }
+
   render() {
     const { active } = this.state
     let label
@@ -35,8 +86,22 @@ class SunburstChart extends Component {
     }
     return (
       <Box direction="row" align="center">
+        {this.state.modal.show ? (
+          <AnalyticsModal
+            title={this.state.modal.title}
+            text={this.state.modal.text}
+            closer={true}
+            onClose={() => this.closeModal()}
+          />
+        ) : null}
         <Box pad="none" margin="none">
-          <Title>{this.props.analyticsTitle}</Title>
+          <Box direction="row" align="center" justify="start">
+            <Title>{this.props.analyticsTitle}</Title>
+            <CircleInformationIcon
+              className="info-button"
+              onClick={() => this.changeModalType(this.props.type)}
+            />
+          </Box>
           <SunBurst
             active={active}
             onActive={path => this.setState({ active: path })}
@@ -45,7 +110,11 @@ class SunburstChart extends Component {
           />
         </Box>
         <Box>
-          <Label>Permit count</Label>
+          {this.state.type === 'permit' ? (
+            <Label>{local.analytics.sunburstChart.legend}</Label>
+          ) : (
+            <Label>{local.analytics.sunburstChart.legendCountry}</Label>
+          )}
           <Legend series={this.props.series} />
         </Box>
       </Box>
@@ -57,7 +126,11 @@ SunburstChart.propTypes = {
   accounts: PropTypes.object,
   analyticsTitle: PropTypes.string,
   permitTotal: PropTypes.number,
-  series: PropTypes.array
+  series: PropTypes.array,
+  title: PropTypes.string,
+  text: PropTypes.string,
+  type: PropTypes.string,
+  onClose: PropTypes.func
 }
 
 export default SunburstChart

@@ -4,6 +4,7 @@ import { Box, Select, FormField } from 'grommet'
 import local from '../../localization/localizedStrings'
 import AnalyticsMeter from '../../components/AnalyticsMeter'
 import SunburstChart from '../../components/SunburstChart'
+import { species } from '../../util/species'
 
 class AnalyticsCountryboard extends Component {
   constructor(props) {
@@ -27,23 +28,6 @@ class AnalyticsCountryboard extends Component {
     })
   }
 
-  createPermitSeries() {
-    let arr = this.state.permits
-    let colors = { 'RE-EXPORT': 'warning', EXPORT: 'ok', OTHER: 'critical' }
-    let result = Object.values(
-      arr.reduce((c, { permitType }) => {
-        c[permitType] = c[permitType] || {
-          label: permitType,
-          value: 0,
-          colorIndex: colors[permitType]
-        }
-        c[permitType].value++
-        return c
-      }, {})
-    )
-    return result
-  }
-
   changeCountry(countryTyp) {
     let permitArray = this.state.originpermits
     let permitResult = permitArray.filter(
@@ -62,9 +46,15 @@ class AnalyticsCountryboard extends Component {
     })
   }
 
+  /**
+   * Function to transform the whitelist events to an array of countries.
+   * The array supports the country select option.
+   * @returns Array of counting species per permit type.
+   **/
+
   transformWhitelistArray() {
     let whitelistArray = this.state.originwhitelist
-    let result = Object.values(
+    const result = Object.values(
       whitelistArray.reduce((c, { country }) => {
         c[country] = c[country] || {
           exportCountry: country
@@ -78,7 +68,7 @@ class AnalyticsCountryboard extends Component {
   getCountrySelect() {
     let permit = this.state.originpermits
     let whitelist = this.transformWhitelistArray()
-    let result = Object.values(
+    const result = Object.values(
       permit.concat(whitelist).reduce((c, { exportCountry }) => {
         c[exportCountry] = c[exportCountry] || {
           label: exportCountry,
@@ -90,18 +80,39 @@ class AnalyticsCountryboard extends Component {
     return result
   }
 
+  /**
+   * Function to create a series Array of permit types of each country. The array splits the permit
+   * in the different types and count them.
+   * @returns Array of counted permit types.
+   **/
+
+  createPermitSeries() {
+    const arr = this.state.permits
+    const colors = { 'RE-EXPORT': 'warning', EXPORT: 'ok', OTHER: 'critical' }
+    const result = Object.values(
+      arr.reduce((c, { permitType }) => {
+        c[permitType] = c[permitType] || {
+          label: permitType,
+          value: 0,
+          colorIndex: colors[permitType]
+        }
+        c[permitType].value++
+        return c
+      }, {})
+    )
+    return result
+  }
+
+  /**
+   * Function to create a sunburst series Array. The array splits the data of
+   * a country into the permit types and count species of each permit type.
+   * @returns Array of counting species per permit type.
+   **/
+
   createSunburstSpecimens() {
-    let colorsSpecimens = [
-      'warning',
-      'ok',
-      'critical',
-      'accent-2',
-      'neutral-2',
-      'accent-1'
-    ]
-    let colors = { 'RE-EXPORT': 'warning', EXPORT: 'ok', OTHER: 'critical' }
-    let arr = this.state.permits
-    var result = Object.values(
+    const colors = { 'RE-EXPORT': 'warning', EXPORT: 'ok', OTHER: 'critical' }
+    const arr = this.state.permits
+    const result = Object.values(
       arr.reduce((c, { permitType, specimens }) => {
         c[permitType] = c[permitType] || {
           label: permitType,
@@ -115,10 +126,7 @@ class AnalyticsCountryboard extends Component {
           ] || {
             label: commonName,
             value: 0,
-            colorIndex:
-              colorsSpecimens[
-                Math.floor(Math.random() * colorsSpecimens.length)
-              ]
+            colorIndex: this.filterByValue(commonName)
           }
           c[permitType].children[commonName].value += Number(quantity)
         }, {})
@@ -132,16 +140,27 @@ class AnalyticsCountryboard extends Component {
     return result
   }
 
+  /**
+   * Function to get the color code of an species.
+   * @returns specific color code.
+   **/
+
+  filterByValue(string) {
+    const index = species.findIndex(elem => elem.commonName === string)
+    if (index === -1) {
+      return 'unknown'
+    } else {
+      return species[index].color
+    }
+  }
+
+  /**
+   * Creates an array of all species from the permits of a country.
+   * @returns Array of species per country in relation to the whole data set.
+   **/
+
   createSpecimensSeries() {
-    let arr = this.state.permits
-    let colors = [
-      'warning',
-      'ok',
-      'critical',
-      'accent-2',
-      'neutral-2',
-      'accent-1'
-    ]
+    const arr = this.props.permits
     const result = Object.values(
       [].concat
         .apply([], arr.map(({ specimens }) => specimens))
@@ -149,20 +168,25 @@ class AnalyticsCountryboard extends Component {
           r[commonName] = r[commonName] || {
             label: commonName,
             value: 0,
-            colorIndex: colors[Math.floor(Math.random() * colors.length)]
+            colorIndex: this.filterByValue(commonName)
           }
           r[commonName].value += Number(quantity)
           return r
         }, [])
     )
-    console.log(result)
     return result
   }
 
+  /**
+   * Creates an array of all worker types of a country.
+   * The array checks the worker type and counts each type.
+   * @returns Array of all worker per country.
+   **/
+
   createWorkerSeries() {
-    let colors = { AddressWhitelisted: 'ok', AddressRemoved: 'critical' }
-    let arr = this.state.whitelist
-    let result = Object.values(
+    const colors = { AddressWhitelisted: 'ok', AddressRemoved: 'critical' }
+    const arr = this.state.whitelist
+    const result = Object.values(
       arr.reduce((c, { event }) => {
         c[event] = c[event] || {
           label: event === 'AddressWhitelisted' ? 'whitelisted' : 'removed',
@@ -203,7 +227,7 @@ class AnalyticsCountryboard extends Component {
             <AnalyticsMeter
               analyticsTitle={local.analytics.workChart.headline}
               series={this.createWorkerSeries()}
-              type="work"
+              type="workCountry"
             />
             <AnalyticsMeter
               analyticsTitle={local.analytics.specimensChart.headline}
@@ -214,6 +238,7 @@ class AnalyticsCountryboard extends Component {
         </Box>
         <Box direction="row" align="center">
           <SunburstChart
+            type="country"
             analyticsTitle={local.analytics.sunburstChart.headlineCountry}
             permitTotal={this.state.permits.length}
             series={this.createSunburstSpecimens()}
