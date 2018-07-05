@@ -63,11 +63,11 @@ class CitesHeader extends Component {
             label={local.header.permits}
             inline={false}
             direction={'column'}>
+            <Anchor path="/permits">
+              {local.header.permitsMenu.listPermits}
+            </Anchor>
             <Anchor path="/permits/create">
               {local.header.permitsMenu.createPermit}
-            </Anchor>
-            <Anchor path="/permits/process">
-              {local.header.permitsMenu.processPermit}
             </Anchor>
           </Menu>
           <Link to="/analytics">{local.header.analytics}</Link>

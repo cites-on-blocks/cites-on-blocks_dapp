@@ -10,8 +10,8 @@ let local = new LocalizedStrings({
       },
       permits: 'Permits',
       permitsMenu: {
-        createPermit: 'Create Permit',
-        processPermit: 'Process Permit'
+        listPermits: 'List Permits',
+        createPermit: 'Create Permit'
       },
       analytics: 'Analytics',
       help: 'Help'
@@ -93,8 +93,8 @@ let local = new LocalizedStrings({
       whitelist: 'Whitelist',
       permits: 'Genehmigungen',
       permitsMenu: {
-        createPermit: 'Genehmigung erstellen',
-        processPermit: 'Genehmigung verarbeiten'
+        listPermits: 'Genehmigungen auflisten',
+        createPermit: 'Genehmigung erstellen'
       },
       analytics: 'Analyse',
       help: 'Hilfe'
