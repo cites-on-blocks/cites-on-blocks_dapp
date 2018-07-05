@@ -311,6 +311,16 @@ class PermitCreate extends Component {
     return isValid === 'initial' ? '' : !value && !isValid && errText
   }
 
+  closeTxModal() {
+    this.setState({
+      txStatus: '',
+      modal: {
+        show: false,
+        text: ''
+      }
+    })
+  }
+
   getXMLNamespace() {
     const xml = this.state.xmlToJSON
     return Object.keys(xml)[0].split(':')[0] //maybe better to work with the text/xml. this works for now
@@ -408,6 +418,7 @@ class PermitCreate extends Component {
           <PendingTxModal
             txStatus={this.state.txStatus}
             text={this.state.modal.text}
+            onClose={() => this.closeTxModal()}
             onSuccessActions={
               <Columns justify={'between'} size={'small'}>
                 <Button label={'New permit'} onClick={() => this.clearForm()} />
