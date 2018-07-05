@@ -58,7 +58,7 @@ class SunburstChart extends Component {
         modal: {
           show: true,
           text: local.analytics.sunburstChart.analyticCountryText,
-          title: local.analytics.sunburstChart.analyticsTitle
+          title: local.analytics.sunburstChart.headlineCountry
         },
         type: 'country'
       })
