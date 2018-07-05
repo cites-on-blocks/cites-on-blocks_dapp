@@ -5,6 +5,7 @@ import {
   Box,
   Columns,
   Heading,
+  Paragraph,
   Select,
   FormField,
   AddIcon,
@@ -18,6 +19,8 @@ import PendingTxModal from '../../components/PendingTxModal'
 import { isASCII } from '../../util/stringUtils'
 import * as permitUtils from '../../util/permitUtils'
 import local from '../../localization/localizedStrings'
+
+import { parseString } from 'xml2js'
 
 // NOTE: to be replaced with proper country list from whitelist ui branch
 const COUNTRIES = [
@@ -57,6 +60,8 @@ class PermitCreate extends Component {
       txStatus: '',
       // used for form validation
       isValid: 'initial',
+      xmlToJSON: {},
+      isXML: 'initial',
       hashSuggestions: []
     }
     // for convinience
@@ -306,7 +311,89 @@ class PermitCreate extends Component {
     return isValid === 'initial' ? '' : !value && !isValid && errText
   }
 
+  getXMLNamespace() {
+    const xml = this.state.xmlToJSON
+    return Object.keys(xml)[0].split(':')[0] //maybe better to work with the text/xml. this works for now
+  }
+
+  handleUpload() {
+    if (!this.state.isXML) {
+      return
+    }
+    const { permit } = this.state
+    const { xmlToJSON } = this.state
+    console.log(xmlToJSON)
+    const XMLNamespace = this.getXMLNamespace()
+    const generalInfo =
+      xmlToJSON[XMLNamespace + ':CITESEPermit'][
+        'ns2:SpecifiedSupplyChainConsignment'
+      ][0]
+    //set address data
+    const exportInfo = generalInfo.ConsignorTradeParty[0]
+    const exportAddress = exportInfo.PostalTradeAddress[0]
+    permit.exportCountry = exportAddress.CountryID
+    permit.exporter = [
+      exportInfo.Name[0],
+      exportAddress.StreetName[0],
+      exportAddress.CityName[0]
+    ]
+    const importInfo = generalInfo.ConsigneeTradeParty[0]
+    const importAddress = importInfo.PostalTradeAddress[0]
+    permit.importCountry = importAddress.CountryID
+    permit.importer = [
+      importInfo.Name[0],
+      importAddress.StreetName[0],
+      importAddress.CityName[0]
+    ]
+    //set species data
+    const speciesXML = generalInfo.IncludedSupplyChainConsignmentItem
+    const speciesArray = speciesXML.map(xml => {
+      const specimen = permitUtils.DEFAULT_SPECIMEN
+      const xmlData =
+        xml.IncludedSupplyChainTradeLineItem[0].SpecifiedTradeProduct[0]
+      specimen.scientificName = xmlData.ScientificName[0]
+      specimen.commonName = xmlData.CommonName[0]
+      specimen.description = xmlData.Description[0]
+      specimen.quantity = xml.TransportLogisticsPackage[0].ItemQuantity[0]._
+      return specimen
+    })
+    this.setState({
+      permit,
+      specimens: speciesArray
+    })
+  }
+
+  handleUploadChange(event) {
+    let { isXML } = this.state
+    if (event.target.files[0].name.split('.')[1] !== 'xml') {
+      isXML = false
+      this.setState({ isXML })
+      return
+    }
+    isXML = true
+    this.setState({ isXML })
+    const file = event.target.files[0]
+    const reader = new FileReader()
+    reader.onload = event => {
+      const xml = event.target.result
+      parseString(xml, (err, result) => {
+        const xmlToJSON = result
+        this.setState({ xmlToJSON })
+      })
+    }
+    reader.readAsText(file)
+  }
+
   render() {
+    var XMLerror = ''
+    if (!(this.state.isXML || this.state.isXML === 'initial')) {
+      XMLerror = (
+        <Paragraph style={{ color: 'red' }}>
+          The file you are trying to upload is not an XML document. Please make
+          sure your file has the correct type
+        </Paragraph>
+      )
+    }
     const {
       permitForm,
       permit,
@@ -447,6 +534,29 @@ class PermitCreate extends Component {
             icon={<DocumentUploadIcon />}
             onClick={() => this.createPermit()}
           />
+        </Box>
+        <Box
+          justify={'center'}
+          size={'full'}
+          direction={'row'}
+          margin={'medium'}>
+          <input
+            type="file"
+            accept="text/xml"
+            onChange={event => this.handleUploadChange(event)}
+          />
+          <Button
+            label={'Import from XML'}
+            icon={<DocumentUploadIcon />}
+            onClick={() => this.handleUpload()}
+          />
+        </Box>
+        <Box
+          justify={'center'}
+          size={'full'}
+          direction={'row'}
+          margin={'medium'}>
+          {XMLerror}
         </Box>
       </Box>
     )
