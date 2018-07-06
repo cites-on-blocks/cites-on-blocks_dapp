@@ -180,6 +180,15 @@ module.exports = {
           name: 'fonts/[name].[hash].[ext]'
         }
       },
+      {
+        test: /\.(html)$/,
+        loader: 'html-loader',
+        use: {
+          options: {
+            attrs: [':data-src']
+          }
+        }
+      }
       // Truffle solidity loader to watch for changes in Solitiy files and hot
       // reload contracts with webpack.
       //

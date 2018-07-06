@@ -7,3 +7,7 @@ export function trimHash(hash) {
 export function toUnixTimestamp(date) {
   return date.getTime()
 }
+
+export function isASCII(string) {
+  return /^[\x00-\x7F]*$/.test(string)
+}

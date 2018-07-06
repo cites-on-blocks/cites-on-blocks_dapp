@@ -69,12 +69,8 @@ class CitesHeader extends Component {
             <Anchor path="/permits/create">
               {local.header.permitsMenu.createPermit}
             </Anchor>
-            <Anchor path="/permits/process">
-              {local.header.permitsMenu.processPermit}
-            </Anchor>
           </Menu>
           <Link to="/analytics">{local.header.analytics}</Link>
-          <Link to="/import-export">{local.header.importExport}</Link>
           <Link to="/help">{local.header.help}</Link>
           <Menu
             responsive={true}

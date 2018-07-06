@@ -34,6 +34,7 @@ class Permits extends Component {
       // permit events
       events: [],
       filteredEvents: [],
+      eventsUpdated: false,
       // selected permit for detailed information
       selectedPermit: '',
       // latest block for retrieved events
@@ -71,7 +72,7 @@ class Permits extends Component {
       if (blockNumber > this.state.latestBlock) {
         this.getEvents(blockNumber)
       }
-    }, 3000)
+    }, 1000)
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -106,9 +107,9 @@ class Permits extends Component {
         (a, b) => b.blockNumber - a.blockNumber
       )
       this.setState({
-        ...this.state,
         latestBlock: events[0].blockNumber,
-        events: mergedEvents
+        events: mergedEvents,
+        eventsUpdated: true
       })
     }
   }
@@ -216,15 +217,50 @@ class Permits extends Component {
     })
   }
 
-  handleFilter(attr, value) {
+  handleFilter(filter) {
     const { events } = this.state
-    const filteredEvents =
-      value !== 'all' ? events.filter(e => e[attr] === value) : events
-    this.setState({ filteredEvents })
+    const {
+      exCountryFilter,
+      imCountryFilter,
+      statusFilter,
+      startDateFilter,
+      endDateFilter,
+      searchInput
+    } = filter
+    // filter export / import country and status
+    let filteredEvents = events.filter(e => {
+      if (
+        exCountryFilter.value !== 'all' &&
+        exCountryFilter.value !== e.exportCountry
+      ) {
+        return false
+      }
+      if (
+        imCountryFilter.value !== 'all' &&
+        imCountryFilter.value !== e.importCountry
+      ) {
+        return false
+      }
+      if (statusFilter.value !== 'all' && statusFilter.value !== e.status) {
+        return false
+      }
+      return true
+    })
+    // filter from / to date
+    filteredEvents = this.dateFilter(
+      startDateFilter,
+      endDateFilter,
+      filteredEvents
+    )
+    // search filter
+    filteredEvents = this.searchFilter(searchInput, filteredEvents)
+    this.setState({
+      filteredEvents,
+      eventsUpdated: false
+    })
   }
 
-  handleDateFilter(startDate, endDate) {
-    const { events } = this.state
+  dateFilter(startDate, endDate, events) {
     if (startDate) {
       const [day, month, year] = startDate.split('/')
       startDate = toUnixTimestamp(new Date(year, month - 1, day))
@@ -234,7 +270,7 @@ class Permits extends Component {
       day++
       endDate = toUnixTimestamp(new Date(year, month - 1, day))
     }
-    const filteredEvents = events.filter(e => {
+    return events.filter(e => {
       if (startDate && endDate) {
         return startDate <= e.timestamp && e.timestamp <= endDate
       }
@@ -246,19 +282,14 @@ class Permits extends Component {
       }
       return true
     })
-    this.setState({ filteredEvents })
   }
 
-  handleSearch(searchInput) {
-    const { events } = this.state
-    const filteredEvents = events.filter(e =>
-      e.permitHash.includes(searchInput)
-    )
-    this.setState({ filteredEvents })
+  searchFilter(searchInput, events) {
+    return events.filter(e => e.permitHash.includes(searchInput))
   }
 
   render() {
-    const { selectedPermit, authCountry } = this.state
+    const { selectedPermit, authCountry, eventsUpdated } = this.state
     return (
       <Box>
         {selectedPermit && (
@@ -292,9 +323,8 @@ class Permits extends Component {
         )}
         <PermitsToolbar
           searchSuggestions={this.state.filteredEvents.map(e => e.permitHash)}
-          onSearchChange={searchInput => this.handleSearch(searchInput)}
-          onSelectChange={(attr, value) => this.handleFilter(attr, value)}
-          onDateChange={(start, end) => this.handleDateFilter(start, end)}
+          onFilter={filter => this.handleFilter(filter)}
+          eventsUpdated={eventsUpdated}
         />
         <Table>
           <TableHeader
