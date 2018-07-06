@@ -102,6 +102,16 @@ let local = new LocalizedStrings({
       createPermit: 'Create permit',
       species: 'Species',
       importFromXML: 'Import from XML'
+    },
+    permitCreate: {
+      pending: 'Permit creation pending...',
+      successful: 'Permit creation successful!',
+      failed: 'Permit creation has failed.',
+      noXMLImportError:
+        'The file you are trying to upload is not an XML document. Please make sure your file has the correct type',
+      goToPermit: 'Go to permit',
+      newPermit: 'New permit',
+      tryAgain: 'Try again'
     }
   },
   de: {
@@ -162,7 +172,7 @@ let local = new LocalizedStrings({
       accordionHeadline: 'Häufigste Fragen',
       first: 'Was ist die Blockchain>',
       second: 'Was ist Cites?',
-      third: 'Wie kann ich cites kontaktieren?',
+      third: 'Wie kann ich Cites kontaktieren?',
       fourth: 'Frage Nr. 4',
       contact: 'Kontaktieren Sie uns'
     },
@@ -207,6 +217,16 @@ let local = new LocalizedStrings({
       createPermit: 'Permit erstellen',
       species: 'Spezies',
       importFromXML: 'Durch XML importieren'
+    },
+    permitCreate: {
+      pending: 'Genehmigung wird erstellt...',
+      successful: 'Genehmigung wurde erfolgreich erstellt!',
+      failed: 'Die Erstellung der Genehmigung ist fehlgeschlagen.',
+      noXMLImportError:
+        'Die von Ihnen hochgeladene Datei ist keine XML-Datei. Bitte laden Sie eine Datei mit dem richtigen Typ hoch',
+      goToPermit: 'Gehe zur Genehmigung',
+      newPermit: 'Neue Genehmigung',
+      tryAgain: 'Wiederholen'
     }
   }
 })
