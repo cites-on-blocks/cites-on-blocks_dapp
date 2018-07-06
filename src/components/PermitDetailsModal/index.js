@@ -17,6 +17,7 @@ import dateformat from 'dateformat'
 import fileDownload from 'js-file-download'
 import local from '../../localization/localizedStrings'
 import { getPermitAsXMLFromExporterURL } from '../../util/exporterUtils'
+import axios from 'axios'
 
 /**
  * Component for detailed permit information
@@ -149,8 +150,9 @@ class PermitDetailsModal extends Component {
   }
 
   async exportRequest(permit) {
+    console.warn('Start')
     try {
-      let response = await fetch(
+      let response = await axios.get(
         getPermitAsXMLFromExporterURL(permit.permitHash)
       )
       if (response.status === 200 || response.status === 201) {
