@@ -49,6 +49,7 @@
     "max-len": [2, 120, 2],
     "promise/avoid-new": 0,
     "no-console": "off",
-    "prettier/prettier": "error"
+    "prettier/prettier": "error",
+    "no-control-regex": 0
   }
 }

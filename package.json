@@ -16,7 +16,7 @@
     "deepmerge": "^2.1.1",
     "detect-port": "1.0.1",
     "dotenv": "2.0.0",
-    "drizzle": "dakingha69/drizzle",
+    "drizzle": "1.2.2",
     "drizzle-react": "1.1.1",
     "drizzle-react-components": "1.1.0",
     "eslint": "3.8.1",
@@ -53,15 +53,18 @@
     "style-loader": "0.13.1",
     "truffle-contract": "^1.1.8",
     "truffle-hdwallet-provider": "0.0.3",
+    "url-loader": "^1.0.1",
     "webpack": "1.14.0",
     "webpack-dev-server": "1.16.2",
     "webpack-manifest-plugin": "1.1.0",
     "whatwg-fetch": "1.0.0"
   },
   "dependencies": {
+    "@amcharts/amcharts3-react": "^3.0.0",
     "dateformat": "^3.0.3",
     "eth-block-tracker-es5": "^2.3.2",
     "grommet": "^1.10.1",
+    "grommet-addons": "^0.6.0",
     "openzeppelin-solidity": "^1.9.0",
     "prop-types": "^15.6.1",
     "react": "^16.3.0",
@@ -75,7 +78,8 @@
     "redux-auth-wrapper": "^1.0.0",
     "redux-saga": "^0.15.3",
     "redux-thunk": "^2.2.0",
-    "web3": "1.0.0-beta.34"
+    "web3": "1.0.0-beta.34",
+    "xml2js": "^0.4.19"
   },
   "scripts": {
     "start": "node scripts/start.js",

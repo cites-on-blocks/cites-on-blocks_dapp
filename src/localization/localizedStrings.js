@@ -11,11 +11,9 @@ let local = new LocalizedStrings({
       permits: 'Permits',
       permitsMenu: {
         listPermits: 'List Permits',
-        createPermit: 'Create Permit',
-        processPermit: 'Process Permit'
+        createPermit: 'Create Permit'
       },
       analytics: 'Analytics',
-      importExport: 'Import/Export',
       help: 'Help'
     },
     whitelist: {
@@ -88,7 +86,48 @@ let local = new LocalizedStrings({
       reExportPermitNumber: 'Number of last re-exprt permit',
       createPermit: 'Create permit',
       species: 'Species'
-    }
+    },
+    analytics: {
+      headline: 'Analytics',
+      menu: 'Dashboard',
+      country: 'Country',
+      permitChart: {
+        headline: 'Permit',
+        export: 'Export',
+        reExport: 'Re-Export',
+        import: 'Import',
+        other: 'Others',
+        analyticsTitle: 'Permit Chart',
+        analyticText:
+          'This chart displays all the different permit types in relation to the total count of permits.'
+      },
+      workChart: {
+        headline: 'Worker',
+        analyticsTitle: 'Worker Chart',
+        analyticCountryText:
+          'This chart displays all the worker of an country and split them into "whitelited" and "removed".',
+        analyticText:
+          'This chart displays all the worker count per country in relation to the total count of worker.'
+      },
+      specimensChart: {
+        headline: 'Species',
+        analyticsTitle: 'Species Chart',
+        analyticText:
+          'This chart displays all the different species in relation to the total count of permits'
+      },
+      sunburstChart: {
+        headline: 'Permit per Country',
+        headlineCountry: 'Specimens per Permit-Type',
+        analyticsTitle: 'Country Chart',
+        legend: 'Countries',
+        legendCountry: 'Permit Type',
+        analyticCountryText:
+          'This chart displays all different permit types and count there specific species of each permit.',
+        analyticText:
+          'This chart displays all the countries and there specific permits in relation to the total count of permits'
+      }
+    },
+    error: 'Error. Please load the page again.'
   },
   de: {
     header: {
@@ -96,11 +135,9 @@ let local = new LocalizedStrings({
       permits: 'Genehmigungen',
       permitsMenu: {
         listPermits: 'Genehmigungen auflisten',
-        createPermit: 'Genehmigung erstellen',
-        processPermit: 'Genehmigung verarbeiten'
+        createPermit: 'Genehmigung erstellen'
       },
       analytics: 'Analyse',
-      importExport: 'Import/Export',
       help: 'Hilfe'
     },
     whitelist: {
@@ -128,7 +165,7 @@ let local = new LocalizedStrings({
     help: {
       headline: 'Hilfe',
       accordionHeadline: 'Häufigste Fragen',
-      first: 'Was ist die Blockchain>',
+      first: 'Was ist die Blockchain?',
       second: 'Was ist Cites?',
       third: 'Wie kann ich cites kontaktieren?',
       fourth: 'Frage Nr. 4',
@@ -174,7 +211,47 @@ let local = new LocalizedStrings({
       reExportPermitNumber: 'Nummer der letzten Re-Exportgenehmigung',
       createPermit: 'Permit erstellen',
       species: 'Spezies'
-    }
+    },
+    analytics: {
+      headline: 'Analyse',
+      menu: 'Dashboard',
+      country: 'Land',
+      permitChart: {
+        headline: 'Genehmigung',
+        export: 'Export',
+        reExport: 'Re-Export',
+        import: 'Import',
+        analyticsTitle: 'Genehmigungsdiagramm',
+        other: 'Anderes',
+        analyticText:
+          'Dieses Diagramm zeigt alle Genehmigungsarten im Verhältnis zur Gesamtanzahl an Genehmigungen'
+      },
+      workChart: {
+        headline: 'Arbeiter',
+        analyticsTitle: 'Mitarbeiter Diagramm',
+        analyticText:
+          'Dieses Diagramm zeigt alle Mitarbeiter pro Land im Verhältnis zur Gesamtanzahl an',
+        analyticCountryText:
+          'Dieses Diagramm gruppiert alle Mitarbeiter eines Landes in "whitelisted" und "removed".'
+      },
+      specimensChart: {
+        headline: 'Spezien',
+        analyticsTitle: 'Spezien Diagramm',
+        analyticText:
+          'Dieses Diagramm zeigt die gesamte Anzahl an Spezien im Verhältnis zur Gesamtanzahl an'
+      },
+      sunburstChart: {
+        headline: 'Genehmigungen pro Land',
+        headlineCountry: 'Spezies pro Genehmigungsart',
+        legend: 'Länder',
+        legendCountry: 'Genehmigungsart',
+        analyticCountryText:
+          'Dieses Diagramm gruppiert alle Genehmigungsarten und zeigt die spezifischen Spezien je Genehmigungsart.',
+        analyticText:
+          'Dieses Diagramm zeigt die Genehmigungen pro Land und Art im Verhältnis zur Gesamtanzahl an'
+      }
+    },
+    error: 'Error. Please load the page again.'
   }
 })
 

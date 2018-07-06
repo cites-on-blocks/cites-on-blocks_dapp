@@ -69,15 +69,9 @@ class CitesHeader extends Component {
             <Anchor path="/permits/create" style={{ color: 'black' }}>
               {local.header.permitsMenu.createPermit}
             </Anchor>
-            <Anchor path="/permits/process" style={{ color: 'black' }}>
-              {local.header.permitsMenu.processPermit}
-            </Anchor>
           </Menu>
           <Link to="/analytics" style={{ color: 'black' }}>
             {local.header.analytics}
-          </Link>
-          <Link to="/import-export" style={{ color: 'black' }}>
-            {local.header.importExport}
           </Link>
           <Link to="/help" style={{ color: 'black' }}>
             {local.header.help}
