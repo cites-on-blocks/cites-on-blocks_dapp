@@ -96,6 +96,22 @@ export async function getPermitEvents(permitFactory, eventName, fromBlock = 0) {
 }
 
 /**
+ * Fetches event logs from the Whitelist contract.
+ * @param {object} permitFactory A web3 instance of the Whitelist contract.
+ * @param {string} eventName Name of the event log -> `AddressWhitelisted` or AddressRemoved`.
+ * @param {number} fromBlock Start of block range for query.
+ * @returns An array of formatted Whitelist event logs.
+ */
+export async function getWhitelistEvents(
+  permitFactory,
+  eventName,
+  fromBlock = 0
+) {
+  const events = await permitFactory.getPastEvents(eventName, { fromBlock })
+  return events.map(e => _formatWhitelistEvent(e))
+}
+
+/**
  * Formats an event log of the PermitFactory contract. Only for internal use.
  * @param {object} permitEvent Unformatted PermitFactory event log.
  * @returns Formatted event log.
@@ -114,6 +130,22 @@ function _formatEvent(permitEvent) {
 }
 
 /**
+ * Formats an event log of the Whitelist contract. Only for internal use.
+ * @param {object} permitEvent Unformatted Whitelist event log.
+ * @returns Formatted event log for whitelist.
+ */
+function _formatWhitelistEvent(permitEvent) {
+  const { blockNumber, event, returnValues } = permitEvent
+  const { added, removed, country } = returnValues
+  return {
+    event,
+    blockNumber,
+    address: event === 'AddressWhitelisted' ? added : removed,
+    country: utils.hexToUtf8(country)
+  }
+}
+
+/**
  * Formats the block number of events to the corresponding UNIX timestamps.
  * @param {object} web3 A web3 instance.
  * @param {Array} events Array of events with blocknumber attribute.
@@ -128,6 +160,31 @@ export async function blockNumberToUnix(web3, events) {
     // convert seconds into miliseconds
     timestamp: blocks[i].timestamp * 1000
   }))
+}
+
+/**
+ * Merges two event arrays. Overwrites an event if a second event with an status change is given.
+ * @param {Array} oldEvents Array of current event logs.
+ * @param {Array} newEvents Array of new event lgos.
+ * @returns Array of merged events where only one event exists per address.
+ */
+export function mergeWhitelistEvents(oldEvents, newEvents) {
+  const mergedEvents = newEvents.concat(oldEvents)
+  return Object.values(
+    mergedEvents.reduce((c, { event, blockNumber, address, country }) => {
+      c[address] = c[address] || {
+        address: address,
+        blockNumber: blockNumber,
+        event: event,
+        country: country
+      }
+      if (c[address].blockNumber < blockNumber) {
+        c[address].blockNumber = blockNumber
+        c[address].event = event
+      }
+      return c
+    }, {})
+  )
 }
 
 /**
@@ -171,7 +228,6 @@ export function sortPermitEvents(events, attribute, ascending) {
 }
 
 export function isValidPermitHash(hash) {
-  console.log(hash.length, utils.isHex(hash))
   if (hash.substr(0, 2) === '0x') {
     return hash.length === 66 && utils.isHex(hash)
   }
