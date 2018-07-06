@@ -29,16 +29,22 @@ class PermitDetailsModal extends Component {
             pad={{ vertical: 'medium' }}>
             <Title>Permit details</Title>
           </Box>
-          <Columns justify={'between'} size={'small'}>
-            <Box margin={{ vertical: 'small' }}>
-              <b>Type</b>
-              {permit.permitType}
-            </Box>
-            <Box margin={{ vertical: 'small' }}>
-              <b>Id</b>
-              {trimHash(permit.permitHash)}
-            </Box>
-          </Columns>
+          <Box margin={{ vertical: 'small' }}>
+            <b>Type</b>
+            {permit.permitType}
+          </Box>
+          <Box margin={{ vertical: 'small' }}>
+            <b>Id</b>
+            <td>
+              <div
+                style={{
+                  overflowX: 'scroll',
+                  width: '100%'
+                }}>
+                {permit.permitHash}
+              </div>
+            </td>
+          </Box>
           <Columns justify={'between'} size={'small'}>
             <Box margin={{ vertical: 'small' }}>
               <b>Country of export</b>
@@ -102,16 +108,30 @@ class PermitDetailsModal extends Component {
                   {specimen.quantity}
                 </Box>
               </Columns>
-              <Columns justify={'between'} size={'small'}>
-                <Box margin={{ vertical: 'small' }}>
-                  <b>Origin</b>
-                  {trimHash(specimen.originHash)}
-                </Box>
-                <Box margin={{ vertical: 'small' }}>
-                  <b>Last re-export</b>
-                  {trimHash(specimen.reExportHash)}
-                </Box>
-              </Columns>
+              <Box margin={{ vertical: 'small' }}>
+                <b>Origin</b>
+                <td>
+                  <div
+                    style={{
+                      overflowX: 'scroll',
+                      width: '100%'
+                    }}>
+                    {specimen.originHash}
+                  </div>
+                </td>
+              </Box>
+              <Box margin={{ vertical: 'small' }}>
+                <b>Last re-export</b>
+                <td>
+                  <div
+                    style={{
+                      overflowX: 'scroll',
+                      width: '100%'
+                    }}>
+                    {specimen.reExportHash}
+                  </div>
+                </td>
+              </Box>
             </Box>
           ))}
           <Box
