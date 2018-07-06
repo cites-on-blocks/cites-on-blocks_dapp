@@ -11,11 +11,9 @@ let local = new LocalizedStrings({
       permits: 'Permits',
       permitsMenu: {
         listPermits: 'List Permits',
-        createPermit: 'Create Permit',
-        processPermit: 'Process Permit'
+        createPermit: 'Create Permit'
       },
       analytics: 'Analytics',
-      importExport: 'Import/Export',
       help: 'Help'
     },
     whitelist: {
@@ -105,11 +103,9 @@ let local = new LocalizedStrings({
       permits: 'Genehmigungen',
       permitsMenu: {
         listPermits: 'Genehmigungen auflisten',
-        createPermit: 'Genehmigung erstellen',
-        processPermit: 'Genehmigung verarbeiten'
+        createPermit: 'Genehmigung erstellen'
       },
       analytics: 'Analyse',
-      importExport: 'Import/Export',
       help: 'Hilfe'
     },
     whitelist: {
