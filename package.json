@@ -59,9 +59,11 @@
     "whatwg-fetch": "1.0.0"
   },
   "dependencies": {
+    "@amcharts/amcharts3-react": "^3.0.0",
     "dateformat": "^3.0.3",
     "eth-block-tracker-es5": "^2.3.2",
     "grommet": "^1.10.1",
+    "grommet-addons": "^0.6.0",
     "openzeppelin-solidity": "^1.9.0",
     "prop-types": "^15.6.1",
     "react": "^16.3.0",
