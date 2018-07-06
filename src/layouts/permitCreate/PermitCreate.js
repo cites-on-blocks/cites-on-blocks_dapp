@@ -5,6 +5,7 @@ import {
   Box,
   Columns,
   Heading,
+  Paragraph,
   Select,
   FormField,
   AddIcon,
@@ -15,8 +16,11 @@ import Web3, { utils } from 'web3'
 import AddressInputs from '../../components/AddressInputs'
 import SpeciesInputs from '../../components/SpeciesInputs'
 import PendingTxModal from '../../components/PendingTxModal'
+import { isASCII } from '../../util/stringUtils'
 import * as permitUtils from '../../util/permitUtils'
 import local from '../../localization/localizedStrings'
+
+import { parseString } from 'xml2js'
 
 // NOTE: to be replaced with proper country list from whitelist ui branch
 const COUNTRIES = [
@@ -56,6 +60,8 @@ class PermitCreate extends Component {
       txStatus: '',
       // used for form validation
       isValid: 'initial',
+      xmlToJSON: {},
+      isXML: 'initial',
       hashSuggestions: []
     }
     // for convinience
@@ -124,24 +130,44 @@ class PermitCreate extends Component {
       const { permit, specimens } = this.state
       const specimensAsArrays = permitUtils.convertSpecimensToArrays(specimens)
       // stack id used for monitoring transaction
-      this.stackId = this.contracts.PermitFactory.methods.createPermit.cacheSend(
-        utils.asciiToHex(permit.exportCountry),
-        utils.asciiToHex(permit.importCountry),
-        permitUtils.PERMIT_TYPES.indexOf(permit.permitType),
-        permit.exporter.map(address => utils.asciiToHex(address)),
-        permit.importer.map(address => utils.asciiToHex(address)),
-        specimensAsArrays.quantities,
-        specimensAsArrays.scientificNames.map(e => utils.asciiToHex(e)),
-        specimensAsArrays.commonNames.map(e => utils.asciiToHex(e)),
-        specimensAsArrays.descriptions.map(e => utils.asciiToHex(e)),
-        specimensAsArrays.originHashes.map(
-          hash => (hash ? hash : utils.asciiToHex(hash))
-        ),
-        specimensAsArrays.reExportHashes.map(
-          hash => (hash ? hash : utils.asciiToHex(hash))
-        ),
-        { from: this.props.accounts[0] }
-      )
+      this.stackId =
+        this.state.permitForm === 'DIGITAL'
+          ? this.contracts.PermitFactory.methods.createPermit.cacheSend(
+              utils.asciiToHex(permit.exportCountry),
+              utils.asciiToHex(permit.importCountry),
+              permitUtils.PERMIT_TYPES.indexOf(permit.permitType),
+              permit.exporter.map(address => utils.asciiToHex(address)),
+              permit.importer.map(address => utils.asciiToHex(address)),
+              specimensAsArrays.quantities,
+              specimensAsArrays.scientificNames.map(e => utils.asciiToHex(e)),
+              specimensAsArrays.commonNames.map(e => utils.asciiToHex(e)),
+              specimensAsArrays.descriptions.map(e => utils.asciiToHex(e)),
+              specimensAsArrays.originHashes.map(
+                hash => (hash ? hash : utils.asciiToHex(hash))
+              ),
+              specimensAsArrays.reExportHashes.map(
+                hash => (hash ? hash : utils.asciiToHex(hash))
+              ),
+              { from: this.props.accounts[0] }
+            )
+          : this.contracts.PermitFactory.methods.createPaperPermit.cacheSend(
+              utils.asciiToHex(permit.exportCountry),
+              utils.asciiToHex(permit.importCountry),
+              permitUtils.PERMIT_TYPES.indexOf(permit.permitType),
+              permit.exporter.map(address => utils.asciiToHex(address)),
+              permit.importer.map(address => utils.asciiToHex(address)),
+              specimensAsArrays.quantities,
+              specimensAsArrays.scientificNames.map(e => utils.asciiToHex(e)),
+              specimensAsArrays.commonNames.map(e => utils.asciiToHex(e)),
+              specimensAsArrays.descriptions.map(e => utils.asciiToHex(e)),
+              specimensAsArrays.originHashes.map(
+                hash => (hash ? hash : utils.asciiToHex(hash))
+              ),
+              specimensAsArrays.reExportHashes.map(
+                hash => (hash ? hash : utils.asciiToHex(hash))
+              ),
+              { from: this.props.accounts[0] }
+            )
     }
   }
 
@@ -242,7 +268,13 @@ class PermitCreate extends Component {
       permit.importCountry &&
       permit.permitType &&
       permit.importer &&
-      permit.exporter
+      isASCII(permit.importer[0]) &&
+      isASCII(permit.importer[1]) &&
+      isASCII(permit.importer[2]) &&
+      permit.exporter &&
+      isASCII(permit.exporter[0]) &&
+      isASCII(permit.exporter[1]) &&
+      isASCII(permit.exporter[2])
     const specimensValid = specimens.reduce((isValid, specimen) => {
       let validHashes
       const {
@@ -250,7 +282,8 @@ class PermitCreate extends Component {
         scientificName,
         commonName,
         originHash,
-        reExportHash
+        reExportHash,
+        description
       } = specimen
       if (permit.permitType === 'RE-EXPORT') {
         validHashes =
@@ -260,7 +293,14 @@ class PermitCreate extends Component {
         validHashes = true
       }
       return (
-        isValid && quantity > 0 && scientificName && commonName && validHashes
+        isValid &&
+        quantity > 0 &&
+        scientificName &&
+        isASCII(scientificName) &&
+        commonName &&
+        isASCII(commonName) &&
+        isASCII(description) &&
+        validHashes
       )
     }, true)
     return permitValid && specimensValid
@@ -271,13 +311,106 @@ class PermitCreate extends Component {
     return isValid === 'initial' ? '' : !value && !isValid && errText
   }
 
+  closeTxModal() {
+    this.setState({
+      txStatus: '',
+      modal: {
+        show: false,
+        text: ''
+      }
+    })
+  }
+
+  getXMLNamespace() {
+    const xml = this.state.xmlToJSON
+    return Object.keys(xml)[0].split(':')[0] //maybe better to work with the text/xml. this works for now
+  }
+
+  handleUpload() {
+    if (!this.state.isXML) {
+      return
+    }
+    const { permit } = this.state
+    const { xmlToJSON } = this.state
+    console.log(xmlToJSON)
+    const XMLNamespace = this.getXMLNamespace()
+    const generalInfo =
+      xmlToJSON[XMLNamespace + ':CITESEPermit'][
+        'ns2:SpecifiedSupplyChainConsignment'
+      ][0]
+    //set address data
+    const exportInfo = generalInfo.ConsignorTradeParty[0]
+    const exportAddress = exportInfo.PostalTradeAddress[0]
+    permit.exportCountry = exportAddress.CountryID
+    permit.exporter = [
+      exportInfo.Name[0],
+      exportAddress.StreetName[0],
+      exportAddress.CityName[0]
+    ]
+    const importInfo = generalInfo.ConsigneeTradeParty[0]
+    const importAddress = importInfo.PostalTradeAddress[0]
+    permit.importCountry = importAddress.CountryID
+    permit.importer = [
+      importInfo.Name[0],
+      importAddress.StreetName[0],
+      importAddress.CityName[0]
+    ]
+    //set species data
+    const speciesXML = generalInfo.IncludedSupplyChainConsignmentItem
+    const speciesArray = speciesXML.map(xml => {
+      const specimen = permitUtils.DEFAULT_SPECIMEN
+      const xmlData =
+        xml.IncludedSupplyChainTradeLineItem[0].SpecifiedTradeProduct[0]
+      specimen.scientificName = xmlData.ScientificName[0]
+      specimen.commonName = xmlData.CommonName[0]
+      specimen.description = xmlData.Description[0]
+      specimen.quantity = xml.TransportLogisticsPackage[0].ItemQuantity[0]._
+      return specimen
+    })
+    this.setState({
+      permit,
+      specimens: speciesArray
+    })
+  }
+
+  handleUploadChange(event) {
+    let { isXML } = this.state
+    if (event.target.files[0].name.split('.')[1] !== 'xml') {
+      isXML = false
+      this.setState({ isXML })
+      return
+    }
+    isXML = true
+    this.setState({ isXML })
+    const file = event.target.files[0]
+    const reader = new FileReader()
+    reader.onload = event => {
+      const xml = event.target.result
+      parseString(xml, (err, result) => {
+        const xmlToJSON = result
+        this.setState({ xmlToJSON })
+      })
+    }
+    reader.readAsText(file)
+  }
+
   render() {
+    var XMLerror = ''
+    if (!(this.state.isXML || this.state.isXML === 'initial')) {
+      XMLerror = (
+        <Paragraph style={{ color: 'red' }}>
+          The file you are trying to upload is not an XML document. Please make
+          sure your file has the correct type
+        </Paragraph>
+      )
+    }
     const {
       permitForm,
       permit,
       specimens,
       isValid,
-      hashSuggestions
+      hashSuggestions,
+      authorityCountry
     } = this.state
     return (
       <Box>
@@ -285,6 +418,7 @@ class PermitCreate extends Component {
           <PendingTxModal
             txStatus={this.state.txStatus}
             text={this.state.modal.text}
+            onClose={() => this.closeTxModal()}
             onSuccessActions={
               <Columns justify={'between'} size={'small'}>
                 <Button label={'New permit'} onClick={() => this.clearForm()} />
@@ -328,7 +462,11 @@ class PermitCreate extends Component {
             error={this.getError(permit.exportCountry, 'required')}>
             <Select
               value={permit.exportCountry}
-              options={COUNTRIES}
+              options={
+                permitForm === 'DIGITAL'
+                  ? [{ value: authorityCountry, label: authorityCountry }]
+                  : COUNTRIES.filter(c => c.value !== permit.importCountry)
+              }
               onChange={({ option }) => {
                 this.handlePermitChange('exportCountry', option.value)
               }}
@@ -339,7 +477,11 @@ class PermitCreate extends Component {
             error={this.getError(permit.importCountry, 'required')}>
             <Select
               value={permit.importCountry}
-              options={COUNTRIES}
+              options={
+                permitForm === 'PAPER'
+                  ? [{ value: authorityCountry, label: authorityCountry }]
+                  : COUNTRIES.filter(c => c.value !== permit.exportCountry)
+              }
               onChange={({ option }) => {
                 this.handlePermitChange('importCountry', option.value)
               }}
@@ -403,6 +545,29 @@ class PermitCreate extends Component {
             icon={<DocumentUploadIcon />}
             onClick={() => this.createPermit()}
           />
+        </Box>
+        <Box
+          justify={'center'}
+          size={'full'}
+          direction={'row'}
+          margin={'medium'}>
+          <input
+            type="file"
+            accept="text/xml"
+            onChange={event => this.handleUploadChange(event)}
+          />
+          <Button
+            label={'Import from XML'}
+            icon={<DocumentUploadIcon />}
+            onClick={() => this.handleUpload()}
+          />
+        </Box>
+        <Box
+          justify={'center'}
+          size={'full'}
+          direction={'row'}
+          margin={'medium'}>
+          {XMLerror}
         </Box>
       </Box>
     )
