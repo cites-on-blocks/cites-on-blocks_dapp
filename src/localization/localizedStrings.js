@@ -38,6 +38,21 @@ let local = new LocalizedStrings({
       add: 'Add',
       status: 'Status'
     },
+    addAddress: {
+      addingPending: 'Adding addresses pending...',
+      successfullyAdded: 'Successfully added addresses!',
+      addingFailed: 'Adding addresses has failed.',
+      invalidInputError:
+        'Invalid input. Make sure all addresses are valid Ethereum addresses and that you have selected a country',
+      addMoreAddresses: 'Add more addresses',
+      goToWhitelist: 'Go to whitelist',
+      addNewAddresses: 'Add new addresses',
+      whitelisting: 'Whitelisting',
+      country: 'Country',
+      addAddressesToWhitelist: 'Add Addresses to Whitelist',
+      ownerNotLoggedInError:
+        'Adding addresses to the Whitelist is only possible when logged in as an Owner'
+    },
     help: {
       headline: 'Help',
       accordionHeadline: 'Most frequent questions',
@@ -85,12 +100,17 @@ let local = new LocalizedStrings({
       originPermitNumber: 'Number of origin permit',
       reExportPermitNumber: 'Number of last re-exprt permit',
       createPermit: 'Create permit',
-      species: 'Species'
+      species: 'Species',
+      importFromXML: 'Import from XML'
     }
   },
   de: {
     header: {
       whitelist: 'Whitelist',
+      whitelistMenu: {
+        whitelist: 'Whitelist',
+        whitelistAdd: 'Adresse hinzufügen'
+      },
       permits: 'Genehmigungen',
       permitsMenu: {
         listPermits: 'Genehmigungen auflisten',
@@ -120,6 +140,22 @@ let local = new LocalizedStrings({
       notWhitelisted: 'Nicht auf der Whitelist',
       add: 'Hinzufügen',
       status: 'Status'
+    },
+    addAddress: {
+      addingPending: 'Adresse wird hinzugefügt...',
+      successfullyAdded: 'Adresse erfolgreich hinzugefügt!',
+      addingFailed: 'Das Hinzufügen der Adresse ist fehlgeschlagen.',
+      invalidInputError:
+        'Ungültige Eingabe. Überprüfen Sie, dass alle Adressen gültige Ethereum Adressen sind \
+        und dass Sie ein Land ausgewählt haben',
+      addMoreAddresses: 'Mehr Adressen hinzufügen',
+      goToWhitelist: 'Zur Whiteliste gehen',
+      addNewAddresses: 'Neue Adressen hinzufügen',
+      whitelisting: 'Whitelisting',
+      country: 'Land',
+      addAddressesToWhitelist: 'Adressen zur Whitelist hinzufügen',
+      ownerNotLoggedInError:
+        'Sie können Adressen nur zur Whitelist hinzufügen, wenn Sie als Controller eingeloggt sind'
     },
     help: {
       headline: 'Hilfe',
@@ -169,7 +205,8 @@ let local = new LocalizedStrings({
       originPermitNumber: 'Nummer der Ursprungsgenehmigung',
       reExportPermitNumber: 'Nummer der letzten Re-Exportgenehmigung',
       createPermit: 'Permit erstellen',
-      species: 'Spezies'
+      species: 'Spezies',
+      importFromXML: 'Durch XML importieren'
     }
   }
 })

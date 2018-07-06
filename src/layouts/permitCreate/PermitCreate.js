@@ -557,7 +557,7 @@ class PermitCreate extends Component {
             onChange={event => this.handleUploadChange(event)}
           />
           <Button
-            label={'Import from XML'}
+            label={local.permits.importFromXML}
             icon={<DocumentUploadIcon />}
             onClick={() => this.handleUpload()}
           />
