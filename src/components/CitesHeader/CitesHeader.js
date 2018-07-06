@@ -51,10 +51,10 @@ class CitesHeader extends Component {
             label={local.header.whitelist}
             inline={false}
             direction={'column'}>
-            <Anchor path="/whitelist">
+            <Anchor path="/whitelist" style={{ color: 'black' }}>
               {local.header.whitelistMenu.whitelist}
             </Anchor>
-            <Anchor path="/whitelist/add">
+            <Anchor path="/whitelist/add" style={{ color: 'black' }}>
               {local.header.whitelistMenu.whitelistAdd}
             </Anchor>
           </Menu>
@@ -63,19 +63,25 @@ class CitesHeader extends Component {
             label={local.header.permits}
             inline={false}
             direction={'column'}>
-            <Anchor path="/permits">
+            <Anchor path="/permits" style={{ color: 'black' }}>
               {local.header.permitsMenu.listPermits}
             </Anchor>
-            <Anchor path="/permits/create">
+            <Anchor path="/permits/create" style={{ color: 'black' }}>
               {local.header.permitsMenu.createPermit}
             </Anchor>
-            <Anchor path="/permits/process">
+            <Anchor path="/permits/process" style={{ color: 'black' }}>
               {local.header.permitsMenu.processPermit}
             </Anchor>
           </Menu>
-          <Link to="/analytics">{local.header.analytics}</Link>
-          <Link to="/import-export">{local.header.importExport}</Link>
-          <Link to="/help">{local.header.help}</Link>
+          <Link to="/analytics" style={{ color: 'black' }}>
+            {local.header.analytics}
+          </Link>
+          <Link to="/import-export" style={{ color: 'black' }}>
+            {local.header.importExport}
+          </Link>
+          <Link to="/help" style={{ color: 'black' }}>
+            {local.header.help}
+          </Link>
           <Menu
             responsive={true}
             label={<FlagIcon code={currentLanguage} size="lg" />}
