@@ -272,7 +272,7 @@ class WhitelistAdd extends Component {
                     onClick={() => this.clearForm()}
                   />
                   <Button
-                    label={'Try again'}
+                    label={local.addAddress.tryAgain}
                     onClick={() => this.addAddresses()}
                   />
                 </Columns>

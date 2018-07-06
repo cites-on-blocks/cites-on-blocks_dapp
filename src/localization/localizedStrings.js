@@ -51,7 +51,8 @@ let local = new LocalizedStrings({
       country: 'Country',
       addAddressesToWhitelist: 'Add Addresses to Whitelist',
       ownerNotLoggedInError:
-        'Adding addresses to the Whitelist is only possible when logged in as an Owner'
+        'Adding addresses to the Whitelist is only possible when logged in as an Owner',
+      tryAgain: 'Try again'
     },
     help: {
       headline: 'Help',
@@ -60,7 +61,8 @@ let local = new LocalizedStrings({
       second: 'What is cites?',
       third: 'How can I contact cites?',
       fourth: 'This is Nr. 4',
-      contact: 'Contact us'
+      contact: 'Contact us',
+      submit: 'Submit'
     },
     footer: {
       openingDays: 'Monday to Saturday',
@@ -101,7 +103,9 @@ let local = new LocalizedStrings({
       reExportPermitNumber: 'Number of last re-exprt permit',
       createPermit: 'Create permit',
       species: 'Species',
-      importFromXML: 'Import from XML'
+      importFromXML: 'Import from XML',
+      decline: 'Decline',
+      confirm: 'Confirm'
     },
     permitCreate: {
       pending: 'Permit creation pending...',
@@ -165,7 +169,8 @@ let local = new LocalizedStrings({
       country: 'Land',
       addAddressesToWhitelist: 'Adressen zur Whitelist hinzufügen',
       ownerNotLoggedInError:
-        'Sie können Adressen nur zur Whitelist hinzufügen, wenn Sie als Controller eingeloggt sind'
+        'Sie können Adressen nur zur Whitelist hinzufügen, wenn Sie als Controller eingeloggt sind',
+      tryAgain: 'Wiederholen'
     },
     help: {
       headline: 'Hilfe',
@@ -174,7 +179,8 @@ let local = new LocalizedStrings({
       second: 'Was ist Cites?',
       third: 'Wie kann ich Cites kontaktieren?',
       fourth: 'Frage Nr. 4',
-      contact: 'Kontaktieren Sie uns'
+      contact: 'Kontaktieren Sie uns',
+      submit: 'Hochladen'
     },
     footer: {
       openingDays: 'Montag bis Samstag',
@@ -216,7 +222,9 @@ let local = new LocalizedStrings({
       reExportPermitNumber: 'Nummer der letzten Re-Exportgenehmigung',
       createPermit: 'Permit erstellen',
       species: 'Spezies',
-      importFromXML: 'Durch XML importieren'
+      importFromXML: 'Durch XML importieren',
+      decline: 'Ablehnen',
+      confirm: 'Bestätigen'
     },
     permitCreate: {
       pending: 'Genehmigung wird erstellt...',
