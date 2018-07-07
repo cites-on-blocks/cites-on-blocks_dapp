@@ -12,29 +12,12 @@ import {
   AddIcon,
   DocumentUploadIcon
 } from 'grommet'
-import local from '../../localization/localizedStrings'
 import { utils } from 'web3'
 import PropTypes from 'prop-types'
 
-const options = [
-  {
-    value: 'DE',
-    label: 'DE'
-  },
-  {
-    value: 'FR',
-    label: 'FR'
-  },
-  {
-    value: 'EN',
-    label: 'EN'
-  },
-  {
-    value: 'US',
-    label: 'US'
-  }
-]
 import PendingTxModal from '../../components/PendingTxModal'
+import local from '../../localization/localizedStrings'
+import { COUNTRY_OPTS } from '../../util/options'
 
 class WhitelistAdd extends Component {
   constructor(props, context) {
@@ -281,7 +264,7 @@ class WhitelistAdd extends Component {
           <FormField label={local.addAddress.country}>
             <Select
               id={'select'}
-              options={options}
+              options={COUNTRY_OPTS}
               value={this.state.country}
               onChange={option => {
                 this.setCountry(option.value)
