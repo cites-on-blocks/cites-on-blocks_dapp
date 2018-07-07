@@ -61,8 +61,8 @@ let local = new LocalizedStrings({
       thirdText:
         'Yes. However, if a commercial breeder of a CITES Appendix-I species fulfils certain conditions and is' +
         ' registered with the CITES Secretariat, specimens from the breeding operation may be treated as if they' +
-        ' are of Appendix-II species, meaning that they can be traded commercially (permit requirement is not waived). ' +
-        'If the animals were not bred for commercial purposes they may be traded simply with a ' +
+        ' are of Appendix-II species, meaning that they can be traded commercially (permit requirement is not ' +
+        'waived). If the animals were not bred for commercial purposes they may be traded simply with a ' +
         'certificate of captive breeding. Click here for further information.',
       fourth: 'What is the Blockchain?',
       fourthText:
