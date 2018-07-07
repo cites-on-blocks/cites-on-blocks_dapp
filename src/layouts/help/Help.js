@@ -74,7 +74,7 @@ class Help extends Component {
               <TextInput />
             </FormField>
             <Footer pad={{ vertical: 'medium' }}>
-              <Button label="Submit" type="submit" primary={true} />
+              <Button label={local.help.submit} type="submit" primary={true} />
             </Footer>
           </Form>
         </Box>
