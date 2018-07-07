@@ -5,7 +5,7 @@ import local from '../../localization/localizedStrings'
 import AnalyticsMeter from '../../components/AnalyticsMeter'
 import SunburstChart from '../../components/SunburstChart'
 import { COUNTRIES } from '../../util/countries'
-import { species } from '../../util/species'
+import { SPECIES } from '../../util/species'
 
 class AnalyticsDashboard extends Component {
   constructor(props) {
@@ -83,11 +83,11 @@ class AnalyticsDashboard extends Component {
    **/
 
   filterByValue(string) {
-    const index = species.findIndex(elem => elem.commonName === string)
+    const index = SPECIES.findIndex(elem => elem.commonName === string)
     if (index === -1) {
       return 'unknown'
     } else {
-      return species[index].color
+      return SPECIES[index].color
     }
   }
 
