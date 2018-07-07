@@ -1,4 +1,5 @@
 import { COUNTRIES } from './countries'
+import { SPECIES } from './species'
 
 export const COUNTRY_OPTS = Object.values(COUNTRIES).map(c => ({
   ...c,
@@ -26,3 +27,13 @@ export const STATUS_FILTER_OPTS = [
     label: 'Processed'
   }
 ]
+
+export const SPECIES_SC_NAME_OPTS = SPECIES.map(s => ({
+  ...s,
+  label: s.scientificName
+}))
+
+export const SPECIES_COM_NAME_OPTS = SPECIES.map(s => ({
+  ...s,
+  label: s.commonName
+}))
