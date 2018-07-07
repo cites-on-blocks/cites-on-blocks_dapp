@@ -12,6 +12,7 @@ import {
   DocumentUploadIcon
 } from 'grommet'
 import Web3, { utils } from 'web3'
+import { parseString } from 'xml2js'
 
 import AddressInputs from '../../components/AddressInputs'
 import SpeciesInputs from '../../components/SpeciesInputs'
@@ -19,28 +20,7 @@ import PendingTxModal from '../../components/PendingTxModal'
 import { isASCII } from '../../util/stringUtils'
 import * as permitUtils from '../../util/permitUtils'
 import local from '../../localization/localizedStrings'
-
-import { parseString } from 'xml2js'
-
-// NOTE: to be replaced with proper country list from whitelist ui branch
-const COUNTRIES = [
-  {
-    value: 'DE',
-    label: 'DE'
-  },
-  {
-    value: 'FR',
-    label: 'FR'
-  },
-  {
-    value: 'EN',
-    label: 'EN'
-  },
-  {
-    value: 'US',
-    label: 'US'
-  }
-]
+import { COUNTRIES } from '../../util/countries'
 
 class PermitCreate extends Component {
   constructor(props, context) {

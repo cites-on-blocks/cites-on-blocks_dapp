@@ -4,7 +4,7 @@ import { Box } from 'grommet'
 import local from '../../localization/localizedStrings'
 import AnalyticsMeter from '../../components/AnalyticsMeter'
 import SunburstChart from '../../components/SunburstChart'
-import { countries } from '../../util/country'
+import { COUNTRIES } from '../../util/countries'
 import { species } from '../../util/species'
 
 class AnalyticsDashboard extends Component {
@@ -56,7 +56,7 @@ class AnalyticsDashboard extends Component {
         c[exportCountry] = c[exportCountry] || {
           label: exportCountry,
           value: 0,
-          colorIndex: countries[exportCountry].color,
+          colorIndex: COUNTRIES[exportCountry].color,
           children: []
         }
         c[exportCountry].children[permitType] = c[exportCountry].children[
@@ -128,7 +128,7 @@ class AnalyticsDashboard extends Component {
         c[country] = c[country] || {
           label: country,
           value: 0,
-          colorIndex: countries[country].color
+          colorIndex: COUNTRIES[country].color
         }
         c[country].value++
         return c
