@@ -302,11 +302,11 @@ class Permits extends Component {
                 <Columns justify={'between'} size={'small'}>
                   <Button
                     secondary={true}
-                    label={'Decline'}
+                    label={local.permits.decline}
                     onClick={() => this.processPermit(false)}
                   />
                   <Button
-                    label={'Confirm'}
+                    label={local.permits.confirm}
                     onClick={() => this.processPermit(true)}
                   />
                 </Columns>

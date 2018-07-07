@@ -38,6 +38,22 @@ let local = new LocalizedStrings({
       add: 'Add',
       status: 'Status'
     },
+    addAddress: {
+      addingPending: 'Adding addresses pending...',
+      successfullyAdded: 'Successfully added addresses!',
+      addingFailed: 'Adding addresses has failed.',
+      invalidInputError:
+        'Invalid input. Make sure all addresses are valid Ethereum addresses and that you have selected a country',
+      addMoreAddresses: 'Add more addresses',
+      goToWhitelist: 'Go to whitelist',
+      addNewAddresses: 'Add new addresses',
+      whitelisting: 'Whitelisting',
+      country: 'Country',
+      addAddressesToWhitelist: 'Add Addresses to Whitelist',
+      ownerNotLoggedInError:
+        'Adding addresses to the Whitelist is only possible when logged in as an Owner',
+      tryAgain: 'Try again'
+    },
     help: {
       headline: 'Help',
       accordionHeadline: 'Frequently Asked Questions',
@@ -119,12 +135,26 @@ let local = new LocalizedStrings({
       originPermitNumber: 'Number of origin permit',
       reExportPermitNumber: 'Number of last re-exprt permit',
       createPermit: 'Create permit',
-      species: 'Species'
+      species: 'Species',
+      importFromXML: 'Import from XML',
+      decline: 'Decline',
+      confirm: 'Confirm'
+    },
+    permitCreate: {
+      pending: 'Permit creation pending...',
+      successful: 'Permit creation successful!',
+      failed: 'Permit creation has failed.',
+      noXMLImportError:
+        'The file you are trying to upload is not an XML document. Please make sure your file has the correct type',
+      goToPermit: 'Go to permit',
+      newPermit: 'New permit',
+      tryAgain: 'Try again'
     },
     analytics: {
       headline: 'Analytics',
       menu: 'Dashboard',
       country: 'Country',
+      map: 'Map',
       permitChart: {
         headline: 'Permit',
         export: 'Export',
@@ -166,6 +196,10 @@ let local = new LocalizedStrings({
   de: {
     header: {
       whitelist: 'Whitelist',
+      whitelistMenu: {
+        whitelist: 'Whitelist',
+        whitelistAdd: 'Adresse hinzufügen'
+      },
       permits: 'Genehmigungen',
       permitsMenu: {
         listPermits: 'Genehmigungen auflisten',
@@ -195,6 +229,23 @@ let local = new LocalizedStrings({
       notWhitelisted: 'Nicht auf der Whitelist',
       add: 'Hinzufügen',
       status: 'Status'
+    },
+    addAddress: {
+      addingPending: 'Adresse wird hinzugefügt...',
+      successfullyAdded: 'Adresse erfolgreich hinzugefügt!',
+      addingFailed: 'Das Hinzufügen der Adresse ist fehlgeschlagen.',
+      invalidInputError:
+        'Ungültige Eingabe. Überprüfen Sie, dass alle Adressen gültige Ethereum Adressen sind \
+        und dass Sie ein Land ausgewählt haben',
+      addMoreAddresses: 'Mehr Adressen hinzufügen',
+      goToWhitelist: 'Zur Whiteliste gehen',
+      addNewAddresses: 'Neue Adressen hinzufügen',
+      whitelisting: 'Whitelisting',
+      country: 'Land',
+      addAddressesToWhitelist: 'Adressen zur Whitelist hinzufügen',
+      ownerNotLoggedInError:
+        'Sie können Adressen nur zur Whitelist hinzufügen, wenn Sie als Controller eingeloggt sind',
+      tryAgain: 'Wiederholen'
     },
     help: {
       headline: 'Hilfe',
@@ -281,12 +332,26 @@ let local = new LocalizedStrings({
       originPermitNumber: 'Nummer der Ursprungsgenehmigung',
       reExportPermitNumber: 'Nummer der letzten Re-Exportgenehmigung',
       createPermit: 'Permit erstellen',
-      species: 'Spezies'
+      species: 'Spezies',
+      importFromXML: 'Durch XML importieren',
+      decline: 'Ablehnen',
+      confirm: 'Bestätigen'
+    },
+    permitCreate: {
+      pending: 'Genehmigung wird erstellt...',
+      successful: 'Genehmigung wurde erfolgreich erstellt!',
+      failed: 'Die Erstellung der Genehmigung ist fehlgeschlagen.',
+      noXMLImportError:
+        'Die von Ihnen hochgeladene Datei ist keine XML-Datei. Bitte laden Sie eine Datei mit dem richtigen Typ hoch',
+      goToPermit: 'Gehe zur Genehmigung',
+      newPermit: 'Neue Genehmigung',
+      tryAgain: 'Wiederholen'
     },
     analytics: {
       headline: 'Analyse',
       menu: 'Dashboard',
       country: 'Land',
+      map: 'Karte',
       permitChart: {
         headline: 'Genehmigung',
         export: 'Export',

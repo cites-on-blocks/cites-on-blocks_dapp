@@ -177,7 +177,7 @@ class PermitCreate extends Component {
         txStatus: 'pending',
         modal: {
           show: true,
-          text: 'Permit creation pending...'
+          text: local.permitCreate.pending
         }
       })
     } else if (newTxState === 'success') {
@@ -186,7 +186,7 @@ class PermitCreate extends Component {
         txStatus: 'success',
         modal: {
           show: true,
-          text: 'Permit creation successful!'
+          text: local.permitCreate.successful
         }
       })
     } else {
@@ -195,7 +195,7 @@ class PermitCreate extends Component {
         txStatus: 'failed',
         modal: {
           show: true,
-          text: 'Permit creation has failed.'
+          text: local.permitCreate.failed
         }
       })
     }
@@ -399,8 +399,7 @@ class PermitCreate extends Component {
     if (!(this.state.isXML || this.state.isXML === 'initial')) {
       XMLerror = (
         <Paragraph style={{ color: 'red' }}>
-          The file you are trying to upload is not an XML document. Please make
-          sure your file has the correct type
+          {local.permitCreate.noXMLImportError}
         </Paragraph>
       )
     }
@@ -421,14 +420,26 @@ class PermitCreate extends Component {
             onClose={() => this.closeTxModal()}
             onSuccessActions={
               <Columns justify={'between'} size={'small'}>
-                <Button label={'New permit'} onClick={() => this.clearForm()} />
-                <Button label={'Go to permit'} path={'/permits'} />
+                <Button
+                  label={local.permitCreate.newPermit}
+                  onClick={() => this.clearForm()}
+                />
+                <Button
+                  label={local.permitCreate.goToPermit}
+                  path={'/permits'}
+                />
               </Columns>
             }
             onFailActions={
               <Columns justify={'between'} size={'small'}>
-                <Button label={'New permit'} onClick={() => this.clearForm()} />
-                <Button label={'Try again'} onClick={() => this.addSpecies()} />
+                <Button
+                  label={local.permitCreate.newPermit}
+                  onClick={() => this.clearForm()}
+                />
+                <Button
+                  label={local.permitCreate.tryAgain}
+                  onClick={() => this.addSpecies()}
+                />
               </Columns>
             }
           />
@@ -557,7 +568,7 @@ class PermitCreate extends Component {
             onChange={event => this.handleUploadChange(event)}
           />
           <Button
-            label={'Import from XML'}
+            label={local.permits.importFromXML}
             icon={<DocumentUploadIcon />}
             onClick={() => this.handleUpload()}
           />
