@@ -312,7 +312,6 @@ class PermitCreate extends Component {
     }
     const { permit } = this.state
     const { xmlToJSON } = this.state
-    console.log(xmlToJSON)
     const XMLNamespace = this.getXMLNamespace()
     const generalInfo =
       xmlToJSON[XMLNamespace + ':CITESEPermit'][

@@ -54,7 +54,6 @@ class WhitelistAdd extends Component {
     }
     this.contracts = context.drizzle.contracts
     this.dataKeyOwner = this.contracts.PermitFactory.methods.owner.cacheCall()
-    console.log(this.props.isOwner)
   }
   checkOwner() {
     if (this.dataKeyOwner in this.props.PermitFactory.owner) {
@@ -67,7 +66,6 @@ class WhitelistAdd extends Component {
         this.setState({ isOwner: false })
       }
     }
-    console.log(this.state.isOwner)
   }
   //find a better fitting name
   addAddressField() {
@@ -110,8 +108,6 @@ class WhitelistAdd extends Component {
 
   addAddresses() {
     var addressesToAdd = this.getAddressObjectPropsAsArray()
-    console.log(addressesToAdd)
-    console.log(this.state.country)
     if (
       addressesToAdd.every(ad => utils.isAddress(ad)) &&
       this.state.country !== ''

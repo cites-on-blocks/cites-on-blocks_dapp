@@ -71,7 +71,6 @@ class Home extends Component {
   }
 
   render() {
-    console.log(this.state.whitelistEvents)
     return (
       <main>
         <Box align="center" justify="center" className="cites-box">
