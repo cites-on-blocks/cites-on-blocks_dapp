@@ -22,6 +22,11 @@ import * as permitUtils from '../../util/permitUtils'
 import local from '../../localization/localizedStrings'
 import { COUNTRIES } from '../../util/countries'
 
+const COUNTRY_OPTIONS = Object.values(COUNTRIES).map(c => ({
+  ...c,
+  label: c.value
+}))
+
 class PermitCreate extends Component {
   constructor(props, context) {
     super(props)
@@ -455,7 +460,9 @@ class PermitCreate extends Component {
               options={
                 permitForm === 'DIGITAL'
                   ? [{ value: authorityCountry, label: authorityCountry }]
-                  : COUNTRIES.filter(c => c.value !== permit.importCountry)
+                  : COUNTRY_OPTIONS.filter(
+                      c => c.value !== permit.importCountry
+                    )
               }
               onChange={({ option }) => {
                 this.handlePermitChange('exportCountry', option.value)
@@ -470,7 +477,9 @@ class PermitCreate extends Component {
               options={
                 permitForm === 'PAPER'
                   ? [{ value: authorityCountry, label: authorityCountry }]
-                  : COUNTRIES.filter(c => c.value !== permit.exportCountry)
+                  : COUNTRY_OPTIONS.filter(
+                      c => c.value !== permit.exportCountry
+                    )
               }
               onChange={({ option }) => {
                 this.handlePermitChange('importCountry', option.value)
