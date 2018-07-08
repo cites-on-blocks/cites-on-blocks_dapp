@@ -49,6 +49,18 @@ class WhitelistModal extends Component {
     }
   }
 
+  addAddressToWhitelist(address) {
+    if (utils.isAddress(address)) {
+      this.props.Contracts.PermitFactory.methods.addAddress.cacheSend(
+        address,
+        utils.asciiToHex(this.props.country.iso),
+        {
+          from: this.props.accounts[0]
+        }
+      )
+    }
+  }
+
   isAddressSelected() {
     let isSelected =
       this.state.selectedAddresses !== undefined &&
@@ -130,7 +142,11 @@ class WhitelistModal extends Component {
                       label={local.whitelist.remove}
                     />
                   ) : (
-                    <Button primary={true} label={local.whitelist.add} />
+                    <Button
+                      primary={true}
+                      onClick={this.addAddressToWhitelist.bind(this, data)}
+                      label={local.whitelist.add}
+                    />
                   )}
                 </td>
               )}
