@@ -53,7 +53,7 @@ class WhitelistModal extends Component {
     if (utils.isAddress(address)) {
       this.props.Contracts.PermitFactory.methods.addAddress.cacheSend(
         address,
-        utils.asciiToHex(this.props.country.iso),
+        utils.asciiToHex(this.props.country.value),
         {
           from: this.props.accounts[0]
         }
