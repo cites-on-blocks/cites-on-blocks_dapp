@@ -23,6 +23,130 @@ import axios from 'axios'
  * Component for detailed permit information
  */
 class PermitDetailsModal extends Component {
+  async exportRequest(permit) {
+    console.warn('Start')
+    try {
+      let response = await axios.get(
+        getPermitAsXMLFromExporterURL(permit.permitHash)
+      )
+      if (response.status === 200 || response.status === 201) {
+        fileDownload(response.data, permit.permitHash + '.xml')
+      } else {
+        console.warn('#No valid XML returned#')
+        console.warn(response)
+      }
+    } catch (error) {
+      console.warn(error)
+    }
+  }
+
+  printPermit(permit) {
+    const fieldPlaceholder = '*******'
+    const defaultHash =
+      '0x0000000000000000000000000000000000000000000000000000000000000000'
+    let html = PrintTemplate
+    const wnd = window.open()
+    // Set cross on paper depending on permit type
+    if (permit.permitType === 'EXPORT') {
+      html = html.replace('###EXPORT###', 'x')
+      html = html.replace('###REEXPORT###', '')
+      html = html.replace('###OTHERTYPE###', '')
+    } else if (permit.permitType === 'RE-EXPORT') {
+      html = html.replace('###REEXPORT###', 'x')
+      html = html.replace('###EXPORT###', '')
+      html = html.replace('###OTHERTYPE###', '')
+    } else if (permit.permitType === 'OTHER') {
+      html = html.replace('###OTHERTYPE###', 'x')
+      html = html.replace('###REEXPORT###', '')
+      html = html.replace('###EXPORT###', '')
+    }
+    // Set Import data
+    html = html.replace('###IMPORTCOUNTRY###', permit.importCountry)
+    html = html.replace('###IMPORTERNAME###', permit.importer.name)
+    html = html.replace('###IMPORTERADDRESS###', permit.importer.street)
+    html = html.replace('###IMPORTERCITY###', permit.importer.city)
+
+    // Set Export data
+    html = html.replace('###EXPORTCOUNTRY###', permit.exportCountry)
+    html = html.replace('###EXPORTERNAME###', permit.exporter.name)
+    html = html.replace('###EXPORTERADDRESS###', permit.exporter.street)
+    html = html.replace('###EXPORTERCITY###', permit.exporter.city)
+
+    // Set the species data
+    const formSections = [0, 1, 2]
+    formSections.forEach(index => {
+      //Check if there are values to fill into the form
+      const emptyFields = permit.specimens[index] === undefined
+      html = html.replace(
+        '###SPECIMEN-SCIENTIFICNAME-' + index + '###',
+        emptyFields ? fieldPlaceholder : permit.specimens[index].scientificName
+      )
+      html = html.replace(
+        '###SPECIMEN-COMMONNAME-' + index + '###',
+        emptyFields ? fieldPlaceholder : permit.specimens[index].commonName
+      )
+      html = html.replace(
+        '###SPECIMEN-DESCRIPTION-' + index + '###',
+        emptyFields ? fieldPlaceholder : permit.specimens[index].description
+      )
+      html = html.replace(
+        '###SPECIMEN-QUANTITY-' + index + '###',
+        emptyFields ? fieldPlaceholder : permit.specimens[index].quantity
+      )
+      html = html.replace(
+        '###SPECIMEN-LAST-RE-EXPORT-' + index + '###',
+        emptyFields
+          ? fieldPlaceholder
+          : permit.specimens[index].reExportHash === defaultHash
+            ? fieldPlaceholder
+            : trimHash(permit.specimens[index].reExportHash)
+      )
+      html = html.replace(
+        '###SPECIMEN-ORIGIN-' + index + '###',
+        emptyFields
+          ? fieldPlaceholder
+          : permit.specimens[index].originHash === defaultHash
+            ? fieldPlaceholder
+            : trimHash(permit.specimens[index].originHash)
+      )
+      html = html.replace(
+        '###SPECIMEN-PERMIT-NUMBER-' + index + '###',
+        emptyFields
+          ? fieldPlaceholder
+          : trimHash(permit.specimens[index].permitHash)
+      )
+      html = html.replace(
+        '###SPECIMEN-CERTIFICATE-NUMBER-' + index + '###',
+        fieldPlaceholder
+      )
+      html = html.replace(
+        '###SPECIMEN-LAST-RE-EXPORT-DATE-' + index + '###',
+        fieldPlaceholder
+      )
+      html = html.replace(
+        '###SPECIMEN-ORIGIN-DATE-' + index + '###',
+        fieldPlaceholder
+      )
+    })
+
+    //Set Permit Number
+    html = html.replace('###PERMIT-NUMBER###', trimHash(permit.permitHash))
+
+    //Set Date Of Issue
+    html = html.replace(
+      '###DATE-OF-ISSUE####',
+      this.getTimestampFormattedForPrintedVersion(permit.timestamp)
+    )
+
+    //Write them into the document
+    wnd.document.write(html)
+    wnd.document.close()
+    wnd.print()
+  }
+
+  getTimestampFormattedForPrintedVersion(timestamp) {
+    return dateformat(Date(timestamp), 'dd.mm.yyyy')
+  }
   render() {
     const { permit, onClose } = this.props
     return (
@@ -167,131 +291,6 @@ class PermitDetailsModal extends Component {
         </Article>
       </Layer>
     )
-  }
-
-  async exportRequest(permit) {
-    console.warn('Start')
-    try {
-      let response = await axios.get(
-        getPermitAsXMLFromExporterURL(permit.permitHash)
-      )
-      if (response.status === 200 || response.status === 201) {
-        fileDownload(response.data, permit.permitHash + '.xml')
-      } else {
-        console.warn('#No valid XML returned#')
-        console.warn(response)
-      }
-    } catch (error) {
-      console.warn(error)
-    }
-  }
-
-  printPermit(permit) {
-    const fieldPlaceholder = '*******'
-    const defaultHash =
-      '0x0000000000000000000000000000000000000000000000000000000000000000'
-    let html = PrintTemplate
-    const wnd = window.open()
-    // Set cross on paper depending on permit type
-    if (permit.permitType === 'EXPORT') {
-      html = html.replace('###EXPORT###', 'x')
-      html = html.replace('###REEXPORT###', '')
-      html = html.replace('###OTHERTYPE###', '')
-    } else if (permit.permitType === 'RE-EXPORT') {
-      html = html.replace('###REEXPORT###', 'x')
-      html = html.replace('###EXPORT###', '')
-      html = html.replace('###OTHERTYPE###', '')
-    } else if (permit.permitType === 'OTHER') {
-      html = html.replace('###OTHERTYPE###', 'x')
-      html = html.replace('###REEXPORT###', '')
-      html = html.replace('###EXPORT###', '')
-    }
-    // Set Import data
-    html = html.replace('###IMPORTCOUNTRY###', permit.importCountry)
-    html = html.replace('###IMPORTERNAME###', permit.importer.name)
-    html = html.replace('###IMPORTERADDRESS###', permit.importer.street)
-    html = html.replace('###IMPORTERCITY###', permit.importer.city)
-
-    // Set Export data
-    html = html.replace('###EXPORTCOUNTRY###', permit.exportCountry)
-    html = html.replace('###EXPORTERNAME###', permit.exporter.name)
-    html = html.replace('###EXPORTERADDRESS###', permit.exporter.street)
-    html = html.replace('###EXPORTERCITY###', permit.exporter.city)
-
-    // Set the species data
-    const formSections = [0, 1, 2]
-    formSections.forEach(index => {
-      //Check if there are values to fill into the form
-      const emptyFields = permit.specimens[index] === undefined
-      html = html.replace(
-        '###SPECIMEN-SCIENTIFICNAME-' + index + '###',
-        emptyFields ? fieldPlaceholder : permit.specimens[index].scientificName
-      )
-      html = html.replace(
-        '###SPECIMEN-COMMONNAME-' + index + '###',
-        emptyFields ? fieldPlaceholder : permit.specimens[index].commonName
-      )
-      html = html.replace(
-        '###SPECIMEN-DESCRIPTION-' + index + '###',
-        emptyFields ? fieldPlaceholder : permit.specimens[index].description
-      )
-      html = html.replace(
-        '###SPECIMEN-QUANTITY-' + index + '###',
-        emptyFields ? fieldPlaceholder : permit.specimens[index].quantity
-      )
-      html = html.replace(
-        '###SPECIMEN-LAST-RE-EXPORT-' + index + '###',
-        emptyFields
-          ? fieldPlaceholder
-          : permit.specimens[index].reExportHash === defaultHash
-            ? fieldPlaceholder
-            : trimHash(permit.specimens[index].reExportHash)
-      )
-      html = html.replace(
-        '###SPECIMEN-ORIGIN-' + index + '###',
-        emptyFields
-          ? fieldPlaceholder
-          : permit.specimens[index].originHash === defaultHash
-            ? fieldPlaceholder
-            : trimHash(permit.specimens[index].originHash)
-      )
-      html = html.replace(
-        '###SPECIMEN-PERMIT-NUMBER-' + index + '###',
-        emptyFields
-          ? fieldPlaceholder
-          : trimHash(permit.specimens[index].permitHash)
-      )
-      html = html.replace(
-        '###SPECIMEN-CERTIFICATE-NUMBER-' + index + '###',
-        fieldPlaceholder
-      )
-      html = html.replace(
-        '###SPECIMEN-LAST-RE-EXPORT-DATE-' + index + '###',
-        fieldPlaceholder
-      )
-      html = html.replace(
-        '###SPECIMEN-ORIGIN-DATE-' + index + '###',
-        fieldPlaceholder
-      )
-    })
-
-    //Set Permit Number
-    html = html.replace('###PERMIT-NUMBER###', trimHash(permit.permitHash))
-
-    //Set Date Of Issue
-    html = html.replace(
-      '###DATE-OF-ISSUE####',
-      this.getTimestampFormattedForPrintedVersion(permit.timestamp)
-    )
-
-    //Write them into the document
-    wnd.document.write(html)
-    wnd.document.close()
-    wnd.print()
-  }
-
-  getTimestampFormattedForPrintedVersion(timestamp) {
-    return dateformat(Date(timestamp), 'dd.mm.yyyy')
   }
 }
 
