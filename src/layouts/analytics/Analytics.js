@@ -177,7 +177,7 @@ class Analytics extends Component {
                   })
                 }>
                 <MapIcon />
-                Map
+                {local.analytics.map}
               </Anchor>
               <Anchor
                 className={this.getDashboardClass()}

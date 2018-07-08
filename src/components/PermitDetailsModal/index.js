@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import dateformat from 'dateformat'
 import {
   Article,
   Button,
+  DownloadIcon,
   Layer,
   Box,
   Columns,
@@ -13,148 +13,31 @@ import {
 } from 'grommet'
 import PrintTemplate from '../../templates/print_template.html'
 import { trimHash } from '../../util/stringUtils'
+import dateformat from 'dateformat'
+import fileDownload from 'js-file-download'
+import local from '../../localization/localizedStrings'
+import { getPermitAsXMLFromExporterURL } from '../../util/exporterUtils'
+import axios from 'axios'
 
 /**
  * Component for detailed permit information
  */
 class PermitDetailsModal extends Component {
-  render() {
-    const { permit, onClose } = this.props
-    return (
-      <Layer closer={true} overlayClose={true} onClose={() => onClose()}>
-        <Article size={'large'}>
-          <Box
-            direction={'row'}
-            justify={'center'}
-            pad={{ vertical: 'medium' }}>
-            <Title>Permit details</Title>
-          </Box>
-          <Box margin={{ vertical: 'small' }}>
-            <b>Type</b>
-            {permit.permitType}
-          </Box>
-          <Box margin={{ vertical: 'small' }}>
-            <b>Id</b>
-            <td>
-              <div
-                style={{
-                  overflowX: 'scroll',
-                  width: '100%'
-                }}>
-                {permit.permitHash}
-              </div>
-            </td>
-          </Box>
-          <Columns justify={'between'} size={'small'}>
-            <Box margin={{ vertical: 'small' }}>
-              <b>Country of export</b>
-              {permit.exportCountry}
-            </Box>
-            <Box margin={{ vertical: 'small' }}>
-              <b>Country of import</b>
-              {permit.importCountry}
-            </Box>
-          </Columns>
-          <Columns justify={'between'} size={'small'}>
-            <Box margin={{ vertical: 'small' }}>
-              <b>Exporter</b>
-              {permit.exporter.name} <br />
-              {permit.exporter.street} <br />
-              {permit.exporter.city}
-            </Box>
-            <Box margin={{ vertical: 'small' }}>
-              <b>Importer</b>
-              {permit.importer.name} <br />
-              {permit.importer.street} <br />
-              {permit.importer.city}
-            </Box>
-          </Columns>
-          <Columns justify={'between'} size={'small'}>
-            <Box margin={{ vertical: 'small' }}>
-              <b>Timestamp</b>
-              <Timestamp value={permit.timestamp} />
-            </Box>
-            <Box margin={{ vertical: 'small' }}>
-              <b>Status</b>
-              {permit.status}
-            </Box>
-          </Columns>
-          {permit.specimens.map((specimen, i) => (
-            <Box key={i} margin={{ vertical: 'medium' }}>
-              <hr />
-              <Box
-                direction={'row'}
-                justify={'center'}
-                pad={{ vertical: 'medium' }}>
-                <Title>{`Specimen ${i + 1}`}</Title>
-              </Box>
-              <Columns justify={'between'} size={'small'}>
-                <Box margin={{ vertical: 'small' }}>
-                  <b>Common name</b>
-                  {specimen.commonName}
-                </Box>
-                <Box margin={{ vertical: 'small' }}>
-                  <b>Sc. name</b>
-                  {specimen.scientificName}
-                </Box>
-              </Columns>
-              <Columns justify={'between'} size={'small'}>
-                <Box margin={{ vertical: 'small' }}>
-                  <b>Description</b>
-                  {specimen.description}
-                </Box>
-                <Box margin={{ vertical: 'small' }}>
-                  <b>Quantity</b>
-                  {specimen.quantity}
-                </Box>
-              </Columns>
-              <Box margin={{ vertical: 'small' }}>
-                <b>Origin</b>
-                <td>
-                  <div
-                    style={{
-                      overflowX: 'scroll',
-                      width: '100%'
-                    }}>
-                    {specimen.originHash}
-                  </div>
-                </td>
-              </Box>
-              <Box margin={{ vertical: 'small' }}>
-                <b>Last re-export</b>
-                <td>
-                  <div
-                    style={{
-                      overflowX: 'scroll',
-                      width: '100%'
-                    }}>
-                    {specimen.reExportHash}
-                  </div>
-                </td>
-              </Box>
-            </Box>
-          ))}
-          <Box
-            direction={'row'}
-            justify={'center'}
-            pad={{ vertical: 'medium' }}>
-            {this.props.detailsActions}
-          </Box>
-          <Box
-            direction={'row'}
-            justify={'center'}
-            pad={{ vertical: 'medium' }}>
-            <Button
-              icon={<PrintIcon />}
-              label={'Print Permit'}
-              onClick={() => {
-                this.printPermit(permit)
-              }}
-            />
-          </Box>
-        </Article>
-      </Layer>
-    )
+  async exportRequest(permit) {
+    console.warn('Start')
+    try {
+      let response = await axios.get(
+        getPermitAsXMLFromExporterURL(permit.permitHash)
+      )
+      if (response.status === 200 || response.status === 201) {
+        fileDownload(response.data, permit.permitHash + '.xml')
+      } else {
+        console.warn('#No valid XML returned#')
+        console.warn(response)
+      }
+    } catch (error) {
+      console.warn(error)
+    }
   }
 
   printPermit(permit) {
@@ -263,6 +146,151 @@ class PermitDetailsModal extends Component {
 
   getTimestampFormattedForPrintedVersion(timestamp) {
     return dateformat(Date(timestamp), 'dd.mm.yyyy')
+  }
+  render() {
+    const { permit, onClose } = this.props
+    return (
+      <Layer closer={true} overlayClose={true} onClose={() => onClose()}>
+        <Article size={'large'}>
+          <Box
+            direction={'row'}
+            justify={'center'}
+            pad={{ vertical: 'medium' }}>
+            <Title>{local.permits.permitDetails}</Title>
+          </Box>
+          <Box margin={{ vertical: 'small' }}>
+            <b>{local.permits.type}</b>
+            {permit.permitType}
+          </Box>
+          <Box margin={{ vertical: 'small' }}>
+            <b>{local.permits.id}</b>
+            <td>
+              <div
+                style={{
+                  overflowX: 'scroll',
+                  width: '100%'
+                }}>
+                {permit.permitHash}
+              </div>
+            </td>
+          </Box>
+          <Columns justify={'between'} size={'small'}>
+            <Box margin={{ vertical: 'small' }}>
+              <b>{local.permits.countryOfExport}</b>
+              {permit.exportCountry}
+            </Box>
+            <Box margin={{ vertical: 'small' }}>
+              <b>{local.permits.countryOfImport}</b>
+              {permit.importCountry}
+            </Box>
+          </Columns>
+          <Columns justify={'between'} size={'small'}>
+            <Box margin={{ vertical: 'small' }}>
+              <b>{local.permits.exporter}</b>
+              {permit.exporter.name} <br />
+              {permit.exporter.street} <br />
+              {permit.exporter.city}
+            </Box>
+            <Box margin={{ vertical: 'small' }}>
+              <b>{local.permits.importer}</b>
+              {permit.importer.name} <br />
+              {permit.importer.street} <br />
+              {permit.importer.city}
+            </Box>
+          </Columns>
+          <Columns justify={'between'} size={'small'}>
+            <Box margin={{ vertical: 'small' }}>
+              <b>{local.permits.timestamp}</b>
+              <Timestamp value={permit.timestamp} />
+            </Box>
+            <Box margin={{ vertical: 'small' }}>
+              <b>{local.permits.status}</b>
+              {permit.status}
+            </Box>
+          </Columns>
+          {permit.specimens.map((specimen, i) => (
+            <Box key={i} margin={{ vertical: 'medium' }}>
+              <hr />
+              <Box
+                direction={'row'}
+                justify={'center'}
+                pad={{ vertical: 'medium' }}>
+                <Title>{`Specimen ${i + 1}`}</Title>
+              </Box>
+              <Columns justify={'between'} size={'small'}>
+                <Box margin={{ vertical: 'small' }}>
+                  <b>{local.permits.commonName}</b>
+                  {specimen.commonName}
+                </Box>
+                <Box margin={{ vertical: 'small' }}>
+                  <b>{local.permits.scientificName}</b>
+                  {specimen.scientificName}
+                </Box>
+              </Columns>
+              <Columns justify={'between'} size={'small'}>
+                <Box margin={{ vertical: 'small' }}>
+                  <b>{local.permits.description}</b>
+                  {specimen.description}
+                </Box>
+                <Box margin={{ vertical: 'small' }}>
+                  <b>{local.permits.quantity}</b>
+                  {specimen.quantity}
+                </Box>
+              </Columns>
+              <Box margin={{ vertical: 'small' }}>
+                <b>{local.permits.origin}</b>
+                <td>
+                  <div
+                    style={{
+                      overflowX: 'scroll',
+                      width: '100%'
+                    }}>
+                    {specimen.originHash}
+                  </div>
+                </td>
+              </Box>
+              <Box margin={{ vertical: 'small' }}>
+                <b>{local.permits.lastReExport}</b>
+                <td>
+                  <div
+                    style={{
+                      overflowX: 'scroll',
+                      width: '100%'
+                    }}>
+                    {specimen.reExportHash}
+                  </div>
+                </td>
+              </Box>
+            </Box>
+          ))}
+          <Box
+            direction={'row'}
+            justify={'center'}
+            pad={{ vertical: 'medium' }}>
+            {this.props.detailsActions}
+          </Box>
+          <Box
+            direction={'row'}
+            justify={'between'}
+            pad={{ vertical: 'medium' }}>
+            <Button
+              icon={<DownloadIcon />}
+              label={local.permits.downloadAsXML}
+              onClick={() => {
+                this.exportRequest(permit)
+              }}
+            />
+            <Button
+              icon={<PrintIcon />}
+              label={local.permits.printPermit}
+              onClick={() => {
+                this.printPermit(permit)
+              }}
+            />
+          </Box>
+        </Article>
+      </Layer>
+    )
   }
 }
 

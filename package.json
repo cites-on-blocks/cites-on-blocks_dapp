@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "devDependencies": {
     "autoprefixer": "6.5.1",
+    "axios": "^0.18.0",
     "babel-core": "6.17.0",
     "babel-eslint": "7.1.1",
     "babel-jest": "17.0.2",
@@ -64,6 +65,7 @@
     "dateformat": "^3.0.3",
     "eth-block-tracker-es5": "^2.3.2",
     "grommet": "^1.10.1",
+    "js-file-download": "^0.4.1",
     "grommet-addons": "^0.6.0",
     "openzeppelin-solidity": "^1.9.0",
     "prop-types": "^15.6.1",
@@ -82,7 +84,7 @@
     "xml2js": "^0.4.19"
   },
   "scripts": {
-    "start": "node scripts/start.js",
+    "start": "NODE_ENV='development' node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom && ./scripts/run_truffle_tests.sh",
     "chain": "geth --datadir=\"/tmp/eth/60/01\" --nodiscover --maxpeers 0 --port 30301 --rpc --rpcapi \"db,eth,net,web3\" --rpcport 8101 --verbosity 6 console",
