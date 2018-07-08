@@ -34,24 +34,22 @@ class PermitDetailsModal extends Component {
             pad={{ vertical: 'medium' }}>
             <Title>{local.permits.permitDetails}</Title>
           </Box>
-          <Columns justify={'between'} size={'small'}>
-            <Box margin={{ vertical: 'small' }}>
-              <b>{local.permits.type}</b>
-              {permit.permitType}
-            </Box>
-            <Box margin={{ vertical: 'small' }}>
-              <b>{local.permits.id}</b>
-              <td>
-                <div
-                  style={{
-                    overflowX: 'scroll',
-                    width: '100%'
-                  }}>
-                  {permit.permitHash}
-                </div>
-              </td>
-            </Box>
-          </Columns>
+          <Box margin={{ vertical: 'small' }}>
+            <b>{local.permits.type}</b>
+            {permit.permitType}
+          </Box>
+          <Box margin={{ vertical: 'small' }}>
+            <b>{local.permits.id}</b>
+            <td>
+              <div
+                style={{
+                  overflowX: 'scroll',
+                  width: '100%'
+                }}>
+                {permit.permitHash}
+              </div>
+            </td>
+          </Box>
           <Columns justify={'between'} size={'small'}>
             <Box margin={{ vertical: 'small' }}>
               <b>{local.permits.countryOfExport}</b>
@@ -115,32 +113,30 @@ class PermitDetailsModal extends Component {
                   {specimen.quantity}
                 </Box>
               </Columns>
-              <Columns justify={'between'} size={'small'}>
-                <Box margin={{ vertical: 'small' }}>
-                  <b>{local.permits.origin}</b>
-                  <td>
-                    <div
-                      style={{
-                        overflowX: 'scroll',
-                        width: '100%'
-                      }}>
-                      {specimen.originHash}
-                    </div>
-                  </td>
-                </Box>
-                <Box margin={{ vertical: 'small' }}>
-                  <b>{local.permits.lastReExport}</b>
-                  <td>
-                    <div
-                      style={{
-                        overflowX: 'scroll',
-                        width: '100%'
-                      }}>
-                      {specimen.reExportHash}
-                    </div>
-                  </td>
-                </Box>
-              </Columns>
+              <Box margin={{ vertical: 'small' }}>
+                <b>{local.permits.origin}</b>
+                <td>
+                  <div
+                    style={{
+                      overflowX: 'scroll',
+                      width: '100%'
+                    }}>
+                    {specimen.originHash}
+                  </div>
+                </td>
+              </Box>
+              <Box margin={{ vertical: 'small' }}>
+                <b>{local.permits.lastReExport}</b>
+                <td>
+                  <div
+                    style={{
+                      overflowX: 'scroll',
+                      width: '100%'
+                    }}>
+                    {specimen.reExportHash}
+                  </div>
+                </td>
+              </Box>
             </Box>
           ))}
           <Box
