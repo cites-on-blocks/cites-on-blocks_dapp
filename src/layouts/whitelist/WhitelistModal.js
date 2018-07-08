@@ -36,8 +36,6 @@ class WhitelistModal extends Component {
         this.getWhitelistStatuses(addresses)
       }
     }
-    console.log('addresses')
-    console.log(this.props.dataKeyAddresses)
   }
 
   removeAddressFromWhitelist(address) {
