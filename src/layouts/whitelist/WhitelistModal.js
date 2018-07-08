@@ -36,12 +36,26 @@ class WhitelistModal extends Component {
         this.getWhitelistStatuses(addresses)
       }
     }
+    console.log('addresses')
+    console.log(this.props.dataKeyAddresses)
   }
 
   removeAddressFromWhitelist(address) {
     if (utils.isAddress(address)) {
       this.props.Contracts.PermitFactory.methods.removeAddress.cacheSend(
         address,
+        {
+          from: this.props.accounts[0]
+        }
+      )
+    }
+  }
+
+  addAddressToWhitelist(address) {
+    if (utils.isAddress(address)) {
+      this.props.Contracts.PermitFactory.methods.addAddress.cacheSend(
+        address,
+        utils.asciiToHex(this.props.country.iso),
         {
           from: this.props.accounts[0]
         }
@@ -130,7 +144,11 @@ class WhitelistModal extends Component {
                       label={local.whitelist.remove}
                     />
                   ) : (
-                    <Button primary={true} label={local.whitelist.add} />
+                    <Button
+                      primary={true}
+                      onClick={this.addAddressToWhitelist.bind(this, data)}
+                      label={local.whitelist.add}
+                    />
                   )}
                 </td>
               )}
