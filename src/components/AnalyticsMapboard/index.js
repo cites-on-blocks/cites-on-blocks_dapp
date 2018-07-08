@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Box } from 'grommet'
 import AmCharts from '@amcharts/amcharts3-react'
-import { countries } from '../../util/country'
+import { COUNTRIES } from '../../util/countries'
 
 class AnalyticsMapboard extends Component {
   constructor(props) {
@@ -33,10 +33,10 @@ class AnalyticsMapboard extends Component {
           width: 20,
           height: 20,
           value: 0,
-          title: countries[exportCountry].name,
-          color: colors[countries[exportCountry].color],
-          longitude: countries[exportCountry].longitude,
-          latitude: countries[exportCountry].latitude
+          title: COUNTRIES[exportCountry].name,
+          color: colors[COUNTRIES[exportCountry].color],
+          longitude: COUNTRIES[exportCountry].longitude,
+          latitude: COUNTRIES[exportCountry].latitude
         }
         if (c[exportCountry].width < 70) {
           c[exportCountry].width++
@@ -44,7 +44,7 @@ class AnalyticsMapboard extends Component {
         }
         c[exportCountry].value++
         c[exportCountry].title =
-          countries[exportCountry].name + ': ' + c[exportCountry].value
+          COUNTRIES[exportCountry].name + ': ' + c[exportCountry].value
         return c
       }, {})
     )
