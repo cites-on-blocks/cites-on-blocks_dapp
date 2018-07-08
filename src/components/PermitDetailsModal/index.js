@@ -41,7 +41,15 @@ class PermitDetailsModal extends Component {
             </Box>
             <Box margin={{ vertical: 'small' }}>
               <b>{local.permits.id}</b>
-              {trimHash(permit.permitHash)}
+              <td>
+                <div
+                  style={{
+                    overflowX: 'scroll',
+                    width: '100%'
+                  }}>
+                  {permit.permitHash}
+                </div>
+              </td>
             </Box>
           </Columns>
           <Columns justify={'between'} size={'small'}>
@@ -110,11 +118,27 @@ class PermitDetailsModal extends Component {
               <Columns justify={'between'} size={'small'}>
                 <Box margin={{ vertical: 'small' }}>
                   <b>{local.permits.origin}</b>
-                  {trimHash(specimen.originHash)}
+                  <td>
+                    <div
+                      style={{
+                        overflowX: 'scroll',
+                        width: '100%'
+                      }}>
+                      {specimen.originHash}
+                    </div>
+                  </td>
                 </Box>
                 <Box margin={{ vertical: 'small' }}>
                   <b>{local.permits.lastReExport}</b>
-                  {trimHash(specimen.reExportHash)}
+                  <td>
+                    <div
+                      style={{
+                        overflowX: 'scroll',
+                        width: '100%'
+                      }}>
+                      {specimen.reExportHash}
+                    </div>
+                  </td>
                 </Box>
               </Columns>
             </Box>

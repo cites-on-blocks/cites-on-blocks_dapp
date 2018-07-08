@@ -28,53 +28,37 @@ class Help extends Component {
           </Heading>
           <Accordion>
             <AccordionPanel heading={local.help.first}>
-              <Paragraph>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.
-              </Paragraph>
+              <Paragraph>{local.help.firstText}</Paragraph>
             </AccordionPanel>
             <AccordionPanel heading={local.help.second}>
-              <Paragraph>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.
-              </Paragraph>
+              <Paragraph>{local.help.secondText}</Paragraph>
             </AccordionPanel>
             <AccordionPanel heading={local.help.third}>
-              <Paragraph>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.
-              </Paragraph>
+              <Paragraph>{local.help.thirdText}</Paragraph>
             </AccordionPanel>
             <AccordionPanel heading={local.help.fourth}>
-              <Paragraph>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.
-              </Paragraph>
+              <Paragraph>{local.help.fourthText}</Paragraph>
             </AccordionPanel>
           </Accordion>
           <Heading align="left" tag="h3">
             {local.help.contact}
           </Heading>
           <Form>
-            <FormField label="Name">
+            <FormField label={local.help.contactName}>
               <TextInput />
             </FormField>
-            <FormField label="E-Mail">
+            <FormField label={local.help.contactMail}>
               <TextInput />
             </FormField>
-            <FormField label="Text">
+            <FormField label={local.help.contactText}>
               <TextInput />
             </FormField>
             <Footer pad={{ vertical: 'medium' }}>
-              <Button label="Submit" type="submit" primary={true} />
+              <Button
+                label={local.help.contactSend}
+                type="submit"
+                primary={true}
+              />
             </Footer>
           </Form>
         </Box>

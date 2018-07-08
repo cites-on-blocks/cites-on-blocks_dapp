@@ -12,6 +12,7 @@ import {
   AddIcon,
   DocumentUploadIcon
 } from 'grommet'
+import local from '../../localization/localizedStrings'
 import { utils } from 'web3'
 import PropTypes from 'prop-types'
 
@@ -166,7 +167,7 @@ class WhitelistAdd extends Component {
         txStatus: 'pending',
         modal: {
           show: true,
-          text: 'Adding addresses pending...'
+          text: local.addAddress.addingPending
         }
       })
     } else if (newTxState === 'success') {
@@ -175,7 +176,7 @@ class WhitelistAdd extends Component {
         txStatus: 'success',
         modal: {
           show: true,
-          text: 'Successfully added addresses!'
+          text: local.addAddress.successfullyAdded
         }
       })
     } else {
@@ -184,7 +185,7 @@ class WhitelistAdd extends Component {
         txStatus: 'failed',
         modal: {
           show: true,
-          text: 'Adding addresses has failed.'
+          text: local.addAddress.addingFailed
         }
       })
     }
@@ -240,8 +241,7 @@ class WhitelistAdd extends Component {
     if (!this.state.valid) {
       error = (
         <Paragraph style={{ color: 'red' }}>
-          Invalid input. Make sure all addresses are valid Ethereum addresses
-          and that you have selected a country
+          {local.addAddress.invalidInputError}
         </Paragraph>
       )
     }
@@ -256,20 +256,23 @@ class WhitelistAdd extends Component {
               onSuccessActions={
                 <Columns justify={'between'} size={'small'}>
                   <Button
-                    label={'Add more addresses'}
+                    label={local.addAddress.addMoreAddresses}
                     onClick={() => this.clearForm()}
                   />
-                  <Button label={'Go to whitelist'} path={'/whitelist'} />
+                  <Button
+                    label={local.addAddress.goToWhitelist}
+                    path={'/whitelist'}
+                  />
                 </Columns>
               }
               onFailActions={
                 <Columns justify={'between'} size={'small'}>
                   <Button
-                    label={'Add new addresses'}
+                    label={local.addAddress.addNewAddresses}
                     onClick={() => this.clearForm()}
                   />
                   <Button
-                    label={'Try again'}
+                    label={local.addAddress.tryAgain}
                     onClick={() => this.addAddresses()}
                   />
                 </Columns>
@@ -277,9 +280,9 @@ class WhitelistAdd extends Component {
             />
           )}
           <Heading align={'center'} margin={'medium'}>
-            Whitelisting
+            {local.addAddress.whitelisting}
           </Heading>
-          <FormField label={'Country'}>
+          <FormField label={local.addAddress.country}>
             <Select
               id={'select'}
               options={options}
@@ -291,13 +294,13 @@ class WhitelistAdd extends Component {
           </FormField>
           {addressFields}
           <Button
-            label={'Add more Addresses'}
+            label={local.addAddress.addMoreAddresses}
             icon={<AddIcon />}
             onClick={() => this.addAddressField()}
           />
           <Button
             primary={true}
-            label={'Add Addresses to Whitelist'}
+            label={local.addAddress.addAddressesToWhitelist}
             icon={<DocumentUploadIcon />}
             onClick={() => this.addAddresses()}
           />
@@ -307,8 +310,7 @@ class WhitelistAdd extends Component {
     } else {
       return (
         <Paragraph style={{ color: 'red' }}>
-          Adding addresses to the Whitelist is only possible when logged in as
-          an Owner
+          {local.addAddress.ownerNotLoggedInError}
         </Paragraph>
       )
     }

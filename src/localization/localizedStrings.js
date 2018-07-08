@@ -38,14 +38,64 @@ let local = new LocalizedStrings({
       add: 'Add',
       status: 'Status'
     },
+    addAddress: {
+      addingPending: 'Adding addresses pending...',
+      successfullyAdded: 'Successfully added addresses!',
+      addingFailed: 'Adding addresses has failed.',
+      invalidInputError:
+        'Invalid input. Make sure all addresses are valid Ethereum addresses and that you have selected a country',
+      addMoreAddresses: 'Add more addresses',
+      goToWhitelist: 'Go to whitelist',
+      addNewAddresses: 'Add new addresses',
+      whitelisting: 'Whitelisting',
+      country: 'Country',
+      addAddressesToWhitelist: 'Add Addresses to Whitelist',
+      ownerNotLoggedInError:
+        'Adding addresses to the Whitelist is only possible when logged in as an Owner',
+      tryAgain: 'Try again'
+    },
     help: {
       headline: 'Help',
-      accordionHeadline: 'Most frequent questions',
-      first: 'What is the blockchain?',
-      second: 'What is cites?',
-      third: 'How can I contact cites?',
-      fourth: 'This is Nr. 4',
-      contact: 'Contact us'
+      accordionHeadline: 'Frequently Asked Questions',
+      first:
+        'How can I know whether I need a permit to import or export wildlife specimens?',
+      firstText:
+        'Import, export and re-export of any live animal or plant of a species listed in the CITES Appendices' +
+        ' (or of any part or derivative of such animal or plant) requires a permit or certificate. ' +
+        'To find out whether a species is listed in the appendices, you can check in the CITES-listed species' +
+        ' database of this website, using either the scientific name or the common name of the species. ' +
+        'Alternatively, you can also check with the national agency (known as the "Management Authority") of ' +
+        ' your country whether the species you are interested in needs a permit. ' +
+        'They may be able to identify the species for you, if you are not sure what it is.',
+      second:
+        'Where can I find the contact details of the national agency in charge of the implementation of CITES?',
+      secondText:
+        'The national agency responsible for implementing CITES in each country is called the Management Authority. ' +
+        'The contact details of each Management Authority can be found on the National contacts page on the offical ' +
+        ' CITES website.',
+      third: 'Do animals that were bred in captivity also require permits?',
+      thirdText:
+        'Yes. However, if a commercial breeder of a CITES Appendix-I species fulfils certain conditions and is' +
+        ' registered with the CITES Secretariat, specimens from the breeding operation may be treated as if they' +
+        ' are of Appendix-II species, meaning that they can be traded commercially (permit requirement is not ' +
+        'waived). If the animals were not bred for commercial purposes they may be traded simply with a ' +
+        'certificate of captive breeding. Click here for further information.',
+      fourth: 'What is the Blockchain?',
+      fourthText:
+        'Blockchain is the core technology behind crypto currencies. At its heart is a distributed data store.' +
+        ' Anyone who participates in this network has their own data store that stores all of the transactions that' +
+        ' ever happened on the network (this is also known as the distributed ledger).' +
+        ' Entries are stored within a cryptographic chain of blocks. At every stage, the network of participants ' +
+        'must agree about the latest block of transactions. ' +
+        'Agreement is reached through a process of majority consensus, eliminating duplicate entries, ' +
+        'double spending etc. This process and the cryptographic layering of the blocks makes the agreed ' +
+        'blockchain irreversible and immutable. The ‘history’ of events within this technology cannot be ' +
+        'modified by any one of the participants without majority consensus from the group.',
+      contact: 'Contact us',
+      contactName: 'Name',
+      contactMail: 'E-Mail',
+      contactText: 'Text',
+      contactSend: 'SEND'
     },
     footer: {
       openingDays: 'Monday to Saturday',
@@ -94,12 +144,26 @@ let local = new LocalizedStrings({
       createPermit: 'Create permit',
       downloadAsXML: 'Download as XML',
       printPermit: 'Print permit',
-      species: 'Species'
+      species: 'Species',
+      importFromXML: 'Import from XML',
+      decline: 'Decline',
+      confirm: 'Confirm'
+    },
+    permitCreate: {
+      pending: 'Permit creation pending...',
+      successful: 'Permit creation successful!',
+      failed: 'Permit creation has failed.',
+      noXMLImportError:
+        'The file you are trying to upload is not an XML document. Please make sure your file has the correct type',
+      goToPermit: 'Go to permit',
+      newPermit: 'New permit',
+      tryAgain: 'Try again'
     },
     analytics: {
       headline: 'Analytics',
       menu: 'Dashboard',
       country: 'Country',
+      map: 'Map',
       permitChart: {
         headline: 'Permit',
         export: 'Export',
@@ -141,6 +205,10 @@ let local = new LocalizedStrings({
   de: {
     header: {
       whitelist: 'Whitelist',
+      whitelistMenu: {
+        whitelist: 'Whitelist',
+        whitelistAdd: 'Adresse hinzufügen'
+      },
       permits: 'Genehmigungen',
       permitsMenu: {
         listPermits: 'Genehmigungen auflisten',
@@ -171,14 +239,68 @@ let local = new LocalizedStrings({
       add: 'Hinzufügen',
       status: 'Status'
     },
+    addAddress: {
+      addingPending: 'Adresse wird hinzugefügt...',
+      successfullyAdded: 'Adresse erfolgreich hinzugefügt!',
+      addingFailed: 'Das Hinzufügen der Adresse ist fehlgeschlagen.',
+      invalidInputError:
+        'Ungültige Eingabe. Überprüfen Sie, dass alle Adressen gültige Ethereum Adressen sind \
+        und dass Sie ein Land ausgewählt haben',
+      addMoreAddresses: 'Mehr Adressen hinzufügen',
+      goToWhitelist: 'Zur Whiteliste gehen',
+      addNewAddresses: 'Neue Adressen hinzufügen',
+      whitelisting: 'Whitelisting',
+      country: 'Land',
+      addAddressesToWhitelist: 'Adressen zur Whitelist hinzufügen',
+      ownerNotLoggedInError:
+        'Sie können Adressen nur zur Whitelist hinzufügen, wenn Sie als Controller eingeloggt sind',
+      tryAgain: 'Wiederholen'
+    },
     help: {
       headline: 'Hilfe',
       accordionHeadline: 'Häufigste Fragen',
-      first: 'Was ist die Blockchain?',
-      second: 'Was ist Cites?',
-      third: 'Wie kann ich cites kontaktieren?',
-      fourth: 'Frage Nr. 4',
-      contact: 'Kontaktieren Sie uns'
+      first:
+        'Woher weiß ich, ob ich eine Genehmigung für den Import oder Export von wilden Tieren benötige?',
+      firstText:
+        'Die Einfuhr, Ausfuhr und Wiederausfuhr lebendiger Tiere oder Pflanzen einer auf der CITES-Anlage ' +
+        ' aufgeführten Art (oder eines Teils oder Derivats eines solchen Tieres oder einer solchen Pflanze) ' +
+        'erfordert eine Genehmigung oder ein Zertifikat. Um herauszufinden, ob eine Art aufgelistet ist, ' +
+        ' können Sie in der CITES Artendatenbank entweder den wissenschaftlichen Namen oder den gebräuchlichen' +
+        ' Namen der Art eingeben. Alternativ können Sie auch bei der nationalen Behörde Ihres Landes ' +
+        ' (der "Verwaltungsbehörde") nachfragen, ob die von Ihnen gewünschte Art eine Genehmigung benötigt. ' +
+        ' Sie können die Art für Sie identifizieren lassen, wenn Sie nicht sicher sind, welche es ist.',
+      second:
+        'Wo finde ich die Kontaktdaten der nationalen Agentur, die für die Umsetzung ' +
+        'der CITES Anforderungen ständig ist?',
+      secondText:
+        'Die nationale Agentur, die in jedem Land für die Umsetzung der CITES Anforderungen verantwortlich ' +
+        ' ist, wird als Verwaltungsbehörde bezeichnet. Die Kontaktdaten der einzelnen Verwaltungsbehörden ' +
+        'sind auf der offizielen CITES Website zu finden.',
+      third:
+        'Benötigen Tiere, die in Gefangenschaft gezüchtet wurden, auch eine Genehmigungen?',
+      thirdText:
+        'Ja. Wenn jedoch ein kommerzieller Züchter bestimmte Bedingungen für die Zucht einer Art aus ' +
+        ' dem Anhang I erfüllt und beim CITES-Sekretariat registriert ist, können Exemplare aus dem ' +
+        ' Zuchtbetrieb so behandelt werden, als kämen sie aus dem Arten Anhang II, was bedeutet, dass sie ' +
+        ' kommerziell gehandelt werden können (Genehmigungspflicht wird nicht erlassen).' +
+        'Wenn die Tiere nicht für kommerzielle Zwecke gezüchtet wurden, können sie einfach mit ' +
+        ' einer Bescheinigung der Zucht in Gefangenschaft gehandelt werden. Für weitere Informationen gehen ' +
+        'Sie auf die offizielle CITES Webseite.',
+      fourth: 'Was ist eine Blockchain?',
+      fourthText:
+        'Im Kern ist die Blockchain eine verteilter Datenspeicher. Jeder, der an diesem Netzwerk teilnimmt, ' +
+        'hat seinen eigenen Datenspeicher, der alle Transaktionen speichert, die jemals im Netzwerk ausgeführt wurden' +
+        ' (dies wird auch als verteiltes Hauptbuch bezeichnet). Transaktionen werden in einer kryptografischen ' +
+        ' Blockkette gespeichert. In jeder Phase muss sich das Teilnehmernetz über den letzten ' +
+        ' Transaktionsblock einigen. Die Einigung wird durch einen Mehrheitskonsens erreicht, der Doppeleinträge, ' +
+        ' Doppelausgaben usw. eliminiert. Dieser Prozess und die kryptographische Schichtung der Blöcke macht die ' +
+        'vereinbarte Blockkette irreversibel und unveränderlich. Die "Geschichte" der Ereignisse innerhalb dieser ' +
+        ' Technologie kann von keinem der Teilnehmer ohne Mehrheitskonsens von der Gruppe geändert werden.',
+      contact: 'Kontaktiere uns',
+      contactName: 'Name',
+      contactMail: 'E-  Mail',
+      contactText: 'Text',
+      contactSend: 'SENDEN'
     },
     footer: {
       openingDays: 'Montag bis Samstag',
@@ -206,7 +328,7 @@ let local = new LocalizedStrings({
         'Nach Nummer der letzten Re-Exportgenehmigung suchen',
       lastReExport: 'Letzter Re-Export',
       type: 'Typ',
-      permitType: 'Permittyp',
+      permitType: 'Genehmigungstyp',
       exName: 'Name des Exporteurs',
       exStreet: 'Straße des Exporteurs',
       exCity: 'Stadt des Exporteurs',
@@ -225,15 +347,29 @@ let local = new LocalizedStrings({
       originPermitNumber: 'Nummer der Ursprungsgenehmigung',
       origin: 'Ursprung',
       reExportPermitNumber: 'Nummer der letzten Re-Exportgenehmigung',
-      createPermit: 'Permit erstellen',
+      createPermit: 'Genehmigung erstellen',
       downloadAsXML: 'XML herunterladen',
       printPermit: 'Genehmigung drucken',
-      species: 'Spezies'
+      species: 'Spezies',
+      importFromXML: 'Durch XML importieren',
+      decline: 'Ablehnen',
+      confirm: 'Bestätigen'
+    },
+    permitCreate: {
+      pending: 'Genehmigung wird erstellt...',
+      successful: 'Genehmigung wurde erfolgreich erstellt!',
+      failed: 'Die Erstellung der Genehmigung ist fehlgeschlagen.',
+      noXMLImportError:
+        'Die von Ihnen hochgeladene Datei ist keine XML-Datei. Bitte laden Sie eine Datei mit dem richtigen Typ hoch',
+      goToPermit: 'Gehe zur Genehmigung',
+      newPermit: 'Neue Genehmigung',
+      tryAgain: 'Wiederholen'
     },
     analytics: {
       headline: 'Analyse',
       menu: 'Dashboard',
       country: 'Land',
+      map: 'Karte',
       permitChart: {
         headline: 'Genehmigung',
         export: 'Export',
