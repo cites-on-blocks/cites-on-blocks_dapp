@@ -14,7 +14,9 @@ import HelpContainer from './layouts/help/HelpContainer'
 import ImportExportContainer from './layouts/importExport/ImportExportContainer'
 import PermitsContainer from './layouts/permits/PermitsContainer'
 import PermitCreateContainer from './layouts/permitCreate/PermitCreateContainer'
-import PermitProcessContainer from './layouts/permitProcess/PermitProcessContainer'
+import AnalyticMapContainer from './layouts/analyticMap/AnalyticMapContainer'
+import AnalyticCountryDashboardContainer from './layouts/analyticCountryDashboard/AnalyticCountryDashboardContainer'
+import AnalyticDashboardContainer from './layouts/analyticDashboard/AnalyticDashboardContainer'
 import { LoadingContainer } from 'drizzle-react-components'
 
 //Stylesheets
@@ -58,8 +60,14 @@ ReactDOM.render(
         <Route path="/permits/create" component={App}>
           <IndexRoute component={PermitCreateContainer} />
         </Route>
-        <Route path="/permits/process" component={App}>
-          <IndexRoute component={PermitProcessContainer} />
+        <Route path="/analytics/map" component={App}>
+          <IndexRoute component={AnalyticMapContainer} />
+        </Route>
+        <Route path="/analytics/dashboard" component={App}>
+          <IndexRoute component={AnalyticDashboardContainer} />
+        </Route>
+        <Route path="/analytics/country" component={App}>
+          <IndexRoute component={AnalyticCountryDashboardContainer} />
         </Route>
       </Router>
     </LoadingContainer>

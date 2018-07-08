@@ -164,6 +164,8 @@ let local = new LocalizedStrings({
       menu: 'Dashboard',
       country: 'Country',
       map: 'Map',
+      pleaseSelect: 'Please select country',
+      mapHeadline: 'Permits on the world map',
       permitChart: {
         headline: 'Permit',
         export: 'Export',
@@ -369,7 +371,9 @@ let local = new LocalizedStrings({
       headline: 'Analyse',
       menu: 'Dashboard',
       country: 'Land',
+      pleaseSelect: 'Bitte Land wählen',
       map: 'Karte',
+      mapHeadline: 'Genehmigungen auf der Weltkarte',
       permitChart: {
         headline: 'Genehmigung',
         export: 'Export',
