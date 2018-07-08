@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { WorldMap, Box, Headline } from 'grommet'
 import Web3 from 'web3'
-import { countries } from '../../util/country'
+import { COUNTRIES } from '../../util/countries'
 
 import {
   blockNumberToUnix,
@@ -59,10 +59,10 @@ class Home extends Component {
     let result = Object.values(
       whitelistArray.reduce((c, { country }) => {
         c[country] = c[country] || {
-          label: countries[country].name,
+          label: COUNTRIES[country].name,
           colorIndex: 'brand',
-          id: countries[country].name,
-          place: [countries[country].latitude, countries[country].longitude]
+          id: COUNTRIES[country].name,
+          place: [COUNTRIES[country].latitude, COUNTRIES[country].longitude]
         }
         return c
       }, {})
@@ -71,7 +71,6 @@ class Home extends Component {
   }
 
   render() {
-    console.log(this.state.whitelistEvents)
     return (
       <main>
         <Box align="center" justify="center" className="cites-box">

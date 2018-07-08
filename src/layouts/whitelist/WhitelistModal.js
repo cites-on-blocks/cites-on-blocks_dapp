@@ -53,7 +53,7 @@ class WhitelistModal extends Component {
     if (utils.isAddress(address)) {
       this.props.Contracts.PermitFactory.methods.addAddress.cacheSend(
         address,
-        utils.asciiToHex(this.props.country.iso),
+        utils.asciiToHex(this.props.country.value),
         {
           from: this.props.accounts[0]
         }
@@ -164,14 +164,14 @@ class WhitelistModal extends Component {
       <main>
         <Box align="center" full={true} pad="small">
           <Headline className="headline" align="center" tag="h2">
-            {this.props.country.country}
+            {this.props.country.name}
           </Headline>
           <Box direction="row" pad="none" margin="none">
             <Box pad="small" align="center" margin="none">
               <Label>
                 {local.whitelist.table.language}:
                 <FlagIcon
-                  code={this.props.country.language.toLowerCase()}
+                  code={this.props.country.value.toLowerCase()}
                   size="lg"
                 />
               </Label>
@@ -181,7 +181,7 @@ class WhitelistModal extends Component {
             </Box>
             <Box pad="small" align="center" margin="none">
               <Label>
-                {local.whitelist.table.iso}: {this.props.country.iso}
+                {local.whitelist.table.iso}: {this.props.country.value}
               </Label>
               <Label>
                 {local.whitelist.table.joining}: {this.props.country.join}

@@ -153,7 +153,6 @@ class Analytics extends Component {
   }
 
   render() {
-    console.log(this.state.whitelistEvents)
     return (
       <Box
         direction="row"

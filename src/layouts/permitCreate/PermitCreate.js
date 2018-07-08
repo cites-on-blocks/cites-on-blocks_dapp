@@ -12,6 +12,7 @@ import {
   DocumentUploadIcon
 } from 'grommet'
 import Web3, { utils } from 'web3'
+import { parseString } from 'xml2js'
 
 import AddressInputs from '../../components/AddressInputs'
 import SpeciesInputs from '../../components/SpeciesInputs'
@@ -19,28 +20,7 @@ import PendingTxModal from '../../components/PendingTxModal'
 import { isASCII } from '../../util/stringUtils'
 import * as permitUtils from '../../util/permitUtils'
 import local from '../../localization/localizedStrings'
-
-import { parseString } from 'xml2js'
-
-// NOTE: to be replaced with proper country list from whitelist ui branch
-const COUNTRIES = [
-  {
-    value: 'DE',
-    label: 'DE'
-  },
-  {
-    value: 'FR',
-    label: 'FR'
-  },
-  {
-    value: 'EN',
-    label: 'EN'
-  },
-  {
-    value: 'US',
-    label: 'US'
-  }
-]
+import { COUNTRY_OPTS } from '../../util/options'
 
 class PermitCreate extends Component {
   constructor(props, context) {
@@ -332,7 +312,6 @@ class PermitCreate extends Component {
     }
     const { permit } = this.state
     const { xmlToJSON } = this.state
-    console.log(xmlToJSON)
     const XMLNamespace = this.getXMLNamespace()
     const generalInfo =
       xmlToJSON[XMLNamespace + ':CITESEPermit'][
@@ -476,7 +455,7 @@ class PermitCreate extends Component {
               options={
                 permitForm === 'DIGITAL'
                   ? [{ value: authorityCountry, label: authorityCountry }]
-                  : COUNTRIES.filter(c => c.value !== permit.importCountry)
+                  : COUNTRY_OPTS.filter(c => c.value !== permit.importCountry)
               }
               onChange={({ option }) => {
                 this.handlePermitChange('exportCountry', option.value)
@@ -491,7 +470,7 @@ class PermitCreate extends Component {
               options={
                 permitForm === 'PAPER'
                   ? [{ value: authorityCountry, label: authorityCountry }]
-                  : COUNTRIES.filter(c => c.value !== permit.exportCountry)
+                  : COUNTRY_OPTS.filter(c => c.value !== permit.exportCountry)
               }
               onChange={({ option }) => {
                 this.handlePermitChange('importCountry', option.value)

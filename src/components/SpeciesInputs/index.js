@@ -9,10 +9,12 @@ import {
   NumberInput,
   Heading,
   SubtractIcon,
-  SearchInput
+  SearchInput,
+  Select
 } from 'grommet'
 import { isASCII } from '../../util/stringUtils'
 import local from '../../localization/localizedStrings'
+import { SPECIES_SC_NAME_OPTS, SPECIES_COM_NAME_OPTS } from '../../util/options'
 
 /**
  * Component for form elements of species information
@@ -51,6 +53,16 @@ class SpeciesInputs extends Component {
     return isValid === 'initial' ? '' : !value && !isValid && errText
   }
 
+  onNameChange(attr, name) {
+    const otherAttr =
+      attr === 'scientificName' ? 'commonName' : 'scientificName'
+    const otherName = SPECIES_COM_NAME_OPTS.find(s => s[attr] === name)[
+      otherAttr
+    ]
+    this.props.onChange(attr, name)
+    this.props.onChange(otherAttr, otherName)
+  }
+
   render() {
     const {
       index,
@@ -77,20 +89,22 @@ class SpeciesInputs extends Component {
         </Box>
         <Columns justify={'between'} size={'large'}>
           <FormField label={local.permits.scientificName} error={errText[0]}>
-            <TextInput
+            <Select
               value={species.scientificName}
-              onDOMChange={e => {
-                onChange('scientificName', e.target.value)
-                this.setError(e.target.value, 0)
+              options={SPECIES_SC_NAME_OPTS}
+              onChange={({ option }) => {
+                this.onNameChange('scientificName', option.scientificName)
+                this.setError(option.value, 0)
               }}
             />
           </FormField>
           <FormField label={local.permits.commonName} error={errText[1]}>
-            <TextInput
+            <Select
               value={species.commonName}
-              onDOMChange={e => {
-                onChange('commonName', e.target.value)
-                this.setError(e.target.value, 1)
+              options={SPECIES_COM_NAME_OPTS}
+              onChange={({ option }) => {
+                this.onNameChange('commonName', option.commonName)
+                this.setError(option.value, 1)
               }}
             />
           </FormField>

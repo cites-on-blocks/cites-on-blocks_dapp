@@ -1,10 +1,10 @@
 //based on australian cites list https://www.legislation.gov.au/Details/F2017C01029
 
-export const species = [
+export const SPECIES = [
   {
     class: 'Reptilia',
     order: 'Crocodylia',
-    scienceName: 'Alligator mississippiensis',
+    scientificName: 'Alligator mississippiensis',
     family: 'Alligatoridae',
     commonName: 'American Alligator',
     color: 'brand'
@@ -12,7 +12,7 @@ export const species = [
   {
     class: 'Reptilia',
     order: 'Crocodylia',
-    scienceName: 'Alligator sinensis',
+    scientificName: 'Alligator sinensis',
     family: 'Alligatoridae',
     commonName: 'Chinese Alligator',
     color: 'warning'
@@ -20,7 +20,7 @@ export const species = [
   {
     class: 'Reptilia',
     order: 'Squamata',
-    scienceName: 'Brookesia perarmata',
+    scientificName: 'Brookesia perarmata',
     family: 'Chamaeleonidae',
     commonName: 'chameleon',
     color: 'ok'
@@ -28,7 +28,7 @@ export const species = [
   {
     class: 'Aves',
     order: 'Falconiformes',
-    scienceName: 'Accipiter gundlachi',
+    scientificName: 'Accipiter gundlachi',
     family: 'Accipitridae',
     commonName: 'Gundlachs Hawk',
     color: 'critical'
@@ -36,7 +36,7 @@ export const species = [
   {
     class: 'Mammalia',
     order: 'Artiodactyla',
-    scienceName: 'Axis calamianensis',
+    scientificName: 'Axis calamianensis',
     family: 'Cervidae',
     commonName: 'Calamianes Deer',
     color: 'accent-1-t'
@@ -44,7 +44,7 @@ export const species = [
   {
     class: 'Reptilia',
     order: 'Testudines',
-    scienceName: 'Chelydra serpentina',
+    scientificName: 'Chelydra serpentina',
     family: 'Chelydridae',
     commonName: 'Common snapping turtle',
     color: 'accent-1-t'
@@ -52,7 +52,7 @@ export const species = [
   {
     class: 'Anthozoa',
     order: 'Gorgonaceae',
-    scienceName: 'Corallium elatius',
+    scientificName: 'Corallium elatius',
     family: 'Coralliidae',
     commonName: 'Boke',
     color: 'neutral-1'
@@ -60,11 +60,11 @@ export const species = [
   {
     class: 'Bivalvia',
     order: 'Mytiloida',
-    scienceName: 'Lithophaga lithophaga',
+    scientificName: 'Lithophaga lithophaga',
     family: 'Mytilidae',
     commonName: 'sea mussel',
     color: 'neutral-2'
   }
 ]
 
-export default species
+export default SPECIES

@@ -1,28 +1,17 @@
-export const countries = [
-  {
-    value: 'DE',
-    label: 'DE' // TODO add country flag
-  },
-  {
-    value: 'FR',
-    label: 'FR' // TODO add country flag
-  },
-  {
-    value: 'EN',
-    label: 'EN' // TODO add country flag
-  },
-  {
-    value: 'US',
-    label: 'US' // TODO add country flag
-  }
-]
+import { COUNTRIES } from './countries'
+import { SPECIES } from './species'
+
+export const COUNTRY_OPTS = Object.values(COUNTRIES).map(c => ({
+  ...c,
+  label: `${c.value} - ${c.name}`
+}))
 
 export const COUNTRY_FILTER_OPTS = [
   {
     value: 'all',
     label: 'All'
   }
-].concat(countries)
+].concat(COUNTRY_OPTS)
 
 export const STATUS_FILTER_OPTS = [
   {
@@ -38,3 +27,17 @@ export const STATUS_FILTER_OPTS = [
     label: 'Processed'
   }
 ]
+
+export const SPECIES_SC_NAME_OPTS = SPECIES.map(s => ({
+  ...s,
+  label: s.scientificName
+}))
+
+export const SPECIES_COM_NAME_OPTS = SPECIES.map(s => ({
+  ...s,
+  label: s.commonName
+}))
+
+export const LISTED_COUNTRIES = Object.values(COUNTRIES).filter(key =>
+  key.hasOwnProperty('entry')
+)
