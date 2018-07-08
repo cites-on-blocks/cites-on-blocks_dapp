@@ -37,3 +37,7 @@ export const SPECIES_COM_NAME_OPTS = SPECIES.map(s => ({
   ...s,
   label: s.commonName
 }))
+
+export const LISTED_COUNTRIES = Object.values(COUNTRIES).filter(key =>
+  key.hasOwnProperty('entry')
+)
