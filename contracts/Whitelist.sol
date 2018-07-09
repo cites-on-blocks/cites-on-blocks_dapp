@@ -64,9 +64,6 @@ contract Whitelist is Ownable {
    * @return the list of addresses linked to the country
    */
   function getCountry(bytes2 _country) external view returns(address[]) {
-    // Make sure the passed country exist.
-    require(authorityMapping[_country].length > 0);
-
     return authorityMapping[_country];
   }
 
