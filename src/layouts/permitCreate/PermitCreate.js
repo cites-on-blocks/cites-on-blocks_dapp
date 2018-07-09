@@ -42,6 +42,7 @@ class PermitCreate extends Component {
       isValid: 'initial',
       xmlToJSON: {},
       isXML: 'initial',
+      isCITESXML: 'initial',
       hashSuggestions: []
     }
     // for convinience
@@ -306,16 +307,70 @@ class PermitCreate extends Component {
     return Object.keys(xml)[0].split(':')[0] //maybe better to work with the text/xml. this works for now
   }
 
+  isCITESXML() {
+    const { xmlToJSON } = this.state
+    const XMLNamespace = this.getXMLNamespace()
+
+    let headerExists = true
+    let consigneeExists = true
+    let consignorExists = true
+    let tradelineItemExists = true
+
+    try {
+      xmlToJSON[XMLNamespace + ':CITESEPermit'][
+        XMLNamespace + ':HeaderExchangedDocument'
+      ][0]
+    } catch (e) {
+      headerExists = false
+    }
+
+    try {
+      xmlToJSON[XMLNamespace + ':CITESEPermit'][
+        XMLNamespace + ':SpecifiedSupplyChainConsignment'
+      ][0].ConsigneeTradeParty
+    } catch (e) {
+      consigneeExists = false
+    }
+
+    try {
+      xmlToJSON[XMLNamespace + ':CITESEPermit'][
+        XMLNamespace + ':SpecifiedSupplyChainConsignment'
+      ][0].ConsignorTradeParty
+    } catch (e) {
+      consignorExists = false
+    }
+
+    try {
+      xmlToJSON[XMLNamespace + ':CITESEPermit'][
+        XMLNamespace + ':SpecifiedSupplyChainConsignment'
+      ][0].IncludedSupplyChainConsignmentItem[0]
+        .IncludedSupplyChainTradeLineItem
+    } catch (e) {
+      tradelineItemExists = false
+    }
+
+    return (
+      headerExists && consignorExists && consigneeExists && tradelineItemExists
+    )
+  }
+
   handleUpload() {
     if (!this.state.isXML) {
       return
     }
+    if (!this.isCITESXML()) {
+      let { isCITESXML } = this.state
+      isCITESXML = false
+      this.setState({ isCITESXML })
+      return
+    }
     const { permit } = this.state
     const { xmlToJSON } = this.state
+    console.log(xmlToJSON)
     const XMLNamespace = this.getXMLNamespace()
     const generalInfo =
       xmlToJSON[XMLNamespace + ':CITESEPermit'][
-        'ns2:SpecifiedSupplyChainConsignment'
+        XMLNamespace + ':SpecifiedSupplyChainConsignment'
       ][0]
     //set address data
     const exportInfo = generalInfo.ConsignorTradeParty[0]
@@ -375,10 +430,18 @@ class PermitCreate extends Component {
 
   render() {
     var XMLerror = ''
+    var CITESXMLError = ''
     if (!(this.state.isXML || this.state.isXML === 'initial')) {
       XMLerror = (
         <Paragraph style={{ color: 'red' }}>
           {local.permitCreate.noXMLImportError}
+        </Paragraph>
+      )
+    }
+    if (!(this.state.isCITESXML || this.state.isCITESXML === 'initial')) {
+      CITESXMLError = (
+        <Paragraph style={{ color: 'red' }}>
+          {local.permitCreate.noCITESXMLError}
         </Paragraph>
       )
     }
@@ -558,6 +621,7 @@ class PermitCreate extends Component {
           direction={'row'}
           margin={'medium'}>
           {XMLerror}
+          {CITESXMLError}
         </Box>
       </Box>
     )
