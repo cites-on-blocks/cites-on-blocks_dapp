@@ -26,12 +26,11 @@ class WhitelistModal extends Component {
         this.props.dataKeyAddresses
       ].value
       if (addresses !== prevState.addresses) {
-        this.setState({ addresses }, () => {
-          this.getWhitelistStatuses(addresses)
-          this.setState({
-            isLoading: false
-          })
+        this.setState({
+          addresses,
+          isLoading: false
         })
+        this.getWhitelistStatuses(addresses)
       } else {
         this.getWhitelistStatuses(addresses)
       }
@@ -89,21 +88,20 @@ class WhitelistModal extends Component {
     this.setState({ selectedAddresses: addresses })
   }
 
-  getWhitelistStatuses(addresses) {
-    if (this.state.addresses !== undefined) {
-      const whitelistPromises = addresses.map(address =>
-        this.props.Contracts.PermitFactory.methods
-          .whitelist(address)
-          .call()
-          .then(status => status)
-          .catch(e => console.log(e))
-      )
-      Promise.all(whitelistPromises)
-        .then(statuses => this.setState({ statuses }))
-        .catch(e => console.log(e))
-      return
+  async getWhitelistStatuses(addresses) {
+    const { Contracts } = this.props
+    if (addresses && addresses.length > 0) {
+      try {
+        const statuses = await Promise.all(
+          addresses.map(address =>
+            Contracts.PermitFactory.methods.whitelist(address).call()
+          )
+        )
+        this.setState({ statuses })
+      } catch (error) {
+        console.error(error)
+      }
     }
-    return
   }
 
   render() {
