@@ -237,30 +237,34 @@ class PermitDetailsModal extends Component {
                   {specimen.quantity}
                 </Box>
               </Columns>
-              <Box margin={{ vertical: 'small' }}>
-                <b>{local.permits.origin}</b>
-                <td>
-                  <div
-                    style={{
-                      overflowX: 'scroll',
-                      width: '100%'
-                    }}>
-                    {specimen.originHash}
-                  </div>
-                </td>
-              </Box>
-              <Box margin={{ vertical: 'small' }}>
-                <b>{local.permits.lastReExport}</b>
-                <td>
-                  <div
-                    style={{
-                      overflowX: 'scroll',
-                      width: '100%'
-                    }}>
-                    {specimen.reExportHash}
-                  </div>
-                </td>
-              </Box>
+              {permit.permitType === 'RE-EXPORT' && (
+                <Box>
+                  <Box margin={{ vertical: 'small' }}>
+                    <b>{local.permits.origin}</b>
+                    <td>
+                      <div
+                        style={{
+                          overflowX: 'scroll',
+                          width: '100%'
+                        }}>
+                        {specimen.originHash}
+                      </div>
+                    </td>
+                  </Box>
+                  <Box margin={{ vertical: 'small' }}>
+                    <b>{local.permits.lastReExport}</b>
+                    <td>
+                      <div
+                        style={{
+                          overflowX: 'scroll',
+                          width: '100%'
+                        }}>
+                        {specimen.reExportHash}
+                      </div>
+                    </td>
+                  </Box>
+                </Box>
+              )}
             </Box>
           ))}
           <Box
