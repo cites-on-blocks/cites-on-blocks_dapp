@@ -205,7 +205,7 @@ class PermitDetailsModal extends Component {
             </Box>
             <Box margin={{ vertical: 'small' }}>
               <b>{local.permits.status}</b>
-              {permit.status}
+              {local.permits[permit.status]}
             </Box>
           </Columns>
           {permit.specimens.map((specimen, i) => (
