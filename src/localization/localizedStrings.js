@@ -175,12 +175,12 @@ let local = new LocalizedStrings({
           'This chart displays all the different permit types in relation to the total count of permits.'
       },
       workChart: {
-        headline: 'Worker',
-        analyticsTitle: 'Worker Chart',
+        headline: 'Employee',
+        analyticsTitle: 'Employee Chart',
         analyticCountryText:
-          'This chart displays all the worker of an country and split them into "whitelited" and "removed".',
+          'This chart displays all the employees of an country and split them into "whitelited" and "removed".',
         analyticText:
-          'This chart displays all the worker count per country in relation to the total count of worker.'
+          'This chart displays all the employees count per country in relation to the total count of worker.'
       },
       specimensChart: {
         headline: 'Species',
