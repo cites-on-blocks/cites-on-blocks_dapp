@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Layer, Table, TableRow } from 'grommet'
+import { Layer, Table, TableRow, TableHeader } from 'grommet'
 import local from '../../localization/localizedStrings'
 import FlagIconFactory from 'react-flag-icon-css'
 import { utils } from 'web3'
@@ -15,8 +15,28 @@ class WhitelistTable extends Component {
       layerActive: false,
       countryCode: '',
       addresses: [],
-      countryToModal: null
+      countryToModal: null,
+      index: 0,
+      ascending: true,
+      sortIndex: 0
     }
+    this._sort = this._sort.bind(this)
+  }
+
+  _sort(ascending) {
+    const array = this.state.data
+    const result = array.slice(0).sort((r1, r2) => {
+      if (r1.name < r2.name) {
+        return ascending ? -1 : 1
+      } else if (r1.name > r2.name) {
+        return ascending ? 1 : -1
+      } else {
+        return 0
+      }
+    })
+    this.setState({
+      data: result
+    })
   }
 
   showDetails(id) {
@@ -37,7 +57,7 @@ class WhitelistTable extends Component {
   }
 
   render() {
-    const { data } = this.state
+    const { data, sortIndex, ascending } = this.state
     const FlagIcon = FlagIconFactory(React, { useCssModules: false })
     const layer = this.state.layerActive ? (
       <Layer
@@ -83,17 +103,20 @@ class WhitelistTable extends Component {
       <main>
         {layer}
         <Table responsive={false}>
-          <thead>
-            <tr>
-              <th>{local.whitelist.table.country}</th>
-              <th>{local.whitelist.table.language}</th>
-              <th>{local.whitelist.table.iso}</th>
-              <th>{local.whitelist.table.entry}</th>
-              <th>{local.whitelist.table.joining}</th>
-              {this.props.isOwner && <th />}
-            </tr>
-          </thead>
-          <tbody>{rows}</tbody>
+          <TableHeader
+            labels={[
+              local.whitelist.table.country,
+              local.whitelist.table.language,
+              local.whitelist.table.iso,
+              local.whitelist.table.entry,
+              local.whitelist.table.joining,
+              ''
+            ]}
+            sortIndex={sortIndex}
+            sortAscending={ascending}
+            onSort={this._sort}
+          />
+          <tbody>{rows}</tbody>a
         </Table>
       </main>
     )
