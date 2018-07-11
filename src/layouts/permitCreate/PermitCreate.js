@@ -354,6 +354,16 @@ class PermitCreate extends Component {
     )
   }
 
+  getTypeString(typeCode) {
+    let result = 'EXPORT'
+    if (typeCode === 'O') {
+      result = 'OTHER'
+    } else if (typeCode === 'R') {
+      result = 'RE-EXPORT'
+    }
+    return result
+  }
+
   handleUpload() {
     if (!this.state.isXML) {
       return
@@ -367,7 +377,13 @@ class PermitCreate extends Component {
     this.setState({ isCITESXML: true })
     const { permit } = this.state
     const { xmlToJSON } = this.state
+    console.log(xmlToJSON)
     const XMLNamespace = this.getXMLNamespace()
+    const permitType =
+      xmlToJSON[XMLNamespace + ':CITESEPermit'][
+        XMLNamespace + ':HeaderExchangedDocument'
+      ][0].TypeCode[0]
+    permit.permitType = this.getTypeString(permitType)
     const generalInfo =
       xmlToJSON[XMLNamespace + ':CITESEPermit'][
         XMLNamespace + ':SpecifiedSupplyChainConsignment'
@@ -405,6 +421,7 @@ class PermitCreate extends Component {
       permit,
       specimens: speciesArray
     })
+    console.log(this.state)
   }
 
   handleUploadChange(event) {
