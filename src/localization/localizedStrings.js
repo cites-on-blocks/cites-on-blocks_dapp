@@ -163,11 +163,17 @@ let local = new LocalizedStrings({
       newPermit: 'New permit',
       tryAgain: 'Try again'
     },
+    permitProcess: {
+      successful: 'Permit process successful!',
+      pending: 'Permit process pending...',
+      failed: 'Permit process failed.'
+    },
     analytics: {
       headline: 'Analytics',
       menu: 'Dashboard',
       country: 'Country',
       map: 'Map',
+      permitsOnTheWorldMap: 'Permits on the World Map',
       permitChart: {
         headline: 'Permit',
         export: 'Export',
@@ -373,11 +379,17 @@ let local = new LocalizedStrings({
       newPermit: 'Neue Genehmigung',
       tryAgain: 'Wiederholen'
     },
+    permitProcess: {
+      successful: 'Genehmigung erfolgreich bearbeitet!',
+      pending: 'Genehmigung in Bearbeitung...',
+      failed: 'Bearbeitung der Genehmigung fehlgeschlagen.'
+    },
     analytics: {
       headline: 'Analyse',
       menu: 'Dashboard',
       country: 'Land',
       map: 'Karte',
+      permitsOnTheWorldMap: 'Genehmigungen auf der Karte',
       permitChart: {
         headline: 'Genehmigung',
         export: 'Export',
