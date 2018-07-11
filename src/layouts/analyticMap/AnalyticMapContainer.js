@@ -1,4 +1,4 @@
-import PermitProcess from './PermitProcess'
+import AnalyticMap from './AnalyticMap'
 import { drizzleConnect } from 'drizzle-react'
 
 // May still need this even with data function to refresh component on updates for this contract.
@@ -9,6 +9,6 @@ const mapStateToProps = state => {
   }
 }
 
-const PermitProcessContainer = drizzleConnect(PermitProcess, mapStateToProps)
+const AnalyticMapContainer = drizzleConnect(AnalyticMap, mapStateToProps)
 
-export default PermitProcessContainer
+export default AnalyticMapContainer

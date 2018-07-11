@@ -1,30 +1,111 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Box, Select, FormField } from 'grommet'
+import { Box, Select, FormField, Paragraph } from 'grommet'
+import Web3 from 'web3'
+
 import local from '../../localization/localizedStrings'
 import AnalyticsMeter from '../../components/AnalyticsMeter'
 import SunburstChart from '../../components/SunburstChart'
 import { SPECIES } from '../../util/species'
 
-class AnalyticsCountryboard extends Component {
-  constructor(props) {
+import {
+  parseRawPermit,
+  parseRawSpecimen,
+  mergePermitEvents,
+  getPermitEvents,
+  blockNumberToUnix,
+  getWhitelistEvents,
+  mergeWhitelistEvents
+} from '../../util/permitUtils'
+
+class AnalyticCountryDashboard extends Component {
+  constructor(props, context) {
     super(props)
     this.state = {
-      type: 'error',
-      country: '',
+      // permit events
+      events: [],
+      // permit events
+      whitelistEvents: [],
+      country: local.analytics.pleaseSelect,
+      //permits
       permits: [],
+      whitelist: [],
       originpermits: [],
-      originwhitelist: [],
-      whitelist: []
+      originwhitelist: []
     }
+    this.contracts = context.drizzle.contracts
+    // NOTE: We have to iniate a new web3 instance for retrieving event via `getPastEvents`.
+    //       MetaMask does not support websockets and Drizzle retrieves events via subscriptions.
+    const web3 = new Web3(this.contracts.PermitFactory.givenProvider)
+    const { abi, address } = this.contracts.PermitFactory
+    this.PermitFactory = new web3.eth.Contract(abi, address)
+    this.web3 = web3
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    await this.getEvents()
+    await this.getPermits()
+    await this.getWhitelistedEvents()
+  }
+
+  async getEvents(from = 0) {
+    const [createdPermits, confirmedPermits] = await Promise.all([
+      getPermitEvents(this.PermitFactory, 'PermitCreated', from),
+      getPermitEvents(this.PermitFactory, 'PermitConfirmed', from)
+    ])
+    const events = createdPermits.concat(confirmedPermits)
+    const newEvents = await blockNumberToUnix(this.web3, events)
+    const mergedEvents = mergePermitEvents(this.state.events, newEvents).sort(
+      (a, b) => b.blockNumber - a.blockNumber
+    )
     this.setState({
-      permits: this.props.permits,
-      originpermits: this.props.permits,
-      whitelist: this.props.whitelist,
-      originwhitelist: this.props.whitelist
+      ...this.state,
+      events: mergedEvents
+    })
+  }
+
+  async getWhitelistedEvents(from = 0) {
+    const [addWhitelist, removedWhitelist] = await Promise.all([
+      getWhitelistEvents(this.PermitFactory, 'AddressWhitelisted', from),
+      getWhitelistEvents(this.PermitFactory, 'AddressRemoved', from)
+    ])
+    const whitelistEvents = addWhitelist.concat(removedWhitelist)
+    const newWhitelistEvents = await blockNumberToUnix(
+      this.web3,
+      whitelistEvents
+    )
+    const mergedWhitelistEvents = mergeWhitelistEvents(
+      whitelistEvents,
+      newWhitelistEvents
+    )
+    this.setState({
+      ...this.state,
+      whitelistEvents: mergedWhitelistEvents
+    })
+  }
+
+  async getPermits() {
+    let permits = []
+    for (const event of this.state.events) {
+      const rawPermit = await this.contracts.PermitFactory.methods
+        .getPermit(event.permitHash)
+        .call()
+      const parsedPermit = parseRawPermit(rawPermit)
+      const specimenPromises = parsedPermit.specimenHashes.map(s =>
+        this.contracts.PermitFactory.methods.specimens(s).call()
+      )
+      const rawSpecimens = await Promise.all(specimenPromises)
+      const parsedSpecimens = rawSpecimens.map(s => parseRawSpecimen(s))
+      permits.push({
+        ...parsedPermit,
+        specimens: parsedSpecimens,
+        status: event.status,
+        timestamp: event.timestamp,
+        permitHash: event.permitHash
+      })
+    }
+    this.setState({
+      originpermits: permits
     })
   }
 
@@ -37,7 +118,7 @@ class AnalyticsCountryboard extends Component {
       permits: permitResult,
       country: countryTyp
     })
-    let whitelistArray = this.state.originwhitelist
+    let whitelistArray = this.state.whitelistEvents
     let whitelistResult = whitelistArray.filter(
       country => country.country === countryTyp
     )
@@ -53,7 +134,7 @@ class AnalyticsCountryboard extends Component {
    **/
 
   transformWhitelistArray() {
-    let whitelistArray = this.state.originwhitelist
+    let whitelistArray = this.state.whitelistEvents
     const result = Object.values(
       whitelistArray.reduce((c, { country }) => {
         c[country] = c[country] || {
@@ -66,7 +147,7 @@ class AnalyticsCountryboard extends Component {
   }
 
   getCountrySelect() {
-    let permit = this.state.originpermits
+    let permit = this.state.permits
     let whitelist = this.transformWhitelistArray()
     const result = Object.values(
       permit.concat(whitelist).reduce((c, { exportCountry }) => {
@@ -160,7 +241,7 @@ class AnalyticsCountryboard extends Component {
    **/
 
   createSpecimensSeries() {
-    const arr = this.props.permits
+    const arr = this.state.permits
     const result = Object.values(
       [].concat
         .apply([], arr.map(({ specimens }) => specimens))
@@ -208,52 +289,63 @@ class AnalyticsCountryboard extends Component {
         align="center"
         wrap={true}
         margin="small">
-        <Box>
-          <FormField label={'Select Country'}>
-            <Select
-              value={this.state.country}
-              options={this.getCountrySelect()}
-              onChange={({ option }) => {
-                this.changeCountry(option.value)
-              }}
-            />
-          </FormField>
-          <Box direction="row" pad="small" justify="center" align="center">
-            <AnalyticsMeter
-              analyticsTitle={local.analytics.permitChart.headline}
-              series={this.createPermitSeries()}
-              type="permit"
-            />
-            <AnalyticsMeter
-              analyticsTitle={local.analytics.workChart.headline}
-              series={this.createWorkerSeries()}
-              type="workCountry"
-            />
-            <AnalyticsMeter
-              analyticsTitle={local.analytics.specimensChart.headline}
-              series={this.createSpecimensSeries()}
-              type="specimens"
-            />
-          </Box>
-        </Box>
-        <Box direction="row" align="center">
-          <SunburstChart
-            type="country"
-            analyticsTitle={local.analytics.sunburstChart.headlineCountry}
-            permitTotal={this.state.permits.length}
-            series={this.createSunburstSpecimens()}
+        <FormField label={local.analytics.pleaseSelect}>
+          <Select
+            value={this.state.country}
+            options={this.getCountrySelect()}
+            onChange={({ option }) => {
+              this.changeCountry(option.value)
+            }}
           />
-        </Box>
+        </FormField>
+        {this.state.country === local.analytics.pleaseSelect ? (
+          <Paragraph style={{ color: 'red' }}>
+            {local.analytics.pleaseSelect}
+          </Paragraph>
+        ) : (
+          <Box>
+            <Box pad="none">
+              <Box direction="row" pad="none" justify="center" align="center">
+                <AnalyticsMeter
+                  analyticsTitle={local.analytics.permitChart.headline}
+                  series={this.createPermitSeries()}
+                  type="permit"
+                />
+                <AnalyticsMeter
+                  analyticsTitle={local.analytics.workChart.headline}
+                  series={this.createWorkerSeries()}
+                  type="workCountry"
+                />
+                <AnalyticsMeter
+                  analyticsTitle={local.analytics.specimensChart.headline}
+                  series={this.createSpecimensSeries()}
+                  type="specimens"
+                />
+              </Box>
+            </Box>
+            <Box direction="row" align="center">
+              <SunburstChart
+                type="country"
+                analyticsTitle={local.analytics.sunburstChart.headlineCountry}
+                permitTotal={this.state.permits.length}
+                series={this.createSunburstSpecimens()}
+              />
+            </Box>
+          </Box>
+        )}
       </Box>
     )
   }
 }
 
-AnalyticsCountryboard.propTypes = {
+AnalyticCountryDashboard.propTypes = {
   accounts: PropTypes.object,
-  analyticsTitle: PropTypes.string,
   permits: PropTypes.array,
   whitelist: PropTypes.array
 }
 
-export default AnalyticsCountryboard
+AnalyticCountryDashboard.contextTypes = {
+  drizzle: PropTypes.object
+}
+
+export default AnalyticCountryDashboard

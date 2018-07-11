@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Box } from 'grommet'
 import AmCharts from '@amcharts/amcharts3-react'
 import { COUNTRIES } from '../../util/countries'
+import local from '../../localization/localizedStrings'
 
 class AnalyticsMapboard extends Component {
   constructor(props) {
@@ -57,12 +58,6 @@ class AnalyticsMapboard extends Component {
     const config = {
       type: 'map',
       theme: 'light',
-      titles: [
-        {
-          text: 'Permits on the World Map',
-          size: 14
-        }
-      ],
       projection: 'mercator',
       dataProvider: {
         map: 'worldLow',
@@ -85,8 +80,9 @@ class AnalyticsMapboard extends Component {
         wrap={true}
         responsive={true}
         full={true}>
+        <h3>{local.analytics.permitsOnTheWorldMap}</h3>
         <AmCharts.React
-          style={{ width: '100%', height: '80%' }}
+          style={{ width: '100%', height: '82%' }}
           options={config}
         />
       </Box>

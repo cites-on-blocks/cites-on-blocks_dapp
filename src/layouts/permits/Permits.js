@@ -177,7 +177,7 @@ class Permits extends Component {
         txStatus: 'pending',
         modal: {
           show: true,
-          text: 'Permit process pending...'
+          text: local.permitProcess.pending
         }
       })
     } else if (newTxState === 'success') {
@@ -186,7 +186,7 @@ class Permits extends Component {
         txStatus: 'success',
         modal: {
           show: true,
-          text: 'Permit process successful!'
+          text: local.permitProcess.successful
         }
       })
     } else {
@@ -195,7 +195,7 @@ class Permits extends Component {
         txStatus: 'failed',
         modal: {
           show: true,
-          text: 'Permit process failed.'
+          text: local.permitProcess.failed
         }
       })
     }
@@ -298,7 +298,7 @@ class Permits extends Component {
             onClose={() => this.onDeselect()}
             detailsActions={
               selectedPermit.importCountry === authCountry &&
-              selectedPermit.status !== 'processed' && (
+              selectedPermit.status === 'created' && (
                 <Columns justify={'between'} size={'small'}>
                   <Button
                     secondary={true}
@@ -348,11 +348,7 @@ class Permits extends Component {
                 <td>
                   <Timestamp value={event.timestamp} />
                 </td>
-                <td>
-                  {event.status === 'created'
-                    ? local.permits.created
-                    : local.permits.processed}
-                </td>
+                <td>{local.permits[event.status]}</td>
               </TableRow>
             ))}
           </tbody>

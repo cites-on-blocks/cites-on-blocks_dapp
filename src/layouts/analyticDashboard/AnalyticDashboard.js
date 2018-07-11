@@ -1,18 +1,109 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Box } from 'grommet'
+import Web3 from 'web3'
+
 import local from '../../localization/localizedStrings'
 import AnalyticsMeter from '../../components/AnalyticsMeter'
 import SunburstChart from '../../components/SunburstChart'
-import { COUNTRIES } from '../../util/countries'
 import { SPECIES } from '../../util/species'
+import { COUNTRIES } from '../../util/countries'
 
-class AnalyticsDashboard extends Component {
-  constructor(props) {
+import {
+  parseRawPermit,
+  parseRawSpecimen,
+  mergePermitEvents,
+  getPermitEvents,
+  blockNumberToUnix,
+  getWhitelistEvents,
+  mergeWhitelistEvents
+} from '../../util/permitUtils'
+
+class AnalyticDashboard extends Component {
+  constructor(props, context) {
     super(props)
     this.state = {
-      type: 'error'
+      // permit events
+      events: [],
+      // permit events
+      whitelistEvents: [],
+      //permits
+      permits: []
     }
+    this.contracts = context.drizzle.contracts
+    // NOTE: We have to iniate a new web3 instance for retrieving event via `getPastEvents`.
+    //       MetaMask does not support websockets and Drizzle retrieves events via subscriptions.
+    const web3 = new Web3(this.contracts.PermitFactory.givenProvider)
+    const { abi, address } = this.contracts.PermitFactory
+    this.PermitFactory = new web3.eth.Contract(abi, address)
+    this.web3 = web3
+  }
+
+  async componentDidMount() {
+    await this.getEvents()
+    await this.getPermits()
+    await this.getWhitelistedEvents()
+  }
+
+  async getEvents(from = 0) {
+    const [createdPermits, confirmedPermits] = await Promise.all([
+      getPermitEvents(this.PermitFactory, 'PermitCreated', from),
+      getPermitEvents(this.PermitFactory, 'PermitConfirmed', from)
+    ])
+    const events = createdPermits.concat(confirmedPermits)
+    const newEvents = await blockNumberToUnix(this.web3, events)
+    const mergedEvents = mergePermitEvents(this.state.events, newEvents).sort(
+      (a, b) => b.blockNumber - a.blockNumber
+    )
+    this.setState({
+      ...this.state,
+      events: mergedEvents
+    })
+  }
+
+  async getWhitelistedEvents(from = 0) {
+    const [addWhitelist, removedWhitelist] = await Promise.all([
+      getWhitelistEvents(this.PermitFactory, 'AddressWhitelisted', from),
+      getWhitelistEvents(this.PermitFactory, 'AddressRemoved', from)
+    ])
+    const whitelistEvents = addWhitelist.concat(removedWhitelist)
+    const newWhitelistEvents = await blockNumberToUnix(
+      this.web3,
+      whitelistEvents
+    )
+    const mergedWhitelistEvents = mergeWhitelistEvents(
+      whitelistEvents,
+      newWhitelistEvents
+    )
+    this.setState({
+      ...this.state,
+      whitelistEvents: mergedWhitelistEvents
+    })
+  }
+
+  async getPermits() {
+    let permits = []
+    for (const event of this.state.events) {
+      const rawPermit = await this.contracts.PermitFactory.methods
+        .getPermit(event.permitHash)
+        .call()
+      const parsedPermit = parseRawPermit(rawPermit)
+      const specimenPromises = parsedPermit.specimenHashes.map(s =>
+        this.contracts.PermitFactory.methods.specimens(s).call()
+      )
+      const rawSpecimens = await Promise.all(specimenPromises)
+      const parsedSpecimens = rawSpecimens.map(s => parseRawSpecimen(s))
+      permits.push({
+        ...parsedPermit,
+        specimens: parsedSpecimens,
+        status: event.status,
+        timestamp: event.timestamp,
+        permitHash: event.permitHash
+      })
+    }
+    this.setState({
+      permits: permits
+    })
   }
 
   /**
@@ -22,7 +113,7 @@ class AnalyticsDashboard extends Component {
    **/
 
   createPermitSeries() {
-    const arr = this.props.permits
+    const arr = this.state.permits
     const colors = { 'RE-EXPORT': 'warning', EXPORT: 'ok', OTHER: 'critical' }
     const result = Object.values(
       arr.reduce((c, { permitType }) => {
@@ -50,7 +141,7 @@ class AnalyticsDashboard extends Component {
       EXPORT: 'ok',
       OTHER: 'critical'
     }
-    const arr = this.props.permits
+    const arr = this.state.permits
     const result = Object.values(
       arr.reduce((c, { exportCountry, permitType }) => {
         c[exportCountry] = c[exportCountry] || {
@@ -98,7 +189,7 @@ class AnalyticsDashboard extends Component {
    **/
 
   createSpecimensSeries() {
-    const arr = this.props.permits
+    const arr = this.state.permits
     const result = Object.values(
       [].concat
         .apply([], arr.map(({ specimens }) => specimens))
@@ -122,7 +213,7 @@ class AnalyticsDashboard extends Component {
    **/
 
   createWorkerSeries() {
-    const arr = this.props.whitelist
+    const arr = this.state.whitelistEvents
     const result = Object.values(
       arr.reduce((c, { country }) => {
         c[country] = c[country] || {
@@ -163,26 +254,28 @@ class AnalyticsDashboard extends Component {
               type="specimens"
             />
           </Box>
-        </Box>
-        <Box direction="row" align="center">
-          <SunburstChart
-            type="permit"
-            analyticsTitle={local.analytics.sunburstChart.headline}
-            permitTotal={this.props.permits.length}
-            series={this.createSunburstSeries()}
-          />
+          <Box direction="row" align="center">
+            <SunburstChart
+              type="permit"
+              analyticsTitle={local.analytics.sunburstChart.headline}
+              permitTotal={this.state.permits.length}
+              series={this.createSunburstSeries()}
+            />
+          </Box>
         </Box>
       </Box>
     )
   }
 }
 
-AnalyticsDashboard.propTypes = {
+AnalyticDashboard.propTypes = {
   accounts: PropTypes.object,
-  analyticsTitle: PropTypes.string,
-  permitTotal: PropTypes.number,
   permits: PropTypes.array,
   whitelist: PropTypes.array
 }
 
-export default AnalyticsDashboard
+AnalyticDashboard.contextTypes = {
+  drizzle: PropTypes.object
+}
+
+export default AnalyticDashboard
