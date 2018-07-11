@@ -289,7 +289,7 @@ class AnalyticCountryDashboard extends Component {
         align="center"
         wrap={true}
         margin="small">
-        <FormField label={'Select Country'}>
+        <FormField label={local.analytics.pleaseSelect}>
           <Select
             value={this.state.country}
             options={this.getCountrySelect()}
