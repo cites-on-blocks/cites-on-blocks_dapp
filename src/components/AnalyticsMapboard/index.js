@@ -82,7 +82,7 @@ class AnalyticsMapboard extends Component {
         full={true}>
         <h3>{local.analytics.permitsOnTheWorldMap}</h3>
         <AmCharts.React
-          style={{ width: '100%', height: '80%' }}
+          style={{ width: '100%', height: '82%' }}
           options={config}
         />
       </Box>
