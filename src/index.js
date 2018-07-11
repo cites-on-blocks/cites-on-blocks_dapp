@@ -9,12 +9,13 @@ import App from './components/App/App'
 import HomeContainer from './layouts/home/HomeContainer'
 import WhitelistContainer from './layouts/whitelist/WhitelistContainer'
 import WhitelistAddContainer from './layouts/whitelistAdd/WhitelistAddContainer'
-import AnalyticsContainer from './layouts/analytics/AnalyticsContainer'
 import HelpContainer from './layouts/help/HelpContainer'
 import ImportExportContainer from './layouts/importExport/ImportExportContainer'
 import PermitsContainer from './layouts/permits/PermitsContainer'
 import PermitCreateContainer from './layouts/permitCreate/PermitCreateContainer'
-import PermitProcessContainer from './layouts/permitProcess/PermitProcessContainer'
+import AnalyticMapContainer from './layouts/analyticMap/AnalyticMapContainer'
+import AnalyticCountryDashboardContainer from './layouts/analyticCountryDashboard/AnalyticCountryDashboardContainer'
+import AnalyticDashboardContainer from './layouts/analyticDashboard/AnalyticDashboardContainer'
 import { LoadingContainer } from 'drizzle-react-components'
 
 //Stylesheets
@@ -43,9 +44,6 @@ ReactDOM.render(
         <Route path="/whitelist/add" component={App}>
           <IndexRoute component={WhitelistAddContainer} />
         </Route>
-        <Route path="/analytics" component={App}>
-          <IndexRoute component={AnalyticsContainer} />
-        </Route>
         <Route path="/help" component={App}>
           <IndexRoute component={HelpContainer} />
         </Route>
@@ -58,8 +56,14 @@ ReactDOM.render(
         <Route path="/permits/create" component={App}>
           <IndexRoute component={PermitCreateContainer} />
         </Route>
-        <Route path="/permits/process" component={App}>
-          <IndexRoute component={PermitProcessContainer} />
+        <Route path="/analytics/map" component={App}>
+          <IndexRoute component={AnalyticMapContainer} />
+        </Route>
+        <Route path="/analytics/dashboard" component={App}>
+          <IndexRoute component={AnalyticDashboardContainer} />
+        </Route>
+        <Route path="/analytics/country" component={App}>
+          <IndexRoute component={AnalyticCountryDashboardContainer} />
         </Route>
       </Router>
     </LoadingContainer>
