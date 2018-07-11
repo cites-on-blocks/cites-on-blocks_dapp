@@ -364,6 +364,7 @@ class PermitCreate extends Component {
       this.setState({ isCITESXML })
       return
     }
+    this.setState({ isCITESXML: true })
     const { permit } = this.state
     const { xmlToJSON } = this.state
     const XMLNamespace = this.getXMLNamespace()
