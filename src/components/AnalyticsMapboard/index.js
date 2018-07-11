@@ -58,12 +58,6 @@ class AnalyticsMapboard extends Component {
     const config = {
       type: 'map',
       theme: 'light',
-      titles: [
-        {
-          text: local.analytics.mapHeadline,
-          size: 14
-        }
-      ],
       projection: 'mercator',
       dataProvider: {
         map: 'worldLow',
@@ -86,6 +80,7 @@ class AnalyticsMapboard extends Component {
         wrap={true}
         responsive={true}
         full={true}>
+        <h3>{local.analytics.permitsOnTheWorldMap}</h3>
         <AmCharts.React
           style={{ width: '100%', height: '82%' }}
           options={config}
