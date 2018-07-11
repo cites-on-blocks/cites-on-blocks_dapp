@@ -16,26 +16,54 @@ class WhitelistTable extends Component {
       countryCode: '',
       addresses: [],
       countryToModal: null,
-      index: 0,
-      ascending: true,
-      sortIndex: 0
+      sort: {
+        index: 0,
+        ascending: false
+      }
     }
     this._sort = this._sort.bind(this)
   }
 
-  _sort(ascending) {
+  _sort() {
+    let asc = this.state.ascending
     const array = this.state.data
     const result = array.slice(0).sort((r1, r2) => {
+      if (asc) {
+        asc = false
+        if (r1.name > r2.name) return 1
+        if (r1.name < r2.name) return -1
+      } else if (!asc) {
+        asc = true
+        if (r1.name < r2.name) return 1
+        if (r1.name > r2.name) return -1
+      }
+      return 0
+    })
+    this.setState({
+      ascending: asc
+    })
+    console.log(this.state.ascending)
+    console.log(result)
+  }
+
+  handleSort(index) {
+    const { sort } = this.state
+    const result = this.state.data.slice(0).sort((r1, r2) => {
       if (r1.name < r2.name) {
-        return ascending ? -1 : 1
+        return sort.ascending ? -1 : 1
       } else if (r1.name > r2.name) {
-        return ascending ? 1 : -1
+        return sort.ascending ? 1 : -1
       } else {
         return 0
       }
     })
+    console.log(result)
     this.setState({
-      data: result
+      data: result,
+      sort: {
+        index,
+        ascending: !sort.ascending
+      }
     })
   }
 
@@ -57,7 +85,7 @@ class WhitelistTable extends Component {
   }
 
   render() {
-    const { data, sortIndex, ascending } = this.state
+    const { data } = this.state
     const FlagIcon = FlagIconFactory(React, { useCssModules: false })
     const layer = this.state.layerActive ? (
       <Layer
@@ -79,26 +107,6 @@ class WhitelistTable extends Component {
       </Layer>
     ) : null
 
-    let rows = data.map((data, i) => {
-      return (
-        <TableRow key={i}>
-          <td onClick={this.showDetails.bind(this, i)}>{data.name}</td>
-          <td onClick={this.showDetails.bind(this, i)}>
-            <FlagIcon code={data.value.toLowerCase()} size="lg" />
-          </td>
-          <td onClick={this.showDetails.bind(this, i)}>{data.value}</td>
-          <td onClick={this.showDetails.bind(this, i)}>{data.entry}</td>
-          <td onClick={this.showDetails.bind(this, i)}>{data.join}</td>
-          {this.props.isOwner && (
-            <td
-              onClick={this.removeCountryFromWhitelist.bind(this, data.value)}>
-              <a>{local.whitelist.remove}</a>
-            </td>
-          )}
-        </TableRow>
-      )
-    })
-
     return (
       <main>
         {layer}
@@ -112,11 +120,30 @@ class WhitelistTable extends Component {
               local.whitelist.table.joining,
               ''
             ]}
-            sortIndex={sortIndex}
-            sortAscending={ascending}
-            onSort={this._sort}
+            sortIndex={this.state.sort.index}
+            sortAscending={this.state.sort.ascending}
+            onSort={index => this.handleSort(index)}
           />
-          <tbody>{rows}</tbody>a
+          <tbody>
+            {data.map((data, i) => (
+              <TableRow key={i}>
+                <td onClick={this.showDetails.bind(this, i)}>{data.name}</td>
+                <td onClick={this.showDetails.bind(this, i)}>
+                  <FlagIcon code={data.value.toLowerCase()} size="lg" />
+                </td>
+                <td onClick={this.showDetails.bind(this, i)}>{data.value}</td>
+                <td onClick={this.showDetails.bind(this, i)}>{data.entry}</td>
+                <td onClick={this.showDetails.bind(this, i)}>{data.join}</td>
+                <td
+                  onClick={this.removeCountryFromWhitelist.bind(
+                    this,
+                    data.value
+                  )}>
+                  {this.props.isOwner && <a>{local.whitelist.remove}</a>}
+                </td>
+              </TableRow>
+            ))}
+          </tbody>
         </Table>
       </main>
     )
