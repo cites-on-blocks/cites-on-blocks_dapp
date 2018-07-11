@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Layer, Table, TableRow } from 'grommet'
+import { Layer, Table, TableRow, TableHeader } from 'grommet'
 import local from '../../localization/localizedStrings'
 import FlagIconFactory from 'react-flag-icon-css'
 import { utils } from 'web3'
@@ -15,8 +15,32 @@ class WhitelistTable extends Component {
       layerActive: false,
       countryCode: '',
       addresses: [],
-      countryToModal: null
+      countryToModal: null,
+      sort: {
+        index: 0,
+        ascending: false
+      }
     }
+  }
+
+  handleSort(index) {
+    const { sort } = this.state
+    const result = this.state.data.slice(0).sort((r1, r2) => {
+      if (r1.name < r2.name) {
+        return sort.ascending ? -1 : 1
+      } else if (r1.name > r2.name) {
+        return sort.ascending ? 1 : -1
+      } else {
+        return 0
+      }
+    })
+    this.setState({
+      data: result,
+      sort: {
+        index,
+        ascending: !sort.ascending
+      }
+    })
   }
 
   showDetails(id) {
@@ -59,41 +83,43 @@ class WhitelistTable extends Component {
       </Layer>
     ) : null
 
-    let rows = data.map((data, i) => {
-      return (
-        <TableRow key={i}>
-          <td onClick={this.showDetails.bind(this, i)}>{data.name}</td>
-          <td onClick={this.showDetails.bind(this, i)}>
-            <FlagIcon code={data.value.toLowerCase()} size="lg" />
-          </td>
-          <td onClick={this.showDetails.bind(this, i)}>{data.value}</td>
-          <td onClick={this.showDetails.bind(this, i)}>{data.entry}</td>
-          <td onClick={this.showDetails.bind(this, i)}>{data.join}</td>
-          {this.props.isOwner && (
-            <td
-              onClick={this.removeCountryFromWhitelist.bind(this, data.value)}>
-              <a>{local.whitelist.remove}</a>
-            </td>
-          )}
-        </TableRow>
-      )
-    })
-
     return (
       <main>
         {layer}
         <Table responsive={false}>
-          <thead>
-            <tr>
-              <th>{local.whitelist.table.country}</th>
-              <th>{local.whitelist.table.language}</th>
-              <th>{local.whitelist.table.iso}</th>
-              <th>{local.whitelist.table.entry}</th>
-              <th>{local.whitelist.table.joining}</th>
-              {this.props.isOwner && <th />}
-            </tr>
-          </thead>
-          <tbody>{rows}</tbody>
+          <TableHeader
+            labels={[
+              local.whitelist.table.country,
+              local.whitelist.table.language,
+              local.whitelist.table.iso,
+              local.whitelist.table.entry,
+              local.whitelist.table.joining,
+              ''
+            ]}
+            sortIndex={this.state.sort.index}
+            sortAscending={this.state.sort.ascending}
+            onSort={index => this.handleSort(index)}
+          />
+          <tbody>
+            {data.map((data, i) => (
+              <TableRow key={i}>
+                <td onClick={this.showDetails.bind(this, i)}>{data.name}</td>
+                <td onClick={this.showDetails.bind(this, i)}>
+                  <FlagIcon code={data.value.toLowerCase()} size="lg" />
+                </td>
+                <td onClick={this.showDetails.bind(this, i)}>{data.value}</td>
+                <td onClick={this.showDetails.bind(this, i)}>{data.entry}</td>
+                <td onClick={this.showDetails.bind(this, i)}>{data.join}</td>
+                <td
+                  onClick={this.removeCountryFromWhitelist.bind(
+                    this,
+                    data.value
+                  )}>
+                  {this.props.isOwner && <a>{local.whitelist.remove}</a>}
+                </td>
+              </TableRow>
+            ))}
+          </tbody>
         </Table>
       </main>
     )

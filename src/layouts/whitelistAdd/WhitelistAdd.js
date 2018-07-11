@@ -272,17 +272,23 @@ class WhitelistAdd extends Component {
             />
           </FormField>
           {addressFields}
-          <Button
-            label={local.addAddress.addMoreAddresses}
-            icon={<AddIcon />}
-            onClick={() => this.addAddressField()}
-          />
-          <Button
-            primary={true}
-            label={local.addAddress.addAddressesToWhitelist}
-            icon={<DocumentUploadIcon />}
-            onClick={() => this.addAddresses()}
-          />
+          <Box direction="row" pad="small" justify="center" align="center">
+            <Box pad="small">
+              <Button
+                label={local.addAddress.addMoreAddresses}
+                icon={<AddIcon />}
+                onClick={() => this.addAddressField()}
+              />
+            </Box>
+            <Box pad="small">
+              <Button
+                primary={true}
+                label={local.addAddress.addAddressesToWhitelist}
+                icon={<DocumentUploadIcon />}
+                onClick={() => this.addAddresses()}
+              />
+            </Box>
+          </Box>
           {error}
         </Box>
       )
