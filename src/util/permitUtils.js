@@ -205,7 +205,7 @@ export function mergePermitEvents(oldEvents, newEvents) {
     )
     if (index === -1) {
       result.push(current)
-    } else if (current.status === 'processed') {
+    } else if (current.status !== 'created') {
       result.splice(index, 1)
       result.push(current)
     }

@@ -298,7 +298,7 @@ class Permits extends Component {
             onClose={() => this.onDeselect()}
             detailsActions={
               selectedPermit.importCountry === authCountry &&
-              selectedPermit.status !== 'processed' && (
+              selectedPermit.status === 'created' && (
                 <Columns justify={'between'} size={'small'}>
                   <Button
                     secondary={true}

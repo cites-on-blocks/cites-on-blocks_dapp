@@ -23,8 +23,12 @@ export const STATUS_FILTER_OPTS = [
     label: 'Created'
   },
   {
-    value: 'processed',
-    label: 'Processed'
+    value: 'confirmed',
+    label: 'Confirmed'
+  },
+  {
+    value: 'declined',
+    label: 'Declined'
   }
 ]
 
