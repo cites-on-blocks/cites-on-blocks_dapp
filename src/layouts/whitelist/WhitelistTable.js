@@ -21,29 +21,6 @@ class WhitelistTable extends Component {
         ascending: false
       }
     }
-    this._sort = this._sort.bind(this)
-  }
-
-  _sort() {
-    let asc = this.state.ascending
-    const array = this.state.data
-    const result = array.slice(0).sort((r1, r2) => {
-      if (asc) {
-        asc = false
-        if (r1.name > r2.name) return 1
-        if (r1.name < r2.name) return -1
-      } else if (!asc) {
-        asc = true
-        if (r1.name < r2.name) return 1
-        if (r1.name > r2.name) return -1
-      }
-      return 0
-    })
-    this.setState({
-      ascending: asc
-    })
-    console.log(this.state.ascending)
-    console.log(result)
   }
 
   handleSort(index) {
@@ -57,7 +34,6 @@ class WhitelistTable extends Component {
         return 0
       }
     })
-    console.log(result)
     this.setState({
       data: result,
       sort: {
