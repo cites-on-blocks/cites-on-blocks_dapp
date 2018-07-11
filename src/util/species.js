@@ -39,7 +39,7 @@ export const SPECIES = [
     scientificName: 'Axis calamianensis',
     family: 'Cervidae',
     commonName: 'Calamianes Deer',
-    color: 'accent-1-t'
+    color: 'accent-1'
   },
   {
     class: 'Reptilia',
@@ -47,7 +47,7 @@ export const SPECIES = [
     scientificName: 'Chelydra serpentina',
     family: 'Chelydridae',
     commonName: 'Common snapping turtle',
-    color: 'accent-1-t'
+    color: 'accent-1'
   },
   {
     class: 'Anthozoa',
