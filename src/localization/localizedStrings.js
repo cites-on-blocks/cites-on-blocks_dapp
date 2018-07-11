@@ -157,6 +157,8 @@ let local = new LocalizedStrings({
       failed: 'Permit creation has failed.',
       noXMLImportError:
         'The file you are trying to upload is not an XML document. Please make sure your file has the correct type',
+      noCITESXMLError:
+        'The file you are trying to upload does not match CITES XML schema for permits',
       goToPermit: 'Go to permit',
       newPermit: 'New permit',
       tryAgain: 'Try again'
@@ -365,6 +367,8 @@ let local = new LocalizedStrings({
       failed: 'Die Erstellung der Genehmigung ist fehlgeschlagen.',
       noXMLImportError:
         'Die von Ihnen hochgeladene Datei ist keine XML-Datei. Bitte laden Sie eine Datei mit dem richtigen Typ hoch',
+      noCITESXMLError:
+        'Die von Ihnen hochgeladene Datei entspricht nicht dem CITES Schema für Genehmigungen im XML format.',
       goToPermit: 'Gehe zur Genehmigung',
       newPermit: 'Neue Genehmigung',
       tryAgain: 'Wiederholen'
