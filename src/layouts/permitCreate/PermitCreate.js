@@ -304,7 +304,12 @@ class PermitCreate extends Component {
 
   getXMLNamespace() {
     const xml = this.state.xmlToJSON
-    return Object.keys(xml)[0].split(':')[0] //maybe better to work with the text/xml. this works for now
+    let namespace = Object.keys(xml)[0].split(':')[0] //maybe better to work with the text/xml. this works for now
+    if (namespace === Object.keys(xml)[0]) {
+      return ''
+    } else {
+      return namespace + ':'
+    }
   }
 
   isCITESXML() {
@@ -317,32 +322,32 @@ class PermitCreate extends Component {
     let tradelineItemExists = true
 
     try {
-      xmlToJSON[XMLNamespace + ':CITESEPermit'][
-        XMLNamespace + ':HeaderExchangedDocument'
+      xmlToJSON[XMLNamespace + 'CITESEPermit'][
+        XMLNamespace + 'HeaderExchangedDocument'
       ][0]
     } catch (e) {
       headerExists = false
     }
 
     try {
-      xmlToJSON[XMLNamespace + ':CITESEPermit'][
-        XMLNamespace + ':SpecifiedSupplyChainConsignment'
+      xmlToJSON[XMLNamespace + 'CITESEPermit'][
+        XMLNamespace + 'SpecifiedSupplyChainConsignment'
       ][0].ConsigneeTradeParty
     } catch (e) {
       consigneeExists = false
     }
 
     try {
-      xmlToJSON[XMLNamespace + ':CITESEPermit'][
-        XMLNamespace + ':SpecifiedSupplyChainConsignment'
+      xmlToJSON[XMLNamespace + 'CITESEPermit'][
+        XMLNamespace + 'SpecifiedSupplyChainConsignment'
       ][0].ConsignorTradeParty
     } catch (e) {
       consignorExists = false
     }
 
     try {
-      xmlToJSON[XMLNamespace + ':CITESEPermit'][
-        XMLNamespace + ':SpecifiedSupplyChainConsignment'
+      xmlToJSON[XMLNamespace + 'CITESEPermit'][
+        XMLNamespace + 'SpecifiedSupplyChainConsignment'
       ][0].IncludedSupplyChainConsignmentItem[0]
         .IncludedSupplyChainTradeLineItem
     } catch (e) {
@@ -377,16 +382,15 @@ class PermitCreate extends Component {
     this.setState({ isCITESXML: true })
     const { permit } = this.state
     const { xmlToJSON } = this.state
-    console.log(xmlToJSON)
     const XMLNamespace = this.getXMLNamespace()
     const permitType =
-      xmlToJSON[XMLNamespace + ':CITESEPermit'][
-        XMLNamespace + ':HeaderExchangedDocument'
+      xmlToJSON[XMLNamespace + 'CITESEPermit'][
+        XMLNamespace + 'HeaderExchangedDocument'
       ][0].TypeCode[0]
     permit.permitType = this.getTypeString(permitType)
     const generalInfo =
-      xmlToJSON[XMLNamespace + ':CITESEPermit'][
-        XMLNamespace + ':SpecifiedSupplyChainConsignment'
+      xmlToJSON[XMLNamespace + 'CITESEPermit'][
+        XMLNamespace + 'SpecifiedSupplyChainConsignment'
       ][0]
     //set address data
     const exportInfo = generalInfo.ConsignorTradeParty[0]
