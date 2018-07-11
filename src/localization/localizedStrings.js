@@ -118,6 +118,8 @@ let local = new LocalizedStrings({
       searchPlaceholder: 'Search for permit number',
       created: 'created',
       processed: 'processed',
+      confirmed: 'confirmed',
+      declined: 'declined',
       originHashPlaceholder: 'Search for number of origin permit',
       reExportPlaceholder: 'Search for number of last re-export permit',
       lastReExport: 'Last re-export',
@@ -323,6 +325,8 @@ let local = new LocalizedStrings({
       searchPlaceholder: 'Nach Genehmigungs-Nr. suchen',
       created: 'erstellt',
       processed: 'bearbeitet',
+      confirmed: 'akzeptiert',
+      declined: 'abgelehnt',
       originHashPlaceholder: 'Nach Nummer der Ursprungsgenehmigung suchen',
       reExportPlaceholder:
         'Nach Nummer der letzten Re-Exportgenehmigung suchen',

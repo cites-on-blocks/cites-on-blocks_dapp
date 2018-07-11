@@ -119,13 +119,17 @@ export async function getWhitelistEvents(
 function _formatEvent(permitEvent) {
   const { blockNumber, event, returnValues } = permitEvent
   const { permitHash, exportCountry, importCountry } = returnValues
+  let status = 'created'
+  if (event !== 'PermitCreated') {
+    status = returnValues.isAccepted ? 'confirmed' : 'declined'
+  }
   return {
     event,
     blockNumber,
     permitHash,
+    status,
     exportCountry: utils.hexToUtf8(exportCountry),
-    importCountry: utils.hexToUtf8(importCountry),
-    status: event === 'PermitCreated' ? 'created' : 'processed'
+    importCountry: utils.hexToUtf8(importCountry)
   }
 }
 
@@ -201,7 +205,7 @@ export function mergePermitEvents(oldEvents, newEvents) {
     )
     if (index === -1) {
       result.push(current)
-    } else if (current.status === 'processed') {
+    } else if (current.status !== 'created') {
       result.splice(index, 1)
       result.push(current)
     }
