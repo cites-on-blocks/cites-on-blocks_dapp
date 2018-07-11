@@ -41,6 +41,7 @@ class PendingTxModal extends Component {
           <Box
             direction={'row'}
             justify={'center'}
+            textAlign={'center'}
             pad={{ vertical: 'medium' }}>
             <Heading tag={'h2'}>{text}</Heading>
           </Box>
