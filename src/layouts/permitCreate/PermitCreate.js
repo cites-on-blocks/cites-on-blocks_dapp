@@ -43,6 +43,7 @@ class PermitCreate extends Component {
       xmlToJSON: {},
       isXML: 'initial',
       isCITESXML: 'initial',
+      isSameCountry: 'initial',
       hashSuggestions: []
     }
     // for convinience
@@ -304,7 +305,13 @@ class PermitCreate extends Component {
 
   getXMLNamespace() {
     const xml = this.state.xmlToJSON
-    return Object.keys(xml)[0].split(':')[0] //maybe better to work with the text/xml. this works for now
+    console.log(xml)
+    let namespace = Object.keys(xml)[0].split(':')[0] //maybe better to work with the text/xml. this works for now
+    if (namespace === Object.keys(xml)[0]) {
+      return ''
+    } else {
+      return namespace + ':'
+    }
   }
 
   isCITESXML() {
@@ -317,32 +324,32 @@ class PermitCreate extends Component {
     let tradelineItemExists = true
 
     try {
-      xmlToJSON[XMLNamespace + ':CITESEPermit'][
-        XMLNamespace + ':HeaderExchangedDocument'
+      xmlToJSON[XMLNamespace + 'CITESEPermit'][
+        XMLNamespace + 'HeaderExchangedDocument'
       ][0]
     } catch (e) {
       headerExists = false
     }
 
     try {
-      xmlToJSON[XMLNamespace + ':CITESEPermit'][
-        XMLNamespace + ':SpecifiedSupplyChainConsignment'
+      xmlToJSON[XMLNamespace + 'CITESEPermit'][
+        XMLNamespace + 'SpecifiedSupplyChainConsignment'
       ][0].ConsigneeTradeParty
     } catch (e) {
       consigneeExists = false
     }
 
     try {
-      xmlToJSON[XMLNamespace + ':CITESEPermit'][
-        XMLNamespace + ':SpecifiedSupplyChainConsignment'
+      xmlToJSON[XMLNamespace + 'CITESEPermit'][
+        XMLNamespace + 'SpecifiedSupplyChainConsignment'
       ][0].ConsignorTradeParty
     } catch (e) {
       consignorExists = false
     }
 
     try {
-      xmlToJSON[XMLNamespace + ':CITESEPermit'][
-        XMLNamespace + ':SpecifiedSupplyChainConsignment'
+      xmlToJSON[XMLNamespace + 'CITESEPermit'][
+        XMLNamespace + 'SpecifiedSupplyChainConsignment'
       ][0].IncludedSupplyChainConsignmentItem[0]
         .IncludedSupplyChainTradeLineItem
     } catch (e) {
@@ -354,10 +361,25 @@ class PermitCreate extends Component {
     )
   }
 
+  getTypeString(typeCode) {
+    let result = 'EXPORT'
+    if (typeCode === 'O') {
+      result = 'OTHER'
+    } else if (typeCode === 'R') {
+      result = 'RE-EXPORT'
+    }
+    return result
+  }
+
+  clearErrors() {
+    this.setState({ isCITESXML: true, isSameCountry: true })
+  }
+
   handleUpload() {
     if (!this.state.isXML) {
       return
     }
+    this.clearErrors()
     if (!this.isCITESXML()) {
       let { isCITESXML } = this.state
       isCITESXML = false
@@ -369,21 +391,38 @@ class PermitCreate extends Component {
     const { xmlToJSON } = this.state
     const XMLNamespace = this.getXMLNamespace()
     const generalInfo =
-      xmlToJSON[XMLNamespace + ':CITESEPermit'][
-        XMLNamespace + ':SpecifiedSupplyChainConsignment'
+      xmlToJSON[XMLNamespace + 'CITESEPermit'][
+        XMLNamespace + 'SpecifiedSupplyChainConsignment'
       ][0]
     //set address data
     const exportInfo = generalInfo.ConsignorTradeParty[0]
     const exportAddress = exportInfo.PostalTradeAddress[0]
-    permit.exportCountry = exportAddress.CountryID
+
+    const importInfo = generalInfo.ConsigneeTradeParty[0]
+    const importAddress = importInfo.PostalTradeAddress[0]
+
+    const { permitForm } = this.state
+
+    if (
+      (permitForm === 'DIGITAL' &&
+        exportAddress.CountryID[0] !== permit.exportCountry) ||
+      (permitForm === 'PAPER' &&
+        importAddress.CountryID[0] !== permit.importCountry)
+    ) {
+      let { isSameCountry } = this.state
+      isSameCountry = false
+      this.setState({ isSameCountry })
+      return
+    }
+    this.setState({ isSameCountry: true })
+    permit.exportCountry = exportAddress.CountryID[0]
     permit.exporter = [
       exportInfo.Name[0],
       exportAddress.StreetName[0],
       exportAddress.CityName[0]
     ]
-    const importInfo = generalInfo.ConsigneeTradeParty[0]
-    const importAddress = importInfo.PostalTradeAddress[0]
-    permit.importCountry = importAddress.CountryID
+
+    permit.importCountry = importAddress.CountryID[0]
     permit.importer = [
       importInfo.Name[0],
       importAddress.StreetName[0],
@@ -401,6 +440,11 @@ class PermitCreate extends Component {
       specimen.quantity = xml.TransportLogisticsPackage[0].ItemQuantity[0]._
       return specimen
     })
+    const permitType =
+      xmlToJSON[XMLNamespace + 'CITESEPermit'][
+        XMLNamespace + 'HeaderExchangedDocument'
+      ][0].TypeCode[0]
+    permit.permitType = this.getTypeString(permitType)
     this.setState({
       permit,
       specimens: speciesArray
@@ -431,6 +475,7 @@ class PermitCreate extends Component {
   render() {
     var XMLerror = ''
     var CITESXMLError = ''
+    var CountryError = ''
     if (!(this.state.isXML || this.state.isXML === 'initial')) {
       XMLerror = (
         <Paragraph style={{ color: 'red' }}>
@@ -442,6 +487,13 @@ class PermitCreate extends Component {
       CITESXMLError = (
         <Paragraph style={{ color: 'red' }}>
           {local.permitCreate.noCITESXMLError}
+        </Paragraph>
+      )
+    }
+    if (!(this.state.isSameCountry || this.state.isSameCountry === 'initial')) {
+      CountryError = (
+        <Paragraph style={{ color: 'red' }}>
+          {local.permitCreate.noMatchingCountryError}
         </Paragraph>
       )
     }
@@ -622,6 +674,7 @@ class PermitCreate extends Component {
           margin={'medium'}>
           {XMLerror}
           {CITESXMLError}
+          {CountryError}
         </Box>
       </Box>
     )
