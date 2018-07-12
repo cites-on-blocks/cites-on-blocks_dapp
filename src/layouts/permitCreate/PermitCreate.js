@@ -43,6 +43,7 @@ class PermitCreate extends Component {
       xmlToJSON: {},
       isXML: 'initial',
       isCITESXML: 'initial',
+      isSameCountry: 'initial',
       hashSuggestions: []
     }
     // for convinience
@@ -304,6 +305,7 @@ class PermitCreate extends Component {
 
   getXMLNamespace() {
     const xml = this.state.xmlToJSON
+    console.log(xml)
     let namespace = Object.keys(xml)[0].split(':')[0] //maybe better to work with the text/xml. this works for now
     if (namespace === Object.keys(xml)[0]) {
       return ''
@@ -369,10 +371,15 @@ class PermitCreate extends Component {
     return result
   }
 
+  clearErrors() {
+    this.setState({ isCITESXML: true, isSameCountry: true })
+  }
+
   handleUpload() {
     if (!this.state.isXML) {
       return
     }
+    this.clearErrors()
     if (!this.isCITESXML()) {
       let { isCITESXML } = this.state
       isCITESXML = false
@@ -382,12 +389,8 @@ class PermitCreate extends Component {
     this.setState({ isCITESXML: true })
     const { permit } = this.state
     const { xmlToJSON } = this.state
+    console.log(xmlToJSON)
     const XMLNamespace = this.getXMLNamespace()
-    const permitType =
-      xmlToJSON[XMLNamespace + 'CITESEPermit'][
-        XMLNamespace + 'HeaderExchangedDocument'
-      ][0].TypeCode[0]
-    permit.permitType = this.getTypeString(permitType)
     const generalInfo =
       xmlToJSON[XMLNamespace + 'CITESEPermit'][
         XMLNamespace + 'SpecifiedSupplyChainConsignment'
@@ -395,14 +398,36 @@ class PermitCreate extends Component {
     //set address data
     const exportInfo = generalInfo.ConsignorTradeParty[0]
     const exportAddress = exportInfo.PostalTradeAddress[0]
+
+    const importInfo = generalInfo.ConsigneeTradeParty[0]
+    const importAddress = importInfo.PostalTradeAddress[0]
+
+    const { permitForm } = this.state
+
+    console.log(permitForm)
+    console.log(exportAddress.CountryID[0])
+    console.log(permit.exportCountry)
+
+    if (
+      (permitForm === 'DIGITAL' &&
+        exportAddress.CountryID[0] !== permit.exportCountry) ||
+      (permitForm === 'PAPER' &&
+        importAddress.CountryID[0] !== permit.importCountry)
+    ) {
+      console.log('NO')
+      let { isSameCountry } = this.state
+      isSameCountry = false
+      this.setState({ isSameCountry })
+      return
+    }
+    this.setState({ isSameCountry: true })
     permit.exportCountry = exportAddress.CountryID[0]
     permit.exporter = [
       exportInfo.Name[0],
       exportAddress.StreetName[0],
       exportAddress.CityName[0]
     ]
-    const importInfo = generalInfo.ConsigneeTradeParty[0]
-    const importAddress = importInfo.PostalTradeAddress[0]
+
     permit.importCountry = importAddress.CountryID[0]
     permit.importer = [
       importInfo.Name[0],
@@ -421,6 +446,11 @@ class PermitCreate extends Component {
       specimen.quantity = xml.TransportLogisticsPackage[0].ItemQuantity[0]._
       return specimen
     })
+    const permitType =
+      xmlToJSON[XMLNamespace + 'CITESEPermit'][
+        XMLNamespace + 'HeaderExchangedDocument'
+      ][0].TypeCode[0]
+    permit.permitType = this.getTypeString(permitType)
     this.setState({
       permit,
       specimens: speciesArray
@@ -451,6 +481,7 @@ class PermitCreate extends Component {
   render() {
     var XMLerror = ''
     var CITESXMLError = ''
+    var CountryError = ''
     if (!(this.state.isXML || this.state.isXML === 'initial')) {
       XMLerror = (
         <Paragraph style={{ color: 'red' }}>
@@ -462,6 +493,13 @@ class PermitCreate extends Component {
       CITESXMLError = (
         <Paragraph style={{ color: 'red' }}>
           {local.permitCreate.noCITESXMLError}
+        </Paragraph>
+      )
+    }
+    if (!(this.state.isSameCountry || this.state.isSameCountry === 'initial')) {
+      CountryError = (
+        <Paragraph style={{ color: 'red' }}>
+          {local.permitCreate.noMatchingCountryError}
         </Paragraph>
       )
     }
@@ -642,6 +680,7 @@ class PermitCreate extends Component {
           margin={'medium'}>
           {XMLerror}
           {CITESXMLError}
+          {CountryError}
         </Box>
       </Box>
     )
