@@ -395,7 +395,7 @@ class PermitCreate extends Component {
     //set address data
     const exportInfo = generalInfo.ConsignorTradeParty[0]
     const exportAddress = exportInfo.PostalTradeAddress[0]
-    permit.exportCountry = exportAddress.CountryID
+    permit.exportCountry = exportAddress.CountryID[0]
     permit.exporter = [
       exportInfo.Name[0],
       exportAddress.StreetName[0],
@@ -403,7 +403,7 @@ class PermitCreate extends Component {
     ]
     const importInfo = generalInfo.ConsigneeTradeParty[0]
     const importAddress = importInfo.PostalTradeAddress[0]
-    permit.importCountry = importAddress.CountryID
+    permit.importCountry = importAddress.CountryID[0]
     permit.importer = [
       importInfo.Name[0],
       importAddress.StreetName[0],
@@ -425,7 +425,6 @@ class PermitCreate extends Component {
       permit,
       specimens: speciesArray
     })
-    console.log(this.state)
   }
 
   handleUploadChange(event) {
