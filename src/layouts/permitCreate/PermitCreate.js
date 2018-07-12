@@ -389,7 +389,6 @@ class PermitCreate extends Component {
     this.setState({ isCITESXML: true })
     const { permit } = this.state
     const { xmlToJSON } = this.state
-    console.log(xmlToJSON)
     const XMLNamespace = this.getXMLNamespace()
     const generalInfo =
       xmlToJSON[XMLNamespace + 'CITESEPermit'][
@@ -404,17 +403,12 @@ class PermitCreate extends Component {
 
     const { permitForm } = this.state
 
-    console.log(permitForm)
-    console.log(exportAddress.CountryID[0])
-    console.log(permit.exportCountry)
-
     if (
       (permitForm === 'DIGITAL' &&
         exportAddress.CountryID[0] !== permit.exportCountry) ||
       (permitForm === 'PAPER' &&
         importAddress.CountryID[0] !== permit.importCountry)
     ) {
-      console.log('NO')
       let { isSameCountry } = this.state
       isSameCountry = false
       this.setState({ isSameCountry })
