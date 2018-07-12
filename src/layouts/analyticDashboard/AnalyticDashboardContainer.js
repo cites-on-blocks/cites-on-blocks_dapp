@@ -1,4 +1,4 @@
-import Analytics from './Analytics'
+import AnalyticDashboard from './AnalyticDashboard'
 import { drizzleConnect } from 'drizzle-react'
 
 // May still need this even with data function to refresh component on updates for this contract.
@@ -9,6 +9,9 @@ const mapStateToProps = state => {
   }
 }
 
-const AnalyticsContainer = drizzleConnect(Analytics, mapStateToProps)
+const AnalyticDashboardContainer = drizzleConnect(
+  AnalyticDashboard,
+  mapStateToProps
+)
 
-export default AnalyticsContainer
+export default AnalyticDashboardContainer

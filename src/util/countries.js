@@ -4,7 +4,7 @@ export const COUNTRIES = {
     latitude: 42.546245,
     longitude: 1.601554,
     name: 'Andorra',
-    color: 'accent-1-t'
+    color: 'accent-1'
   },
   AE: {
     value: 'AE',
@@ -75,7 +75,7 @@ export const COUNTRIES = {
     latitude: -11.202692,
     longitude: 17.873887,
     name: 'Angola',
-    color: 'accent-1-t',
+    color: 'accent-1',
     join: '02/10/2013',
     entry: '31/12/2013',
     type: 'Accession'
@@ -153,7 +153,7 @@ export const COUNTRIES = {
     latitude: 43.915886,
     longitude: 17.679076,
     name: 'Bosnia and Herzegovina',
-    color: 'accent-1-t',
+    color: 'accent-1',
     join: '21/01/2009',
     entry: '21/04/2009',
     type: 'Accession'
@@ -243,7 +243,7 @@ export const COUNTRIES = {
     latitude: 17.9,
     longitude: -62.833333,
     name: 'Saint-Barthélemy',
-    color: 'accent-1-t'
+    color: 'accent-1'
   },
   BM: {
     value: 'BM',
@@ -321,7 +321,7 @@ export const COUNTRIES = {
     latitude: -22.328474,
     longitude: 24.684866,
     name: 'Botswana',
-    color: 'accent-1-t',
+    color: 'accent-1',
     join: '14/11/1977',
     entry: '12/02/1978',
     type: 'Accession'
@@ -408,7 +408,7 @@ export const COUNTRIES = {
     latitude: 7.539989,
     longitude: -5.54708,
     name: 'Côte d Ivoire',
-    color: 'accent-1-t',
+    color: 'accent-1',
     join: '21/11/1994',
     entry: '19/02/1995',
     type: 'Accession'
@@ -495,7 +495,7 @@ export const COUNTRIES = {
     latitude: 12.16957,
     longitude: -68.99002,
     name: 'Curaçao',
-    color: 'accent-1-t'
+    color: 'accent-1'
   },
   CX: {
     value: 'CX',
@@ -579,7 +579,7 @@ export const COUNTRIES = {
     latitude: 28.033886,
     longitude: 1.659626,
     name: 'Algeria',
-    color: 'accent-1-t',
+    color: 'accent-1',
     join: '23/11/1983',
     entry: '21/02/1984',
     type: 'Accession'
@@ -656,7 +656,7 @@ export const COUNTRIES = {
     latitude: 61.92411,
     longitude: 25.748151,
     name: 'Finland',
-    color: 'accent-1-t',
+    color: 'accent-1',
     join: '10/05/1976',
     entry: '08/08/1976',
     type: 'Accession'
@@ -666,7 +666,7 @@ export const COUNTRIES = {
     latitude: -16.578193,
     longitude: 179.414413,
     name: 'Fiji',
-    color: 'accent-1-t',
+    color: 'accent-1',
     join: '30/09/1997',
     entry: '29/12/1997',
     type: 'Accession'
@@ -747,7 +747,7 @@ export const COUNTRIES = {
     latitude: 3.933889,
     longitude: -53.125782,
     name: 'French Guiana',
-    color: 'accent-1-t'
+    color: 'accent-1'
   },
   GG: {
     value: 'GG',
@@ -822,7 +822,7 @@ export const COUNTRIES = {
     latitude: 39.074208,
     longitude: 21.824312,
     name: 'Greece',
-    color: 'accent-1-t',
+    color: 'accent-1',
     join: '08/10/1992',
     entry: '06/01/1993',
     type: 'Accession'
@@ -897,7 +897,7 @@ export const COUNTRIES = {
     latitude: 15.199999,
     longitude: -86.241905,
     name: 'Honduras',
-    color: 'accent-1-t',
+    color: 'accent-1',
     join: '15/03/1985',
     entry: '13/06/1985',
     type: 'Accession'
@@ -981,7 +981,7 @@ export const COUNTRIES = {
     latitude: -6.343194,
     longitude: 71.876519,
     name: 'British Indian Ocean Territory',
-    color: 'accent-1-t'
+    color: 'accent-1'
   },
   IQ: {
     value: 'IQ',
@@ -1065,7 +1065,7 @@ export const COUNTRIES = {
     latitude: -0.023559,
     longitude: 37.906193,
     name: 'Kenya',
-    color: 'accent-1-t',
+    color: 'accent-1',
     join: '13/12/1978',
     entry: '13/03/1979',
     type: 'Ratification'
@@ -1149,7 +1149,7 @@ export const COUNTRIES = {
     latitude: 19.513469,
     longitude: -80.566956,
     name: 'Cayman Islands',
-    color: 'accent-1-t'
+    color: 'accent-1'
   },
   KZ: {
     value: 'KZ',
@@ -1246,7 +1246,7 @@ export const COUNTRIES = {
     latitude: 49.815273,
     longitude: 6.129583,
     name: 'Luxembourg',
-    color: 'accent-1-t',
+    color: 'accent-1',
     join: '13/12/1983',
     entry: '12/03/1984',
     type: 'Ratification'
@@ -1333,7 +1333,7 @@ export const COUNTRIES = {
     latitude: 7.131474,
     longitude: 171.184478,
     name: 'Marshall Islands',
-    color: 'accent-1-t'
+    color: 'accent-1'
   },
   MK: {
     value: 'MK',
@@ -1418,7 +1418,7 @@ export const COUNTRIES = {
     latitude: 35.937496,
     longitude: 14.375416,
     name: 'Malta',
-    color: 'accent-1-t',
+    color: 'accent-1',
     join: '17/04/1989',
     entry: '16/07/1989',
     type: 'Accession'
@@ -1498,7 +1498,7 @@ export const COUNTRIES = {
     latitude: -20.904305,
     longitude: 165.618042,
     name: 'New Caledonia',
-    color: 'accent-1-t'
+    color: 'accent-1'
   },
   NE: {
     value: 'NE',
@@ -1579,7 +1579,7 @@ export const COUNTRIES = {
     latitude: -19.054445,
     longitude: -169.867233,
     name: 'Niue',
-    color: 'accent-1-t'
+    color: 'accent-1'
   },
   NZ: {
     value: 'NZ',
@@ -1663,7 +1663,7 @@ export const COUNTRIES = {
     latitude: 51.919438,
     longitude: 19.145136,
     name: 'Poland',
-    color: 'accent-1-t',
+    color: 'accent-1',
     join: '12/12/1989',
     entry: '12/03/1990',
     type: 'Ratification'
@@ -1741,7 +1741,7 @@ export const COUNTRIES = {
     latitude: -21.115141,
     longitude: 55.536384,
     name: 'Réunion',
-    color: 'accent-1-t'
+    color: 'accent-1'
   },
   RO: {
     value: 'RO',
@@ -1838,7 +1838,7 @@ export const COUNTRIES = {
     latitude: 1.352083,
     longitude: 103.819836,
     name: 'Singapore',
-    color: 'accent-1-t',
+    color: 'accent-1',
     join: '30/11/1986',
     entry: '28/02/1987',
     type: 'Accession'
@@ -1922,7 +1922,7 @@ export const COUNTRIES = {
     latitude: 3.919305,
     longitude: -56.027783,
     name: 'Suriname',
-    color: 'accent-1-t',
+    color: 'accent-1',
     join: '17/11/1980',
     entry: '15/02/1981',
     type: 'Accession'
@@ -2003,7 +2003,7 @@ export const COUNTRIES = {
     latitude: 8.619543,
     longitude: 0.824782,
     name: 'Togo',
-    color: 'accent-1-t',
+    color: 'accent-1',
     join: '23/10/1978',
     entry: '21/01/1979',
     type: 'Ratification'
@@ -2084,7 +2084,7 @@ export const COUNTRIES = {
     latitude: 10.691803,
     longitude: -61.222503,
     name: 'Trinidad and Tobago',
-    color: 'accent-1-t',
+    color: 'accent-1',
     join: '19/01/1984',
     entry: '18/04/1984',
     type: 'Accession'
@@ -2165,7 +2165,7 @@ export const COUNTRIES = {
     latitude: 41.377491,
     longitude: 64.585262,
     name: 'Uzbekistan',
-    color: 'accent-1-t',
+    color: 'accent-1',
     join: '10/07/1997',
     entry: '08/10/1997',
     type: 'Accession'
@@ -2243,7 +2243,7 @@ export const COUNTRIES = {
     latitude: -13.759029,
     longitude: -172.104629,
     name: 'Samoa',
-    color: 'accent-1-t',
+    color: 'accent-1',
     join: '09/11/2004',
     entry: '07/02/2005',
     type: 'Accession'

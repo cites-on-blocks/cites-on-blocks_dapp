@@ -177,7 +177,7 @@ class Permits extends Component {
         txStatus: 'pending',
         modal: {
           show: true,
-          text: 'Permit process pending...'
+          text: local.permitProcess.pending
         }
       })
     } else if (newTxState === 'success') {
@@ -186,7 +186,7 @@ class Permits extends Component {
         txStatus: 'success',
         modal: {
           show: true,
-          text: 'Permit process successful!'
+          text: local.permitProcess.successful
         }
       })
     } else {
@@ -195,7 +195,7 @@ class Permits extends Component {
         txStatus: 'failed',
         modal: {
           show: true,
-          text: 'Permit process failed.'
+          text: local.permitProcess.failed
         }
       })
     }

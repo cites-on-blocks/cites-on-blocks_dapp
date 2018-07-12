@@ -189,7 +189,7 @@ class WhitelistModal extends Component {
           {this.state.isLoading ? (
             <Spinning size="large" />
           ) : (
-            <Box full={true} align="center">
+            <Box full={true} align="center" margin="medium">
               <Table responsive={false}>
                 <thead>
                   <tr>

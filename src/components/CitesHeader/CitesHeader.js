@@ -70,9 +70,21 @@ class CitesHeader extends Component {
               {local.header.permitsMenu.createPermit}
             </Anchor>
           </Menu>
-          <Link to="/analytics" style={{ color: 'black' }}>
-            {local.header.analytics}
-          </Link>
+          <Menu
+            responsive={true}
+            label={local.header.analytics}
+            inline={false}
+            direction={'column'}>
+            <Anchor path="/analytics/map" style={{ color: 'black' }}>
+              {local.analytics.map}
+            </Anchor>
+            <Anchor path="/analytics/dashboard" style={{ color: 'black' }}>
+              Dashboard
+            </Anchor>
+            <Anchor path="/analytics/country" style={{ color: 'black' }}>
+              {local.analytics.country}
+            </Anchor>
+          </Menu>
           <Link to="/help" style={{ color: 'black' }}>
             {local.header.help}
           </Link>
