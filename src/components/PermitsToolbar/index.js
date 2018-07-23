@@ -28,7 +28,8 @@ class PermitsToolbar extends Component {
       imCountryFilter,
       statusFilter,
       startDateFilter,
-      endDateFilter
+      endDateFilter,
+      searchInput
     } = this.state
     if (
       this.props.eventsUpdated ||
@@ -36,7 +37,8 @@ class PermitsToolbar extends Component {
       prevState.imCountryFilter !== imCountryFilter ||
       prevState.statusFilter !== statusFilter ||
       prevState.startDateFilter !== startDateFilter ||
-      prevState.endDateFilter !== endDateFilter
+      prevState.endDateFilter !== endDateFilter ||
+      prevState.searchInput !== searchInput
     ) {
       this.props.onFilter(this.state)
     }
