@@ -7,7 +7,7 @@ module.exports = {
       network_id: '*' // Match any network id
     },
     production: {
-      host: '40.115.39.123',
+      host: 'localhost',
       port: 8545,
       network_id: '*',
       // NOTE: unlocked account with a lot of ETH -> controller
@@ -19,5 +19,8 @@ module.exports = {
       enabled: true,
       runs: 500
     }
+  },
+  mocha: {
+    enableTimeouts: false
   }
 }
