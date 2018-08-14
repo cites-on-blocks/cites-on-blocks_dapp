@@ -3,6 +3,8 @@ const PermitFactory = artifacts.require('./PermitFactory.sol')
 
 const web3 = new Web3('http://localhost:8545')
 
+const ACCOUNTS = require('./addresses')
+
 /**
  * This is NOT a unit, integration or system test. Its purpose is solely to test various configurations of
  * the Parity PoA setup. We create 1000 accounts, whitelist them and send 10, 100 and 1000 transactions at
@@ -42,28 +44,42 @@ contract('PermitFactory', () => {
   describe('#createPermit - performance', () => {
     before(async () => {
       permitFactoryInstance = await PermitFactory.deployed()
-      console.log('===========================================')
-      console.log('Create, unlock and whitelist accounts...')
-      for (let i = 0; i < 1000; i++) {
-        // create new account with empty password
-        const newAccount = await web3.eth.personal.newAccount('')
-        // unlock account for 3600 seconds (60 minutes)
-        await web3.eth.personal.unlockAccount(newAccount, '', '0xE10')
-        // add new created account to whitelist
-        await permitFactoryInstance.addAddress(newAccount, EXPORT_COUNTRY, {
-          from: ACC_OWNER
+      // Create, whitelist and unlock accounts if not already done
+      if (ACCOUNTS.length === 0) {
+        console.log('PermitFactory at ' + permitFactoryInstance.address)
+        console.log('===========================================')
+        console.log('Create, unlock and whitelist accounts...')
+        for (let i = 0; i < 1000; i++) {
+          // create new account with empty password
+          const newAccount = await web3.eth.personal.newAccount('')
+          await Promise.all([
+            // unlock account for 6000 seconds (100 minutes)
+            await web3.eth.personal.unlockAccount(newAccount, '', '0x1770'),
+            // add new created account to whitelist
+            await permitFactoryInstance.addAddress(newAccount, EXPORT_COUNTRY, {
+              from: ACC_OWNER
+            }),
+            // send some eth to new created account
+            await web3.eth.sendTransaction({
+              from: ACC_OWNER,
+              to: newAccount,
+              value: web3.utils.toWei('1', 'ether')
+            })
+          ])
+          ACCS_UNLOCKED.push(newAccount)
+          console.log(`${i + 1}) ${newAccount}`)
+        }
+        console.log('done.')
+        console.log('===========================================')
+      } else {  // use already whitelisted accounts if existent
+        permitFactoryInstance = await PermitFactory.at('0x0a35db94da8e787b1c10bc5d9a7761d151bedeaf')
+        console.log('Unlocking accounts...')
+        ACCOUNTS.forEach(async account => {
+          await web3.eth.personal.unlockAccount(account, '', '0x1770')
+          ACCS_UNLOCKED.push(account)
         })
-        // send some eth to new created account
-        await web3.eth.sendTransaction({
-          from: ACC_OWNER,
-          to: newAccount,
-          value: web3.utils.toWei('1', 'ether')
-        })
-        ACCS_UNLOCKED.push(newAccount)
-        console.log(`${i + 1}) ${newAccount}`)
+        console.log('done.')
       }
-      console.log('done.')
-      console.log('===========================================')
     })
 
     it('send 10 transactions at once', async () => {
@@ -83,7 +99,8 @@ contract('PermitFactory', () => {
           Array(SPECIMENS_COUNT).fill(SPECIMEN.reExportHash),
           {
             from: address,
-            gasPrice: 0
+            gasPrice: 0,
+            gas: '0xB71B0'
           }
         )
       ))
@@ -107,7 +124,8 @@ contract('PermitFactory', () => {
           Array(SPECIMENS_COUNT).fill(SPECIMEN.reExportHash),
           {
             from: address,
-            gasPrice: 0
+            gasPrice: 0,
+            gas: '0xB71B0'
           }
         )
       ))
@@ -130,7 +148,8 @@ contract('PermitFactory', () => {
           Array(SPECIMENS_COUNT).fill(SPECIMEN.reExportHash),
           {
             from: address,
-            gasPrice: 0
+            gasPrice: 0,
+            gas: '0xB71B0'
           }
         )
       ))
