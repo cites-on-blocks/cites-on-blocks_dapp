@@ -23,4 +23,4 @@ echo "Starting ganache instance"
 start_ganache
 
 echo "Run truffle tests"
-truffle test
+truffle test "./test/unit"
