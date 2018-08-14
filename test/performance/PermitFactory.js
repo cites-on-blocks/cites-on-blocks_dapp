@@ -1,7 +1,10 @@
 const Web3 = require('web3')
+const fetch = require('node-fetch')
+const chalk = require('chalk')
 const PermitFactory = artifacts.require('./PermitFactory.sol')
 
-const web3 = new Web3('http://localhost:8545')
+const rpcProvider = 'http://localhost:8545'
+const web3 = new Web3(rpcProvider)
 
 const ACCOUNTS = require('./addresses')
 
@@ -41,7 +44,60 @@ contract('PermitFactory', () => {
   }
   const SPECIMENS_COUNT = 3
 
+  const getCreatePermitPromises = (promiseCount) => {
+    return Promise.all(ACCS_UNLOCKED
+      .slice(0, promiseCount)
+      .map(address => permitFactoryInstance.createPermit(
+        EXPORT_COUNTRY,
+        IMPORT_COUNTRY,
+        PERMIT_TYPE,
+        EXPORTER,
+        IMPORTER,
+        Array(SPECIMENS_COUNT).fill(SPECIMEN.quantity),
+        Array(SPECIMENS_COUNT).fill(SPECIMEN.scientificName),
+        Array(SPECIMENS_COUNT).fill(SPECIMEN.commonName),
+        Array(SPECIMENS_COUNT).fill(SPECIMEN.description),
+        Array(SPECIMENS_COUNT).fill(SPECIMEN.originHash),
+        Array(SPECIMENS_COUNT).fill(SPECIMEN.reExportHash),
+        {
+          from: address,
+          gasPrice: 0,
+          gas: '0xB71B0'
+        }
+      )
+    ))
+  }
+
+  const getUncleCount = async (rpcProviderUrl, fromBlock, toBlock) => {
+    const getUnclePromises = []
+    for (let i = fromBlock; i <= toBlock; i++) {
+      getUnclePromises.push(fetch(rpcProviderUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          method: 'eth_getUncleCountByBlockNumber',
+          params:[web3.utils.toHex(i)],
+          id: 8995,
+          jsonrpc: '2.0'
+        })
+      }))
+    }
+    const results = await Promise.all(getUnclePromises)
+    const jsonResults = await Promise.all(results.map(res => res.json()))
+    return jsonResults.reduce(
+      (totalUncleCount, current) => totalUncleCount + web3.utils.hexToNumber(current.result), 0
+    )
+  }
+
   describe('#createPermit - performance', () => {
+    let from
+    let fromBlock
+    let to
+    let toBlock
+    let totalUncleCount
+
     before(async () => {
       permitFactoryInstance = await PermitFactory.deployed()
       // Create, whitelist and unlock accounts if not already done
@@ -73,86 +129,47 @@ contract('PermitFactory', () => {
         console.log('===========================================')
       } else {  // use already whitelisted accounts if existent
         permitFactoryInstance = await PermitFactory.at('0x0a35db94da8e787b1c10bc5d9a7761d151bedeaf')
+        console.log('')
+        console.log('===========================================')
         console.log('Unlocking accounts...')
-        ACCOUNTS.forEach(async account => {
-          await web3.eth.personal.unlockAccount(account, '', '0x1770')
+        await Promise.all(ACCOUNTS.map(account => {
           ACCS_UNLOCKED.push(account)
-        })
+          return web3.eth.personal.unlockAccount(account, '', '0x1770')
+        }))
         console.log('done.')
+        console.log('===========================================')
+        console.log('')
       }
     })
 
+    beforeEach(async () => {
+      from = new Date()
+      fromBlock = await web3.eth.getBlock('latest')
+    })
+
+    afterEach(async () => {
+      to = new Date()
+      toBlock = await web3.eth.getBlock('latest')
+      totalUncleCount = await getUncleCount(rpcProvider, fromBlock.number, toBlock.number)
+      console.log('')
+      console.log(`Block:       ${fromBlock.number} - ${toBlock.number}`)
+      console.log(`Duration:    ${chalk.green(Math.abs(from.getTime() - to.getTime()) + 'ms')}`)
+      console.log(`Uncle count: ${chalk.green(totalUncleCount)}`)
+      console.log('')
+    })
+
     it('send 10 transactions at once', async () => {
-      const results = await Promise.all(ACCS_UNLOCKED
-        .slice(0, 10)
-        .map(address => permitFactoryInstance.createPermit(
-          EXPORT_COUNTRY,
-          IMPORT_COUNTRY,
-          PERMIT_TYPE,
-          EXPORTER,
-          IMPORTER,
-          Array(SPECIMENS_COUNT).fill(SPECIMEN.quantity),
-          Array(SPECIMENS_COUNT).fill(SPECIMEN.scientificName),
-          Array(SPECIMENS_COUNT).fill(SPECIMEN.commonName),
-          Array(SPECIMENS_COUNT).fill(SPECIMEN.description),
-          Array(SPECIMENS_COUNT).fill(SPECIMEN.originHash),
-          Array(SPECIMENS_COUNT).fill(SPECIMEN.reExportHash),
-          {
-            from: address,
-            gasPrice: 0,
-            gas: '0xB71B0'
-          }
-        )
-      ))
+      const results = await getCreatePermitPromises(10)
       assert.equal(results.length, 10)
     })
 
     it('send 100 transactions at once', async () => {
-      const results = await Promise.all(ACCS_UNLOCKED
-        .slice(0, 100)
-        .map(address => permitFactoryInstance.createPermit(
-          EXPORT_COUNTRY,
-          IMPORT_COUNTRY,
-          PERMIT_TYPE,
-          EXPORTER,
-          IMPORTER,
-          Array(SPECIMENS_COUNT).fill(SPECIMEN.quantity),
-          Array(SPECIMENS_COUNT).fill(SPECIMEN.scientificName),
-          Array(SPECIMENS_COUNT).fill(SPECIMEN.commonName),
-          Array(SPECIMENS_COUNT).fill(SPECIMEN.description),
-          Array(SPECIMENS_COUNT).fill(SPECIMEN.originHash),
-          Array(SPECIMENS_COUNT).fill(SPECIMEN.reExportHash),
-          {
-            from: address,
-            gasPrice: 0,
-            gas: '0xB71B0'
-          }
-        )
-      ))
+      const results = await getCreatePermitPromises(100)
       assert.equal(results.length, 100)
     })
 
     it('send 1000 transactions at once', async () => {
-      const results = await Promise.all(ACCS_UNLOCKED
-        .map(address => permitFactoryInstance.createPermit(
-          EXPORT_COUNTRY,
-          IMPORT_COUNTRY,
-          PERMIT_TYPE,
-          EXPORTER,
-          IMPORTER,
-          Array(SPECIMENS_COUNT).fill(SPECIMEN.quantity),
-          Array(SPECIMENS_COUNT).fill(SPECIMEN.scientificName),
-          Array(SPECIMENS_COUNT).fill(SPECIMEN.commonName),
-          Array(SPECIMENS_COUNT).fill(SPECIMEN.description),
-          Array(SPECIMENS_COUNT).fill(SPECIMEN.originHash),
-          Array(SPECIMENS_COUNT).fill(SPECIMEN.reExportHash),
-          {
-            from: address,
-            gasPrice: 0,
-            gas: '0xB71B0'
-          }
-        )
-      ))
+      const results = await getCreatePermitPromises(1000)
       assert.equal(results.length, 1000)
     })
   })
