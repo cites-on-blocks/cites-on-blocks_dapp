@@ -1,6 +1,7 @@
 const Web3 = require('web3')
 const fetch = require('node-fetch')
 const chalk = require('chalk')
+const fs = require('fs')
 const PermitFactory = artifacts.require('./PermitFactory.sol')
 
 const rpcProvider = 'http://localhost:8545'
@@ -44,6 +45,10 @@ contract('PermitFactory', () => {
   }
   const SPECIMENS_COUNT = 3
 
+  /**
+   * Returns given number of `createPermit` promises in an array.
+   * @param {number} promiseCount Number of promises. 
+   */
   const getCreatePermitPromises = (promiseCount) => {
     return Promise.all(ACCS_UNLOCKED
       .slice(0, promiseCount)
@@ -68,6 +73,12 @@ contract('PermitFactory', () => {
     ))
   }
 
+  /**
+   * Returns number of uncle blocks in a given block range.
+   * @param {string} rpcProviderUrl URL of RPC provider. 
+   * @param {number} fromBlock Start of block range.
+   * @param {number} toBlock End of block range.
+   */
   const getUncleCount = async (rpcProviderUrl, fromBlock, toBlock) => {
     const getUnclePromises = []
     for (let i = fromBlock; i <= toBlock; i++) {
@@ -97,6 +108,7 @@ contract('PermitFactory', () => {
     let to
     let toBlock
     let totalUncleCount
+    let txCount
 
     before(async () => {
       permitFactoryInstance = await PermitFactory.deployed()
@@ -151,26 +163,38 @@ contract('PermitFactory', () => {
       to = new Date()
       toBlock = await web3.eth.getBlock('latest')
       totalUncleCount = await getUncleCount(rpcProvider, fromBlock.number, toBlock.number)
-      console.log('')
-      console.log(`Block:       ${fromBlock.number} - ${toBlock.number}`)
-      console.log(`Duration:    ${chalk.green(Math.abs(from.getTime() - to.getTime()) + 'ms')}`)
-      console.log(`Uncle count: ${chalk.green(totalUncleCount)}`)
-      console.log('')
+      const duration = Math.abs(from.getTime() - to.getTime())
+      fs.appendFile(
+        'test/performance/peformanceData.csv',
+        `\n${txCount},${fromBlock.number},${toBlock.number},${duration},${totalUncleCount}`,
+        (err) => {  
+          if (err) throw err
+          console.log('')
+          console.log(`Block:       ${fromBlock.number} - ${toBlock.number}`)
+          console.log(`Duration:    ${chalk.green(duration + 'ms')}`)
+          console.log(`Uncle count: ${chalk.green(totalUncleCount)}`)
+          console.log('')
+      })
     })
 
-    it('send 10 transactions at once', async () => {
-      const results = await getCreatePermitPromises(10)
-      assert.equal(results.length, 10)
-    })
-
-    it('send 100 transactions at once', async () => {
-      const results = await getCreatePermitPromises(100)
-      assert.equal(results.length, 100)
-    })
-
-    it('send 1000 transactions at once', async () => {
-      const results = await getCreatePermitPromises(1000)
-      assert.equal(results.length, 1000)
-    })
+    for (let i = 1; i <= 100; i++) {
+      it('send 10 transactions at once', async () => {
+        txCount = 10
+        const results = await getCreatePermitPromises(txCount)
+        assert.equal(results.length, 10)
+      })
+      
+      it('send 100 transactions at once', async () => {
+        txCount = 100
+        const results = await getCreatePermitPromises(txCount)
+        assert.equal(results.length, 100)
+      })
+      
+      it('send 1000 transactions at once', async () => {
+        txCount = 10000
+        const results = await getCreatePermitPromises(txCount)
+        assert.equal(results.length, 1000)
+      })
+    }
   })
 })
