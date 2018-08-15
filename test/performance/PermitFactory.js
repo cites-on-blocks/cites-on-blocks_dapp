@@ -165,7 +165,7 @@ contract('PermitFactory', () => {
       totalUncleCount = await getUncleCount(rpcProvider, fromBlock.number, toBlock.number)
       const duration = Math.abs(from.getTime() - to.getTime())
       fs.appendFile(
-        'test/performance/peformanceData.csv',
+        'test/performance/performanceData.csv',
         `\n${txCount},${fromBlock.number},${toBlock.number},${duration},${totalUncleCount}`,
         (err) => {  
           if (err) throw err
