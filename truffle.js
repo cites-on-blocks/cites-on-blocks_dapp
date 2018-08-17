@@ -11,7 +11,8 @@ module.exports = {
       port: 8545,
       network_id: '*',
       // NOTE: unlocked account with a lot of ETH -> controller
-      from: '0x6b0c56d1ad5144b4d37fa6e27dc9afd5c2435c3b'
+      from: '0x6b0c56d1ad5144b4d37fa6e27dc9afd5c2435c3b',
+      gas: '0x2FEFD8'
     }
   },
   solc: {
@@ -19,5 +20,8 @@ module.exports = {
       enabled: true,
       runs: 500
     }
+  },
+  mocha: {
+    enableTimeouts: false
   }
 }

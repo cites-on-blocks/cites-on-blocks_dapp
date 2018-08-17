@@ -1,8 +1,9 @@
-version: '2.1'
+version: '3'
 services:
   authority0:
-    image: parity/parity:${PARITY_VERSION}
+    image: parity/parity:stable
     command:
+      --geth
       --config /parity/config/authority.toml
       --engine-signer 0x00bd138abd70e2f00903268f3db08f2d25677c9e
       --jsonrpc-interface 0.0.0.0
@@ -10,13 +11,13 @@ services:
       --ui-interface 0.0.0.0
       --unsafe-expose
       --jsonrpc-cors all
-      --unlock 0x00bd138abd70e2f00903268f3db08f2d25677c9e,0x6b0c56d1ad5144b4d37fa6e27dc9afd5c2435c3b
+      --unlock 0x00bd138abd70e2f00903268f3db08f2d25677c9e,0x6b0c56d1ad5144b4d37fa6e27dc9afd5c2435c3b,0x0011598de1016a350ad719d23586273804076774,0x006b8d5f5c8ad11e5e6cf9ee6624433891430965,0x0076ed2dd9f7dc78e3f336141329f8784d8cd564,0x006db7698b897b842a42a1c3ce423b07c2656ecd,0x00f137e9bfe37cc015f11cec8339cc2f1a3ae3a6,0x00c2bc2f078e1dbafa4a1fa46929e1f2ca207f00,0x000a3702732843418d83a03e65a3d9f7add58864,0x009c4c00de80cb8b0130906b09792aac6585078f,0x0053017d2ef8119654bdc921a9078567a77e854d,0x002491c91e81da1643de79582520ac4c77229e58,0x00fd696f0c0660779379f6bff8ce58632886f9d2,0x007f16bc32026e7cd5046590e4f5b711ef1a6d8b,0x00fb81808899fd51c4a87a642084138be62189a0,0x00a61dabf0324bc07ba5a82a97c5f15d38fa9bbc,0x007a11ac48952a7e8e661833f4803bd7ffa58f77,0x00e7ad5b906c829c71c2f6f6cec016866ed1c264,0x0075f4f4d7324fef36371610d03e1195894bf420
       --password /parity/authority.pwd
     volumes:
       - ./parity/config:/parity/config:ro
       - authority0:/root/.local/share/io.parity.ethereum/
-      - ./parity/authorities/authority0.json:/root/.local/share/io.parity.ethereum/keys/${NETWORK_NAME}/authority.json:ro
-      - ./parity/keys:/root/.local/share/io.parity.ethereum/keys/${NETWORK_NAME}
+      - ./parity/authorities/authority0.json:/root/.local/share/io.parity.ethereum/keys/cites-poa/authority.json:ro
+      - ./parity/keys:/root/.local/share/io.parity.ethereum/keys/cites-poa
       - ./parity/authorities/authority0.pwd:/parity/authority.pwd:ro
       - ./parity/node0.network.key:/root/.local/share/io.parity.ethereum/network/key:ro
     ports:
@@ -27,14 +28,14 @@ services:
 
 
   authority1:
-    image: parity/parity:${PARITY_VERSION}
+    image: parity/parity:stable
     command:
       --config /parity/config/authority.toml
       --engine-signer 0x00aa39d30f0d20ff03a22ccfc30b7efbfca597c2
     volumes:
       - ./parity/config:/parity/config:ro
       - authority1:/root/.local/share/io.parity.ethereum/
-      - ./parity/authorities/authority1.json:/root/.local/share/io.parity.ethereum/keys/${NETWORK_NAME}/authority.json:ro
+      - ./parity/authorities/authority1.json:/root/.local/share/io.parity.ethereum/keys/cites-poa/authority.json:ro
       - ./parity/authorities/authority1.pwd:/parity/authority.pwd:ro
       - ./parity/node1.network.key:/root/.local/share/io.parity.ethereum/network/key:ro
     networks:
@@ -43,14 +44,14 @@ services:
 
 
   authority2:
-    image: parity/parity:${PARITY_VERSION}
+    image: parity/parity:stable
     command:
       --config /parity/config/authority.toml
       --engine-signer 0x002e28950558fbede1a9675cb113f0bd20912019
     volumes:
       - ./parity/config:/parity/config:ro
       - authority2:/root/.local/share/io.parity.ethereum/
-      - ./parity/authorities/authority2.json:/root/.local/share/io.parity.ethereum/keys/${NETWORK_NAME}/authority.json:ro
+      - ./parity/authorities/authority2.json:/root/.local/share/io.parity.ethereum/keys/cites-poa/authority.json:ro
       - ./parity/authorities/authority2.pwd:/parity/authority.pwd:ro
       - ./parity/node2.network.key:/root/.local/share/io.parity.ethereum/network/key:ro
     networks:
@@ -58,16 +59,16 @@ services:
         ipv4_address: 171.16.0.12
 
   member0:
-    image: parity/parity:${PARITY_VERSION}
+    image: parity/parity:stable
     command:
       --config /parity/config/member.toml
-      --dapps-interface 0.0.0.0
+      --jsonrpc-interface 0.0.0.0
       --ws-interface 0.0.0.0
       --ui-interface 0.0.0.0
       --unsafe-expose
     volumes:
       - ./parity/config:/parity/config:ro
-      - ./parity/keys:/root/.local/share/io.parity.ethereum/keys/${NETWORK_NAME}
+      - ./parity/keys:/root/.local/share/io.parity.ethereum/keys/cites-poa
     ports:
       - 8180:8180
       - 8546:8546
@@ -78,7 +79,7 @@ services:
 
 
   member1:
-    image: parity/parity:${PARITY_VERSION}
+    image: parity/parity:stable
     command: --config /parity/config/member.toml
     volumes:
       - ./parity/config:/parity/config:ro
@@ -88,7 +89,7 @@ services:
 
 
   member2:
-    image: parity/parity:${PARITY_VERSION}
+    image: parity/parity:stable
     command: --config /parity/config/member.toml
     volumes:
       - ./parity/config:/parity/config:ro
@@ -127,4 +128,3 @@ networks:
       driver: default
       config:
       - subnet: 171.16.0.1/24
-        gateway: 171.16.0.1
