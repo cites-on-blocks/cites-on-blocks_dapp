@@ -1,0 +1,23 @@
+[parity]
+chain = "/parity/config/chain.json"
+
+[rpc]
+interface = "0.0.0.0"
+cors = ["all"]
+hosts = ["all"]
+apis = ["web3", "eth", "net", "parity", "traces", "rpc", "personal", "parity_accounts", "signer", "parity_set"]
+
+[network]
+bootnodes = [
+  "enode://989b71888c7ddf0d855bb88811dee42f936cd2a01ac104cfbd0625ab854876712c829c750465ce5cef314288b97d3c8089d2a0ea72a05e66da1eb6759a3cd19e@171.16.0.10:30303",
+  "enode://d3b91e3926848047d8e74d3f68f3f4cd5eeec09e6258fab7f25554b6e9dd6f833b2b1cc3806ae7dacd230d6bbfa41ae09350c03e895006a0f03de0d2ac4537ad@171.16.0.11:30303",
+  "enode://9ad7c19cbc70da80aea0f7ab0a1939bb7f98040d05a6648a2f4bb6dc5d12ac2286154bf14eca0908898e66a46a1ef8bd0f17c4e0e7d8789950b8b759d8ddf755@171.16.0.12:30303"
+]
+
+[account]
+password = ["/parity/authority.pwd"]
+
+[mining]
+reseal_on_txs = "none"
+usd_per_tx = "0"
+gas_floor_target = "0x165A0BC00"

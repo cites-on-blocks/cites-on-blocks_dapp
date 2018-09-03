@@ -1,9 +1,12 @@
-var SimpleStorage = artifacts.require("SimpleStorage");
-var TutorialToken = artifacts.require("TutorialToken");
-var ComplexStorage = artifacts.require("ComplexStorage");
+const PermitFactory = artifacts.require('PermitFactory')
 
-module.exports = function(deployer) {
-  deployer.deploy(SimpleStorage);
-  deployer.deploy(TutorialToken);
-  deployer.deploy(ComplexStorage);
-};
+module.exports = async (deployer, network, accounts) => {
+  await deployer.deploy(PermitFactory)
+
+  // set whitelist for dev purposes
+  if (network === 'development') {
+    const permitFactory = await PermitFactory.deployed()
+    await permitFactory.addAddress(accounts[1], 'DE')
+    await permitFactory.addAddress(accounts[2], 'FR')
+  }
+}

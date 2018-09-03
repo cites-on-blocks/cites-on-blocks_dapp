@@ -1,60 +1,99 @@
 import React, { Component } from 'react'
-import { AccountData, ContractData, ContractForm } from 'drizzle-react-components'
-import logo from '../../logo.png'
+import PropTypes from 'prop-types'
+import { WorldMap, Box, Headline } from 'grommet'
+import Web3 from 'web3'
+import { COUNTRIES } from '../../util/countries'
+
+import {
+  blockNumberToUnix,
+  getWhitelistEvents,
+  mergeWhitelistEvents
+} from '../../util/permitUtils'
+
+import '../../css/home.css'
 
 class Home extends Component {
+  constructor(props, context) {
+    super(props)
+    this.state = {
+      whitelistEvents: []
+    }
+    this.contracts = context.drizzle.contracts
+    // NOTE: We have to iniate a new web3 instance for retrieving event via `getPastEvents`.
+    //       MetaMask does not support websockets and Drizzle retrieves events via subscriptions.
+    const web3 = new Web3(this.contracts.PermitFactory.givenProvider)
+    const { abi, address } = this.contracts.PermitFactory
+    this.PermitFactory = new web3.eth.Contract(abi, address)
+    this.web3 = web3
+  }
+
+  async componentDidMount() {
+    await this.getWhitelistedEvents()
+  }
+
+  async getWhitelistedEvents(from = 0) {
+    const [addWhitelist, removedWhitelist] = await Promise.all([
+      getWhitelistEvents(this.PermitFactory, 'AddressWhitelisted', from),
+      getWhitelistEvents(this.PermitFactory, 'AddressRemoved', from)
+    ])
+    const whitelistEvents = addWhitelist.concat(removedWhitelist)
+    const newWhitelistEvents = await blockNumberToUnix(
+      this.web3,
+      whitelistEvents
+    )
+    const mergedWhitelistEvents = mergeWhitelistEvents(
+      whitelistEvents,
+      newWhitelistEvents
+    )
+
+    const result = this.createMapSeries(mergedWhitelistEvents)
+    this.setState({
+      ...this.state,
+      whitelistEvents: result
+    })
+  }
+
+  createMapSeries(arr) {
+    let whitelistArray = arr
+
+    let result = Object.values(
+      whitelistArray.reduce((c, { country }) => {
+        c[country] = c[country] || {
+          label: COUNTRIES[country].name,
+          colorIndex: 'brand',
+          id: COUNTRIES[country].name,
+          place: [COUNTRIES[country].latitude, COUNTRIES[country].longitude]
+        }
+        return c
+      }, {})
+    )
+    return result
+  }
+
   render() {
     return (
-      <main className="container">
-        <div className="pure-g">
-          <div className="pure-u-1-1 header">
-            <img src={logo} alt="drizzle-logo" />
-            <h1>Drizzle Examples</h1>
-            <p>Examples of how to get started with Drizzle in various situations.</p>
-
-            <br/><br/>
-          </div>
-        
-          <div className="pure-u-1-1">
-            <h2>Active Account</h2>
-            <AccountData accountIndex="0" units="ether" precision="3" />
-
-            <br/><br/>
-          </div>
-
-          <div className="pure-u-1-1">
-            <h2>SimpleStorage</h2>
-            <p>This shows a simple ContractData component with no arguments, along with a form to set its value.</p>
-            <p><strong>Stored Value</strong>: <ContractData contract="SimpleStorage" method="storedData" /></p>
-            <ContractForm contract="SimpleStorage" method="set" />
-
-            <br/><br/>
-          </div>
-
-          <div className="pure-u-1-1">
-            <h2>TutorialToken</h2>
-            <p>Here we have a form with custom, friendly labels. Also note the token symbol will not display a loading indicator. We've suppressed it with the <code>hideIndicator</code> prop because we know this variable is constant.</p>
-            <p><strong>Total Supply</strong>: <ContractData contract="TutorialToken" method="totalSupply" methodArgs={[{from: this.props.accounts[0]}]} /> <ContractData contract="TutorialToken" method="symbol" hideIndicator /></p>
-            <p><strong>My Balance</strong>: <ContractData contract="TutorialToken" method="balanceOf" methodArgs={[this.props.accounts[0]]} /></p>
-            <h3>Send Tokens</h3>
-            <ContractForm contract="TutorialToken" method="transfer" labels={['To Address', 'Amount to Send']} />
-
-            <br/><br/>
-          </div>
-
-          <div className="pure-u-1-1">
-            <h2>ComplexStorage</h2>
-            <p>Finally this contract shows data types with additional considerations. Note in the code the strings below are converted from bytes to UTF-8 strings and the device data struct is iterated as a list.</p>
-            <p><strong>String 1</strong>: <ContractData contract="ComplexStorage" method="string1" toUtf8 /></p>
-            <p><strong>String 2</strong>: <ContractData contract="ComplexStorage" method="string2" toUtf8 /></p>
-            <strong>Single Device Data</strong>: <ContractData contract="ComplexStorage" method="singleDD" />
-
-            <br/><br/>
-          </div>
-        </div>
+      <main>
+        <Box align="center" justify="center" className="cites-box">
+          <WorldMap
+            colorIndex="unknown"
+            className="cites-svg"
+            series={this.state.whitelistEvents}
+          />
+          <Headline className="cites-header" align="center">
+            Cites on Blockchain
+          </Headline>
+        </Box>
       </main>
     )
   }
+}
+
+Home.propTypes = {
+  accounts: PropTypes.object
+}
+
+Home.contextTypes = {
+  drizzle: PropTypes.object
 }
 
 export default Home

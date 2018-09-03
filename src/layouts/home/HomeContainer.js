@@ -5,12 +5,10 @@ import { drizzleConnect } from 'drizzle-react'
 const mapStateToProps = state => {
   return {
     accounts: state.accounts,
-    SimpleStorage: state.contracts.SimpleStorage,
-    TutorialToken: state.contracts.TutorialToken,
     drizzleStatus: state.drizzleStatus
   }
 }
 
-const HomeContainer = drizzleConnect(Home, mapStateToProps);
+const HomeContainer = drizzleConnect(Home, mapStateToProps)
 
 export default HomeContainer

@@ -1,0 +1,16 @@
+.cites-header {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    /* or 3d alternative if you will add animations (smoother transitions) */
+    transform: translate3d(-50%,-50%,0);
+}
+
+.cites-box{
+    position: relative;
+}
+
+.cites-svg {
+    opacity: 0.6;
+}

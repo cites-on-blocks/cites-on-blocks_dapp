@@ -1,0 +1,19 @@
+.headline {
+    font-weight: 300;
+    display: inline-block;
+    padding-bottom: 5px;
+    position: relative;
+  }
+
+.headline:before{
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 10px;
+    bottom: 0;
+    border-bottom: 2px solid #417505;
+}
+
+tr:hover{
+    cursor: pointer
+}
